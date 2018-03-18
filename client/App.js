@@ -1,36 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Button, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
 import SongForm from './components/SongForm';
 import SongItem from './components/SongItem';
-import {
-  fetchSongs,
-  createSong,
-  updateSong,
-  deleteSong,
-  upvoteSong,
-} from './constants/api';
+import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, } from './constants/api';
 
 export default class App extends Component {
 
-  static defaultProps = {
-    fetchSongs,
-    createSong,
-    updateSong,
-    deleteSong,
-    upvoteSong,
-  };
+  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, };
 
-  state = {
-    title: null,
-    author: null,
-    edit_title: null,
-    edit_author: null,
-    loading: false,
-    update: null,
-    add: false,
-    songs: []
+  state = { title: null, author: null, edit_title: null, edit_author: null,
+    loading: false, update: null, add: false, songs: []
   };
 
   async updateSongList() {
@@ -130,6 +111,15 @@ export default class App extends Component {
       <View style={styles.container}>
         <Text style={styles.text}>Tell Me What To Play!</Text>
 
+        {this.state.add && (
+          <SongForm
+            handleChange={this.handleChange.bind(this)}
+            onSubmit={() => this.addSong()}
+            title={this.state.title}
+            author={this.state.author}
+            command={'Add'}
+          />
+        )}
         {!this.state.add &&
           <RNButton
             backgroundColor={'#8888ff'}
@@ -140,35 +130,28 @@ export default class App extends Component {
           />
         }
 
-        {this.state.add && (
-          <SongForm
-            handleChange={this.handleChange.bind(this)}
-            onSubmit={() => this.addSong()}
-            title={this.state.title}
-            author={this.state.author}
-            command={'Add'}
-          />
-        )}
-
-        {this.state.songs.map((song, i) => {
-          {return this.state.update === i
-            ? <SongForm
-                key={i}
-                handleChange={this.handleEditChange.bind(this)}
-                onSubmit={() => this.updateSongItem(song._id)}
-                title={this.state.edit_title}
-                author={this.state.edit_author}
-                command={'Updt'}
-            />
-            : <SongItem
-                key={i}
-                song={song}
-                vote={this.vote.bind(this)}
-                showEditForm={() => this.showEditForm(i, song._id)}
-                deleteSong={this.deleteSong.bind(this)}
-            />
-          }
-        })}
+        <ScrollView style={styles.scroll}
+          pagingEnabled = {true}
+        >
+          {this.state.songs.map((song, i) => {
+            return this.state.update === i
+              ? <SongForm
+                  key={i}
+                  handleChange={this.handleEditChange.bind(this)}
+                  onSubmit={() => this.updateSongItem(song._id)}
+                  title={this.state.edit_title}
+                  author={this.state.edit_author}
+                  command={'Updt'}
+              />
+              : <SongItem
+                  key={i}
+                  song={song}
+                  vote={this.vote.bind(this)}
+                  showEditForm={() => this.showEditForm(i, song._id)}
+                  deleteSong={this.deleteSong.bind(this)}
+              />
+          })}
+        </ScrollView>
       </View>
     );
   }
@@ -177,12 +160,18 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 60,
+    // backgroundColor: '#ddd',
+    alignItems: 'stretch',
+    // justifyContent: 'center',
     padding: 5,
+  },
+  scroll: {
+    flex: 1,
+    marginTop: 10,
   },
   text: {
     fontSize: 36,
+    textAlign: 'center', 
   },
 });
