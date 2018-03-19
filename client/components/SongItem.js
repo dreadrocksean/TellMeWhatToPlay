@@ -10,7 +10,7 @@ const SongItem = props => (
       </Text>
       <Button
         onPress={() => props.vote(props.song._id)}
-        title={`${props.song.title.substring(0, 15)} - ${props.song.author.substring(0, 14)}`}
+        title={`${props.song.title.substring(0, 15)} - ${props.song.author.substring(0, 13)}`}
       />
     </View>
     <View style={styles.iconGroup}>

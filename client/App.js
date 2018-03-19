@@ -23,7 +23,11 @@ export default class App extends Component {
     this.setState({ loading: true });
     try {
       const data = await this.props.fetchSongs();
-      const songs = data.songs.sort((a, b) => a.currVotes < b.currVotes);
+      const songs = data.songs.sort((a, b) => {
+        return
+          a.currVotes < b.currVotes
+          || a.createdAt < b.createdAt;
+      });
       this.setState({ songs });
     } catch (err) {
       console.error('ERROR: ', err);
@@ -52,7 +56,6 @@ export default class App extends Component {
 
   async addSong() {
     const {title, author} = this.state;
-    console.log(title);
     if (!title || !author) {
       this.setState({add: false});
       return;

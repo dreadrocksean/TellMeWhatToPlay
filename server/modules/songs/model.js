@@ -18,7 +18,12 @@ const SongSchema = new Schema({
 		type: Number,
 		default: 0,
 		required: false,
-	}
-});
+	},
+	mbid: {
+		type: String,
+		default: '',
+		required: false,
+	},
+}, {timestamps: true});
 
 export default mongoose.model('Song', SongSchema);
