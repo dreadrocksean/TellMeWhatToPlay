@@ -4,15 +4,20 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import SongForm from './components/SongForm';
 import SongItem from './components/SongItem';
-import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, } from './constants/api';
+import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, fetchLastFMSong,} from './constants/api';
 
 export default class App extends Component {
 
-  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, };
+  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, fetchLastFMSong,};
 
   state = { title: null, author: null, edit_title: null, edit_author: null,
-    loading: false, update: null, add: false, songs: []
+    loading: false, update: null, add: false, songs: [],
+    titleComplete: '', artistComplete: '',
   };
+
+  componentDidMount() {
+    this.updateSongList();
+  }
 
   async updateSongList() {
     this.setState({ loading: true });
@@ -23,11 +28,26 @@ export default class App extends Component {
     } catch (err) {
       console.error('ERROR: ', err);
     }
-    this.setState({ loading: false, update: false });
+    this.setState({ loading: false, update: false, add: false });
   }
 
-  componentDidMount() {
-    this.updateSongList();
+  async getLastFMSongList(songName) {
+    if (!songName) {
+      this.openAddForm();
+      return;
+    }
+    try {
+      const data = await this.props.fetchLastFMSong(songName);
+      const songs = data.results.trackmatches.track.map(song => ({title:song.name, author:song.artist}));
+      this.setState({
+        titleComplete: songs[0].title,
+        artistComplete: songs[0].author,
+        title: songs[0].title,
+        author: songs[0].author,
+      });
+    } catch (err) {
+      console.error('ERROR: ', err);
+    }
   }
 
   async addSong() {
@@ -38,7 +58,9 @@ export default class App extends Component {
       return;
     }
     try {
-      const newSong = await this.props.createSong({ title: title, author: author });
+      const newSong = await this.props.createSong({
+        title: title.trim(), author: author.trim(),
+      });
       console.log('Success!: ', newSong);
       this.setState({add: false})
       this.updateSongList();
@@ -91,12 +113,24 @@ export default class App extends Component {
   }
 
   handleChange(field) {
+    this.getLastFMSongList(field.title);
     this.setState(field);
   }
 
   handleEditChange(field) {
     const key = Object.keys(field)[0];
     this.setState({['edit_'+key]: field[key]});
+  }
+
+  openAddForm() {
+    console.log('openform')
+    this.setState({
+      add: true,
+      titleComplete: '',
+      artistComplete: '',
+      title: '',
+      author: '',
+    });
   }
 
   render() {
@@ -118,6 +152,8 @@ export default class App extends Component {
             title={this.state.title}
             author={this.state.author}
             command={'Add'}
+            titleComplete={this.state.titleComplete}
+            artistComplete={this.state.artistComplete}
           />
         )}
         {!this.state.add &&
@@ -125,7 +161,7 @@ export default class App extends Component {
             backgroundColor={'#8888ff'}
             borderRadius={10}
             icon={{name: 'music', type: 'font-awesome'}}
-            onPress={() => this.setState({add: true})}
+            onPress={this.openAddForm.bind(this)}
             title={'Add Song'}
           />
         }

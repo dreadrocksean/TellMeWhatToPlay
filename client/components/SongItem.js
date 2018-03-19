@@ -10,7 +10,7 @@ const SongItem = props => (
       </Text>
       <Button
         onPress={() => props.vote(props.song._id)}
-        title={`${props.song.title} - ${props.song.author}`}
+        title={`${props.song.title.substring(0, 15)} - ${props.song.author.substring(0, 14)}`}
       />
     </View>
     <View style={styles.iconGroup}>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   iconGroup: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   icon: {
     marginLeft: 15,
