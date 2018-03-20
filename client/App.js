@@ -26,8 +26,8 @@ export default class App extends Component {
       const songs = data.songs.sort((a, b) => {
           if (a.currVotes < b.currVotes) return 1;
           if (a.currVotes > b.currVotes) return -1;
-          if (a.createdAt < b.createdAt) return 1;
-          if (a.createdAt > b.createdAt) return -1;
+          if (a.createdAt < b.createdAt) return -1;
+          if (a.createdAt > b.createdAt) return 1;
           return 0;
       });
       this.setState({ songs });
