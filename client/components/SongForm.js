@@ -1,39 +1,57 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native';
 
-const SongForm = props => (
-  <View style={{flexDirection: 'row'}}>
-    <View style={{flex: 4}}>
-      <TextInput
-        style={styles.autocomplete}
-        placeholder={props.titleComplete || ''}
-        editable={false}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Title'
-        onChangeText={title => props.handleChange({title})}
-      />
-    </View>
-    <View style={{flex: 4}}>
-      <TextInput
-        style={styles.autocomplete}
-        placeholder={props.artistComplete || ''}
-        editable={false}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder={ props.artistComplete ? '' : 'Artist' }
-        onChangeText={author => props.handleChange({author})}
-      />
-    </View>
-    <TouchableOpacity
-      style = {styles.submitButton}
-      onPress = { () => props.onSubmit() }>
-      <Text style = {styles.submitButtonText}> {props.command} </Text>
-    </TouchableOpacity>
-  </View>
-);
+class SongForm extends Component {
+
+  state = {
+    title: '',
+    artist: '',
+  }
+
+  handleChange(field) {
+    console.log(field)
+    this.setState(field);
+    this.props.handleChange(field);
+  }
+
+  render() {
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <View style={{flex: 4}}>
+          <TextInput
+            style={styles.autocomplete}
+            placeholder={this.props.titleComplete || ''}
+            editable={false}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder='Title'
+            onChangeText={title => this.handleChange({title})}
+            value={this.props.title || this.state.title}
+          />
+        </View>
+        <View style={{flex: 4}}>
+          <TextInput
+            style={styles.autocomplete}
+            placeholder={this.props.artistComplete || ''}
+            editable={false}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={ this.props.artistComplete ? '' : 'Artist' }
+            onChangeText={artist => this.handleChange({artist})}
+            value={this.props.author || this.state.artist}
+          />
+        </View>
+        <TouchableOpacity
+          style = {styles.submitButton}
+          onPress = { () => this.props.onSubmit() }>
+          <Text style = {styles.submitButtonText}> {this.props.command} </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   autocomplete: {

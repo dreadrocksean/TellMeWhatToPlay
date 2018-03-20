@@ -4,15 +4,17 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import SongForm from './components/SongForm';
 import SongItem from './components/SongItem';
-import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, fetchLastFMSong,} from './constants/api';
+import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
+  fetchLastFMSong, fetchLyrics} from './constants/api';
 
 export default class App extends Component {
 
-  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong, fetchLastFMSong,};
+  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
+    fetchLastFMSong, fetchLyrics};
 
   state = { title: null, author: null, edit_title: null, edit_author: null,
     loading: false, update: null, add: false, songs: [],
-    titleComplete: '', artistComplete: '',
+    titleComplete: '', artistComplete: '', mbid: '',
   };
 
   componentDidMount() {
@@ -20,7 +22,7 @@ export default class App extends Component {
   }
 
   async updateSongList() {
-    this.setState({ loading: true });
+    // this.setState({ loading: true });
     try {
       const data = await this.props.fetchSongs();
       const songs = data.songs.sort((a, b) => {
@@ -30,46 +32,52 @@ export default class App extends Component {
           if (a.createdAt > b.createdAt) return 1;
           return 0;
       });
-      this.setState({ songs });
+      this.setState({ songs, loading: false, update: false, add: false, title: '', author: '' });
     } catch (err) {
-      console.error('ERROR: ', err);
+      console.log('ERROR: ', err);
+      this.setState({ loading: false, update: false, add: false });
     }
-    this.setState({ loading: false, update: false, add: false });
   }
 
-  async getLastFMSongList(songName) {
-    if (!songName) {
+  async fetchLastFMSongList(field) {
+    const key = Object.keys(field)[0];
+    if (key === 'title' && !field[key]) {
       this.openAddForm();
       return;
     }
+    const title = (key === 'title') ? field[key] : this.state.edit_title;
+    const artist = (key === 'artist') ? field[key] : this.state.edit_author;
     try {
-      const data = await this.props.fetchLastFMSong(songName);
-      const songs = data.results.trackmatches.track.map(song => ({title:song.name, author:song.artist}));
+      const data = await this.props.fetchLastFMSong(title, artist);
+      const songs = data.results.trackmatches.track.map(song => ({title:song.name, artist:song.artist, mbid:song.mbid}));
       this.setState({
-        titleComplete: songs[0].title,
-        artistComplete: songs[0].author,
-        title: songs[0].title,
-        author: songs[0].author,
+        titleComplete: (songs[0] || {}).title,
+        artistComplete: (songs[0] || {}).artist,
+        title: (songs[0] || {}).title,
+        author: (songs[0] || {}).artist,
+        mbid: (songs[0] || {}).mbid,
+        edit_title: title,
+        edit_author: artist,
       });
     } catch (err) {
       console.error('ERROR: ', err);
+      this.openAddForm();
     }
   }
 
   async addSong() {
-    const {title, author} = this.state;
+    const {title, author, mbid} = this.state;
+    console.log(this.state)
     if (!title || !author) {
       this.setState({add: false});
       return;
     }
     try {
       const newSong = await this.props.createSong({
-        title: title.trim(), author: author.trim(),
+        title: title.trim(), author: author.trim(), mbid
       });
       console.log('Success!: ', newSong);
-      this.setState({add: false})
       this.updateSongList();
-      this.setState({title: '', author: ''});
     } catch (err) {
       console.error('ERROR creating song', err);
       this.setState({add: false})
@@ -97,8 +105,14 @@ export default class App extends Component {
     this.setState({edit_title: title, edit_author: author, update: i});
   }
 
+  showLyrics(i, songId) {
+    const {title, author} = this.state.songs.find( el => {
+      return el._id === songId;
+    });
+    this.setState({edit_title: title, edit_author: author, update: i});
+  }
+
   deleteSong(songId) {
-    console.log('songId', songId);
     try {
       this.props.deleteSong(songId);
       this.updateSongList();
@@ -118,8 +132,10 @@ export default class App extends Component {
   }
 
   handleChange(field) {
-    this.getLastFMSongList(field.title);
-    this.setState(field);
+    // const key = Object.keys(field)[0];
+    // this.setState({['edit_'+key]: field[key]});
+    this.fetchLastFMSongList(field);
+    // this.setState(field);
   }
 
   handleEditChange(field) {
@@ -128,17 +144,19 @@ export default class App extends Component {
   }
 
   openAddForm() {
-    console.log('openform')
     this.setState({
       add: true,
       titleComplete: '',
       artistComplete: '',
+      edit_title: '',
+      edit_author: '',
       title: '',
       author: '',
     });
   }
 
   render() {
+    console.log('this.state.loading', this.state.loading)
     if (this.state.loading) {
       return (
         <View style={styles.container}>
@@ -146,6 +164,7 @@ export default class App extends Component {
         </View>
       )
     }
+    console.log('this.state.add', this.state.add)
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Tell Me What To Play!</Text>
@@ -153,9 +172,9 @@ export default class App extends Component {
         {this.state.add && (
           <SongForm
             handleChange={this.handleChange.bind(this)}
-            onSubmit={() => this.addSong()}
-            title={this.state.title}
-            author={this.state.author}
+            onSubmit={this.addSong.bind(this)}
+            edit_title={this.state.edit_title}
+            edit_author={this.state.edit_author}
             command={'Add'}
             titleComplete={this.state.titleComplete}
             artistComplete={this.state.artistComplete}
@@ -182,13 +201,14 @@ export default class App extends Component {
                   onSubmit={() => this.updateSongItem(song._id)}
                   title={this.state.edit_title}
                   author={this.state.edit_author}
-                  command={'Updt'}
+                  command={'Save'}
               />
               : <SongItem
                   key={i}
                   song={song}
                   vote={this.vote.bind(this)}
                   showEditForm={() => this.showEditForm(i, song._id)}
+                  showLyrics={() => this.showLyrics(i, song._id)}
                   deleteSong={this.deleteSong.bind(this)}
               />
           })}
