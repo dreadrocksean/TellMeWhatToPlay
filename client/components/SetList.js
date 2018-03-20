@@ -121,7 +121,7 @@ export default class Setlist extends Component {
       const lyrics = data.result.track.text;
       navigate('Lyrics', { name: 'Lyrics', lyrics })
     } catch (err) {
-      console.error('ERROR: ', err);
+      navigate('Lyrics', { name: 'Lyrics', lyrics: 'Sorry. No lyrics available :-(' })
     }
   }
 
