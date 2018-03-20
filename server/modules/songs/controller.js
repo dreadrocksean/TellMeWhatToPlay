@@ -1,8 +1,8 @@
 import Song from './model';
 
 export const createSong = async (req, res) => {
-	const { title, author, votes, currVotes } = req.body;
-	const newSong = new Song({ title, author, votes, currVotes });
+	const { title, author, mbid } = req.body;
+	const newSong = new Song({ title, author, mbid });
 	console.log(newSong);
 
 	try {

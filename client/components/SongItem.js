@@ -25,7 +25,7 @@ const SongItem = props => {
       <View style={styles.iconGroup}>
         <Icon
           iconStyle={styles.icon}
-          onPress={props.showEditForm}
+          onPress={props.showLyrics}
           name='lead-pencil'
           type='material-community'
           color="#d4d4d4"

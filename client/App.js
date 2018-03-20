@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
@@ -7,7 +8,7 @@ import SongItem from './components/SongItem';
 import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
   fetchLastFMSong, fetchLyrics} from './constants/api';
 
-export default class App extends Component {
+export default class Setlist extends Component {
 
   static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
     fetchLastFMSong, fetchLyrics};
@@ -105,11 +106,19 @@ export default class App extends Component {
     this.setState({edit_title: title, edit_author: author, update: i});
   }
 
-  showLyrics(i, songId) {
+  async showLyrics(i, songId) {
     const {title, author} = this.state.songs.find( el => {
       return el._id === songId;
     });
-    this.setState({edit_title: title, edit_author: author, update: i});
+
+    try {
+      const data = await this.props.fetchLyrics(title, author);
+      console.log(data)
+      const lyrics = data.result.track.text;
+      this.setState({ lyrics });
+    } catch (err) {
+      console.error('ERROR: ', err);
+    }
   }
 
   deleteSong(songId) {

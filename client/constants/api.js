@@ -31,7 +31,7 @@ export const fetchLastFMSong = (title, artist) => {
 };
 
 export const fetchLyrics = (title, artist) => {
-	return fetch(`${apiSeeds.ENDPOINT}/${artist}/${title}?api_key=${apiSeeds.API_KEY}`)
+	return fetch(`${apiSeeds.ENDPOINT}/${artist}/${title}?apikey=${apiSeeds.API_KEY}`)
 		.then(res => res.json())
 		.catch(err => console.error('Error getting lyrics:', err))
 };
