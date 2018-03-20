@@ -24,9 +24,11 @@ export default class App extends Component {
     try {
       const data = await this.props.fetchSongs();
       const songs = data.songs.sort((a, b) => {
-        return
-          a.currVotes < b.currVotes
-          || a.createdAt < b.createdAt;
+          if (a.currVotes < b.currVotes) return 1;
+          if (a.currVotes > b.currVotes) return -1;
+          if (a.createdAt < b.createdAt) return 1;
+          if (a.createdAt > b.createdAt) return -1;
+          return 0;
       });
       this.setState({ songs });
     } catch (err) {

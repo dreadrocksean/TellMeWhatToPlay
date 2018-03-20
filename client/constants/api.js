@@ -11,7 +11,7 @@ const localIPs = [
 
 export const fetchSongs = () => (
 	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
-	fetch(`http://${localIPs[1]}:4000/api/songs`)
+	fetch(`http://${localIPs[0]}:4000/api/songs`)
 		.then(res => res.json())
 		.catch(err => console.error('Error getting songs:', err))
 );
@@ -24,7 +24,7 @@ export const fetchLastFMSong = (songName, artist) => {
 };
 
 export const deleteSong = id => (
-	fetch(`http://${localIPs[1]}:4000/api/song/`+id, {
+	fetch(`http://${localIPs[0]}:4000/api/song/`+id, {
 		method: 'DELETE',
 	})
 		.then(res => res.json())
@@ -32,7 +32,7 @@ export const deleteSong = id => (
 );
 
 export const createSong = req => (
-	fetch(`http://${localIPs[1]}:4000/api/songs`, {
+	fetch(`http://${localIPs[0]}:4000/api/songs`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -47,7 +47,7 @@ export const createSong = req => (
 export const updateSong = req => {
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${localIPs[1]}:4000/api/song/${id}`, {
+	return fetch(`http://${localIPs[0]}:4000/api/song/${id}`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
@@ -62,7 +62,7 @@ export const updateSong = req => {
 export const upvoteSong = req => {
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${localIPs[1]}:4000/api/song/${id}`, {
+	return fetch(`http://${localIPs[0]}:4000/api/song/${id}`, {
 		method: 'PATCH',
 		headers: {
 			Accept: 'application/json',
