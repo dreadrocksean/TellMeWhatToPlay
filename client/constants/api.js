@@ -12,7 +12,7 @@ const apiSeeds = {
 }
 
 const localIPs = [
-	'192.168.1.102',
+	'192.168.1.250',
 	'10.128.1.56',
 ]
 
@@ -85,4 +85,82 @@ export const upvoteSong = req => {
 	})
 		.then(res => res.json())
 		.catch(err => console.error('Error upvoting song:', err));
+};
+
+export const createArtist = req => (
+	fetch(`http://${localIPs[0]}:4000/api/artists`, {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(req),
+	})
+		.then(res => {
+			console.log(res.json());
+			return res.json();
+		})
+		.catch(err => console.error('Error creating artist:', err))
+);
+
+export const fetchArtists = () => (
+	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
+	fetch(`http://${localIPs[0]}:4000/api/artists`)
+		.then(res => res.json())
+		.catch(err => console.error('Error getting artists:', err))
+);
+
+export const updateArtist = req => {
+	const id = req._id;
+	delete req._id;
+	return fetch(`http://${localIPs[0]}:4000/api/artist/${id}`, {
+		method: 'PUT',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(req),
+	})
+		.then(res => res.json())
+		.catch(err => console.error('Error updating artist:', err))
+};
+
+export const deleteArtist = id => (
+	fetch(`http://${localIPs[0]}:4000/api/artist/`+id, {
+		method: 'DELETE',
+	})
+		.then(res => res.json())
+		.catch(err => console.error('Error deleting artist:', err))
+);
+
+export const createPerson = req => {
+	console.log('creating Person...', req);
+	fetch(`http://${localIPs[0]}:4000/api/persons`, {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(req),
+	})
+		.then(res => {
+			console.log(res.json());
+			return res.json();
+		})
+		.catch(err => console.error('Error creating person!:', err))
+};
+
+export const updatePerson = req => {
+	const id = req._id;
+	delete req._id;
+	return fetch(`http://${localIPs[0]}:4000/api/person/${id}`, {
+		method: 'PUT',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(req),
+	})
+		.then(res => res.json())
+		.catch(err => console.error('Error updating person:', err))
 };

@@ -130,7 +130,7 @@ export default class Setlist extends Component {
       this.props.deleteSong(songId);
       this.updateSongList();
     } catch (err) {
-      console.error('ERROR creating song', err);
+      console.error('ERROR deleting song', err);
     }
   }
 
@@ -140,7 +140,7 @@ export default class Setlist extends Component {
       this.props.upvoteSong({ _id: songId });
       this.updateSongList();
     } catch (err) {
-      console.error('ERROR creating song', err);
+      console.error('ERROR voting song', err);
     }
   }
 
