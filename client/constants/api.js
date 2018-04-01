@@ -12,6 +12,7 @@ const apiSeeds = {
 }
 
 const localIPs = [
+	// '172.20.10.3', // (hotspot)
 	'192.168.1.250',
 	'10.128.1.56',
 ]
@@ -22,6 +23,13 @@ export const fetchSongs = () => (
 		.then(res => res.json())
 		.catch(err => console.error('Error getting songs:', err))
 );
+
+export const fetchArtistSongs = artistId => {
+	console.log('test', artistId);
+	return fetch(`http://${localIPs[0]}:4000/api/songs/artist/${artistId}`)
+		.then(res => res.json())
+		.catch(err => console.error('Error getting artist\'s songs:', err))
+};
 
 export const fetchLastFMSong = (title, artist) => {
 	const artistQuery = artist ? `&artist=${artist}` : '';
@@ -44,8 +52,9 @@ export const deleteSong = id => (
 		.catch(err => console.error('Error deleting song:', err))
 );
 
-export const createSong = req => (
-	fetch(`http://${localIPs[0]}:4000/api/songs`, {
+export const createSong = req => {
+	console.log('req', req);
+	return fetch(`http://${localIPs[0]}:4000/api/songs`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -54,8 +63,8 @@ export const createSong = req => (
 		body: JSON.stringify(req),
 	})
 		.then(res => res.json())
-		.catch(err => console.error('Error creating song:', err))
-);
+	.catch(err => console.error('Error creating song:', err))
+};
 
 export const updateSong = req => {
 	const id = req._id;
@@ -87,8 +96,9 @@ export const upvoteSong = req => {
 		.catch(err => console.error('Error upvoting song:', err));
 };
 
-export const createArtist = req => (
-	fetch(`http://${localIPs[0]}:4000/api/artists`, {
+export const createArtist = req => {
+			console.log(req);
+	return fetch(`http://${localIPs[0]}:4000/api/artist`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -97,11 +107,11 @@ export const createArtist = req => (
 		body: JSON.stringify(req),
 	})
 		.then(res => {
-			console.log(res.json());
+			console.log(res);
 			return res.json();
 		})
 		.catch(err => console.error('Error creating artist:', err))
-);
+};
 
 export const fetchArtists = () => (
 	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
@@ -109,6 +119,16 @@ export const fetchArtists = () => (
 		.then(res => res.json())
 		.catch(err => console.error('Error getting artists:', err))
 );
+
+export const fetchArtist = req => {
+	const { userId } = req;
+	return fetch(`http://${localIPs[0]}:4000/api/artist/${userId}`)
+		.then(res => {
+			// console.log('response', res);
+			return res.json()
+		})
+		.catch(err => console.error('Error getting artist', err))
+};
 
 export const updateArtist = req => {
 	const id = req._id;
@@ -133,9 +153,9 @@ export const deleteArtist = id => (
 		.catch(err => console.error('Error deleting artist:', err))
 );
 
-export const createPerson = req => {
-	console.log('creating Person...', req);
-	fetch(`http://${localIPs[0]}:4000/api/persons`, {
+export const createUser = req => {
+	console.log('creating User...', req);
+	return fetch(`http://${localIPs[0]}:4000/api/users`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -143,17 +163,35 @@ export const createPerson = req => {
 		},
 		body: JSON.stringify(req),
 	})
-		.then(res => {
-			console.log(res.json());
-			return res.json();
-		})
-		.catch(err => console.error('Error creating person!:', err))
+		.then(res => res.json())
+		.catch(err => console.error('Error creating user!:', err))
 };
 
-export const updatePerson = req => {
+export const fetchUsers = () => (
+	fetch(`http://${localIPs[0]}:4000/api/users`)
+		.then(res => res.json())
+		.catch(err => console.error('Error getting users:', err))
+);
+
+export const fetchUser = req => {
+	const { email, password } = req;
+	delete req.email;
+	return fetch(`http://${localIPs[0]}:4000/api/user/${email}`, {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(req),
+	})
+		.then(res => res.json())
+		.catch(err => console.error('Error getting user', err))
+};
+
+export const updateUser = req => {
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${localIPs[0]}:4000/api/person/${id}`, {
+	return fetch(`http://${localIPs[0]}:4000/api/user/${id}`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
@@ -162,5 +200,5 @@ export const updatePerson = req => {
 		body: JSON.stringify(req),
 	})
 		.then(res => res.json())
-		.catch(err => console.error('Error updating person:', err))
+		.catch(err => console.error('Error updating user:', err))
 };

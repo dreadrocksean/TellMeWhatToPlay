@@ -5,7 +5,7 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import SongForm from './SongForm';
 import SongItem from './SongItem';
-import { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
+import { fetchArtistSongs, createSong, updateSong, deleteSong, upvoteSong,
   fetchLastFMSong, fetchLyrics} from '../constants/api';
 
 export default class Setlist extends Component {
@@ -14,13 +14,19 @@ export default class Setlist extends Component {
     title: 'Set List',
   };
 
-  static defaultProps = { fetchSongs, createSong, updateSong, deleteSong, upvoteSong,
+  static defaultProps = { fetchArtistSongs, createSong, updateSong, deleteSong, upvoteSong,
     fetchLastFMSong, fetchLyrics};
 
-  state = { title: null, author: null, edit_title: null, edit_author: null,
-    loading: false, update: null, add: false, songs: [],
-    titleComplete: '', artistComplete: '', mbid: '',
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: null, author: null, edit_title: null, edit_author: null,
+      loading: false, update: null, add: false, songs: [],
+      titleComplete: '', artistComplete: '', mbid: '',
+      artist: props.navigation.state.params.artist,
+    };
+  }
 
   componentDidMount() {
     this.updateSongList();
@@ -29,7 +35,7 @@ export default class Setlist extends Component {
   async updateSongList() {
     // this.setState({ loading: true });
     try {
-      const data = await this.props.fetchSongs();
+      const data = await this.props.fetchArtistSongs(this.state.artist._id);
       const songs = data.songs.sort((a, b) => {
           if (a.currVotes < b.currVotes) return 1;
           if (a.currVotes > b.currVotes) return -1;
@@ -71,7 +77,7 @@ export default class Setlist extends Component {
   }
 
   async addSong() {
-    const {title, author, mbid} = this.state;
+    const {title, author, mbid, artist} = this.state;
     console.log(this.state)
     if (!title || !author) {
       this.setState({add: false});
@@ -79,7 +85,9 @@ export default class Setlist extends Component {
     }
     try {
       const newSong = await this.props.createSong({
-        title: title.trim(), author: author.trim(), mbid
+        title: title.trim(),
+        author: author.trim(),
+        artist_id: artist._id, mbid
       });
       console.log('Success!: ', newSong);
       this.updateSongList();

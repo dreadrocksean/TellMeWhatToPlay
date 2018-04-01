@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-nativ
 class ArtistForm extends Component {
 
   state = {
-    name: '',
+    artistName: '',
     genres: [],
   }
 
@@ -20,14 +20,14 @@ class ArtistForm extends Component {
         <View style={{flex: 4}}>
           <TextInput
             style={styles.autocomplete}
-            placeholder={this.props.nameComplete || ''}
+            placeholder={this.props.artistNameComplete || ''}
             editable={false}
           />
           <TextInput
             style={styles.input}
-            placeholder='Name'
-            onChangeText={name => this.handleChange({name})}
-            value={this.props.name || this.state.name}
+            placeholder='Artist Name'
+            onChangeText={artistName => this.handleChange({artistName})}
+            value={this.props.artistName || this.state.artistName}
           />
         </View>
         <TouchableOpacity
