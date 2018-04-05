@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { withNavigation } from 'react-navigation';
-import Modal from 'react-native-modal'; // 2.4.0
+import { connect } from 'react-redux';
+import Modal from 'react-native-modal';
 import {
-  Dimensions, StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity
+  Dimensions, StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
 } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
-import MaterialSwitch from './MaterialSwitch';
-import { Provider, Subscribe, Container } from 'unstated';
+import { loginArtist, loginUser, onAir, offAir } from '../redux/actions/ActionCreator';
+// import { Provider, Subscribe, Container } from 'unstated';
+
+import MaterialSwitch from '../components/MaterialSwitch';
 import { UserContainer } from '../stores/UserContainer';
 
 import UserForm from './UserForm';
@@ -36,6 +38,7 @@ class ArtistAdmin extends Component {
 
   async loadStorage() {
     try {
+      // AsyncStorage.clear();
       const userJson = await AsyncStorage.getItem('user');
       const user = JSON.parse(userJson).user;
       const artistJson = await AsyncStorage.getItem('artist');
@@ -45,6 +48,13 @@ class ArtistAdmin extends Component {
         showModal: !user,
         authorized: !!user,
       });
+      console.log('storage artist', artist);
+      if (user) {
+        this.props.dispatch(loginUser());
+      }
+      if (artist) {
+        this.props.dispatch(loginArtist());
+      }
     } catch(e) {
       console.log('Error getting storage email: ', e);
       this.setState({
@@ -76,8 +86,14 @@ class ArtistAdmin extends Component {
   }
 
   componentDidMount() {
-    // AsyncStorage.removeItem('user');
     this.loadStorage();
+  }
+
+  async componentDidUnMount() {
+    const response = await this.props.updateArtist({
+      _id: artist._id,
+      live: false
+    });
   }
 
   navigate(pageName) {
@@ -86,8 +102,14 @@ class ArtistAdmin extends Component {
     navigate(pageName, { name: pageName, artist });
   }
 
-  onSwitchChange(field) {
-    this.setState({onAir: !this.state.onAir});
+  async toggleOnAir() {
+    const { artist } = this.state;
+    if (!artist) { return; }
+    const response = await this.props.updateArtist({
+      _id: artist._id,
+      live: !artist.live
+    });
+    this.setState({ artist: response.artist });
   }
 
   renderButton (text, onPress) {
@@ -121,6 +143,7 @@ class ArtistAdmin extends Component {
     try {
       const data = await this.props.createUser({ email, password });
       user = (data || {}).user;
+      this.props.dispatch(loginUser());
       console.log('SUCCESS! - user created! ->', user);
     } catch (err) {
       console.error('ERROR creating user', err);
@@ -143,6 +166,7 @@ class ArtistAdmin extends Component {
       if (!user) {
         throw 'User with email/password does not exist!';
       }
+      this.props.dispatch(loginUser());
       console.log('SUCCESS! - user logged in! -> ', user);
     } catch (err) {
       return this.handleError('ERROR logging in user -> ', err);
@@ -150,15 +174,18 @@ class ArtistAdmin extends Component {
 
     // Get Artist
     try {
-      const artistData = await this.fetchUserArtist(user._id);
+      const artistData = await this.fetchArtist(user._id);
       artist = (artistData || {}).artist;
       if (!artist) {
         throw 'User has no artist';
       }
+      this.props.dispatch(loginArtist());
       console.log('Got Artist!! ->', artist);
     } catch (err) {
       return this.handleError('ERROR getting artist ->' , err);
     }
+
+    console.log('artist to set storage', artist);
 
     // Store data
     this._handleStorage([{user}, {artist}]);
@@ -167,7 +194,6 @@ class ArtistAdmin extends Component {
   }
 
   handleError(err, msg) {
-    console.log(msg, err);
     this.setState({
       showModal: true,
       authorized: false,
@@ -188,10 +214,23 @@ class ArtistAdmin extends Component {
       this.setState({artist, showModal: false, authorized: true});
       const stored = await AsyncStorage
         .setItem('artist', JSON.stringify(artist));
+      this.props.dispatch(loginArtist());
 
     } catch (err) {
       console.error('ERROR creating artist', err);
       this.setState({showModal: true, authorized: false})
+    }
+  }
+
+  async updateArtist(req) {
+    try {
+      const data = await this.props.updateArtist({ _id: this.state.artist._id, ...req });
+      const artist = (data || {}).artist;
+      const stored = await AsyncStorage
+        .setItem('artist', JSON.stringify(artist));
+
+    } catch (err) {
+      console.error('ERROR updating artist', err);
     }
   }
 
@@ -240,20 +279,55 @@ class ArtistAdmin extends Component {
     )
   }
 
+  renderOnAirImage() {
+    const { artist } = this.state;
+    const source = (artist || {}).live ? onair_on : onair_off;
+    return <Image style={styles.image} source={source} />
+  }
+
   render() {
     const { user, artist, onAir, authorized, showModal } = this.state;
+    // if (!artist) { return null; }
     return (
       <View style={styles.container}>
-        {user && <Text>{user._id}</Text>}
-        {artist && <Text>{artist.name}</Text>}
-        <RNButton style={styles.button}
-          borderRadius={10}
-          icon={{name: 'music', type: 'font-awesome'}}
-          onPress={this.navigate.bind(this, 'Profile')}
-          title={'Edit Profile'}
-          fontSize={36}
-          buttonStyle={styles.button}
-        />
+        <View style={styles.header}>
+          <View style={styles.onair}>
+            <TouchableOpacity style={styles.onairButton} onPress={this.toggleOnAir.bind(this)} >
+              { this.renderOnAirImage() }
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.headerText}>
+            {artist &&
+              <Text style={{backgroundColor: 'blue'}}>
+                {`Welcome ${artist.name.toUpperCase()}`}
+              </Text>
+            }
+          </View>
+
+          <View style={styles.headerText}>
+            {artist &&
+              <Text style={{backgroundColor: 'blue'}}>
+                {`Welcome ${artist.name.toUpperCase()}`}
+              </Text>
+            }
+          </View>
+          
+          <TouchableOpacity style={styles.onairButton} onPress={this.toggleOnAir.bind(this)} >
+            { this.renderOnAirImage() }
+          </TouchableOpacity>
+
+          {/*<View style={styles.hamburger}>
+            <RNButton
+              borderRadius={10}
+              icon={{name: 'music', type: 'font-awesome'}}
+              onPress={this.navigate.bind(this, 'Profile')}
+              title={'Edit Profile'}
+              fontSize={18}
+              buttonStyle={styles.button}
+            />
+          </View>*/}
+        </View>
         <RNButton
           borderRadius={10}
           icon={{name: 'music', type: 'font-awesome'}}
@@ -261,15 +335,6 @@ class ArtistAdmin extends Component {
           title={'Manage SetList'}
           fontSize={36}
           buttonStyle={styles.button}
-        />
-        {onAir && <Image source={onair_on} />}
-        {!onAir && <Image source={onair_off} />}
-        <RNButton
-      
-        />
-        <Switch
-          onValueChange={this.onSwitchChange.bind(this)}
-          value={onAir}
         />
         <Modal  style={styles.modalContainer}
           isVisible={(!authorized && showModal) || !artist}
@@ -291,12 +356,37 @@ class ArtistAdmin extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     padding: 5,
+    backgroundColor: '#ddddff',
   },
-  button: {
+  header: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // backgroundColor: '#ffdddd',
+    alignItems: 'center',
+    height: 60
+  },
+  headerText: {
+    flex: 1
+  },
+  onair: {
+    flex: 1
+  },
+  onairButton: {
+    flex: 1
+  },
+  hamburger: {
+    flex: 1
+  },
+  image: {
     flex: 1,
+    width: null,
+    height: null,
+    resizeMode: 'contain',
   },
   text: {
     fontSize: 36,
@@ -315,8 +405,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     // resizeMode: 'cover',
   },
-
-
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -325,7 +413,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'lightblue',
     padding: 12,
-    margin: 16,
+    // margin: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
@@ -341,7 +429,8 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default withNavigation(ArtistAdmin);
-
-
+const mapStateToProps = state => ({
+  authorized: state.authorized,
+  userType: state.userType,
+});
+export default connect(mapStateToProps)(ArtistAdmin);

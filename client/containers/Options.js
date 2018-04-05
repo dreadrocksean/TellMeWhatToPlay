@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Provider } from 'unstated';
+import { connect } from 'react-redux';
+// import { Provider } from 'unstated';
+
+import { guestTypeArtist, guestTypeFan } from '../redux/actions/ActionCreator';
 import {
   Dimensions, StyleSheet, Text, View, AsyncStorage, Image
 } from 'react-native';
@@ -10,7 +13,7 @@ import bg from '../images/musicbg.jpg';
 
 const {height, width} = Dimensions.get('window');
 
-export default class Options extends Component {
+class Options extends Component {
 
   static navigationOptions = {
     title: 'Options',
@@ -20,32 +23,32 @@ export default class Options extends Component {
 
   navigate(pageName) {
     const {navigate} = this.props.navigation;
+    const action = pageName === 'ArtistAdmin'
+      ? guestTypeArtist() : guestTypeFan();
+    this.props.dispatch(action);
     navigate(pageName, { name: pageName })
   }
 
   render() {
+    // console.log('props', this.props);
     return (
-      <Provider>
         <View style={styles.container}>
           <Image source={bg}  style={styles.backgroundImage} />
           <RNButton style={styles.button}
-            borderRadius={10}
-            icon={{name: 'music', type: 'font-awesome'}}
+            borderRadius={200}
             onPress={this.navigate.bind(this, 'ArtistList')}
             title={'Fan'}
-            fontSize={48}
-            buttonStyle={Object.assign({}, ...(styles.button), {backgroundColor: '#66cc66', height: 200})}
+            fontSize={60}
+            buttonStyle={[styles.button, {backgroundColor: '#66cc66'}]}
           />
           <RNButton
-            borderRadius={10}
-            icon={{name: 'music', type: 'font-awesome'}}
+            borderRadius={200}
             onPress={this.navigate.bind(this, 'ArtistAdmin')}
             title={'Artist'}
-            fontSize={48}
-            buttonStyle={Object.assign({}, ...(styles.button), {backgroundColor: '#8888ff', height: 200})}
+            fontSize={60}
+            buttonStyle={[styles.button, {backgroundColor: '#8888ff'}]}
           />
         </View>
-      </Provider>
     );
   }
 }
@@ -54,11 +57,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-around',
+    alignItems: 'center',
     padding: 5,
   },
   button: {
-    // flex: 1,
     height: 200,
+    width: 200,
   },
   backgroundImage: {
     position: 'absolute',
@@ -69,3 +73,11 @@ const styles = StyleSheet.create({
     // resizeMode: 'cover',
   },
 });
+
+const mapStateToProps = state => {
+  return {
+    authorized: state.authorized,
+    userType: state.userType,
+  }};
+
+export default connect(mapStateToProps)(Options);

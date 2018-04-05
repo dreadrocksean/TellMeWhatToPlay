@@ -13,6 +13,7 @@ const apiSeeds = {
 
 const localIPs = [
 	// '172.20.10.3', // (hotspot)
+	'192.168.1.238', // (Grinders)
 	'192.168.1.250',
 	'10.128.1.56',
 ]
@@ -81,14 +82,14 @@ export const updateSong = req => {
 		.catch(err => console.error('Error updating song:', err))
 };
 
-export const upvoteSong = req => {
-	const id = req._id;
+export const voteSong = req => {
+	const { _id, sentiment } = req;
 	delete req._id;
-	return fetch(`http://${localIPs[0]}:4000/api/song/${id}`, {
+	return fetch(`http://${localIPs[0]}:4000/api/song/${_id}`, {
 		method: 'PATCH',
 		headers: {
 			Accept: 'application/json',
-			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(req),
 	})
@@ -122,15 +123,16 @@ export const fetchArtists = () => (
 
 export const fetchArtist = req => {
 	const { userId } = req;
-	return fetch(`http://${localIPs[0]}:4000/api/artist/${userId}`)
+	return fetch(`http://${localIPs[0]}:4000/api/artist/user/${userId}`)
 		.then(res => {
-			// console.log('response', res);
+			// console.log('fetchArtist response', res);
 			return res.json()
 		})
 		.catch(err => console.error('Error getting artist', err))
 };
 
 export const updateArtist = req => {
+	console.log('api updateArtist', req);
 	const id = req._id;
 	delete req._id;
 	return fetch(`http://${localIPs[0]}:4000/api/artist/${id}`, {
@@ -154,7 +156,6 @@ export const deleteArtist = id => (
 );
 
 export const createUser = req => {
-	console.log('creating User...', req);
 	return fetch(`http://${localIPs[0]}:4000/api/users`, {
 		method: 'POST',
 		headers: {

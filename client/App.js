@@ -1,27 +1,29 @@
-import { StackNavigator, addNavigationHelpers, } from 'react-navigation';
-import Options from './components/Options';
-import { Provider } from 'unstated';
-import ArtistAdmin from './components/ArtistAdmin';
-import ArtistList from './components/ArtistList';
-import SetList from './components/SetList';
-import Lyrics from './components/Lyrics';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Provider } from 'react-redux';
+
+import createStore from './redux/';
+import ReduxNavigation from './navigation/ReduxNavigation';
+
+// create our store
+const store = createStore();
 
 
-const AppRouteConfigs = {
-  Options: { screen: Options },
-  ArtistList: { screen: ArtistList },
-  ArtistAdmin: { screen: ArtistAdmin },
-  SetList: { screen: SetList },
-  Lyrics: { screen: Lyrics },
+export default class App extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <View style={styles.container}>
+          <ReduxNavigation />
+        </View>
+      </Provider>
+    );
+  }
 }
 
-const App = StackNavigator(AppRouteConfigs);
-
-// const AppWithNavigationState = connect(state => ({
-//     nav: state.nav,
-// }))(({ dispatch, nav }) => (
-//     <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />
-// ));
-
-export default App;
-// export default {AppWithNavigationState};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+})

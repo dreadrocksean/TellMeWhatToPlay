@@ -1,3 +1,4 @@
+// For use with 'Unstated'
 import { Container } from 'unstated';
 
 class UserContainer extends Container {

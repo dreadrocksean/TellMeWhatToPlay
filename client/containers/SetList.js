@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
+import { UserType } from '../redux/reducers/LoginReducer';
 import SongForm from './SongForm';
-import SongItem from './SongItem';
-import { fetchArtistSongs, createSong, updateSong, deleteSong, upvoteSong,
+import SongItem from '../components/SongItem';
+import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong,
   fetchLastFMSong, fetchLyrics} from '../constants/api';
 
-export default class Setlist extends Component {
+class Setlist extends Component {
 
   static navigationOptions = {
     title: 'Set List',
   };
 
-  static defaultProps = { fetchArtistSongs, createSong, updateSong, deleteSong, upvoteSong,
+  static defaultProps = { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong,
     fetchLastFMSong, fetchLyrics};
-
 
   constructor(props) {
     super(props);
@@ -25,6 +26,8 @@ export default class Setlist extends Component {
       loading: false, update: null, add: false, songs: [],
       titleComplete: '', artistComplete: '', mbid: '',
       artist: props.navigation.state.params.artist,
+      likes: [],
+      isArtist: props.userType === UserType.ARTIST
     };
   }
 
@@ -36,13 +39,18 @@ export default class Setlist extends Component {
     // this.setState({ loading: true });
     try {
       const data = await this.props.fetchArtistSongs(this.state.artist._id);
-      const songs = data.songs.sort((a, b) => {
+      let songs = data.songs;
+      if (this.state.isArtist) {
+        songs = songs.sort((a, b) => {
           if (a.currVotes < b.currVotes) return 1;
           if (a.currVotes > b.currVotes) return -1;
           if (a.createdAt < b.createdAt) return -1;
           if (a.createdAt > b.createdAt) return 1;
           return 0;
-      });
+        });
+      }
+      // console.log('songs', songs);
+      // songs = songs.filter(song => song.visible);
       this.setState({ songs, loading: false, update: false, add: false, title: '', author: '' });
     } catch (err) {
       console.log('ERROR: ', err);
@@ -78,7 +86,6 @@ export default class Setlist extends Component {
 
   async addSong() {
     const {title, author, mbid, artist} = this.state;
-    console.log(this.state)
     if (!title || !author) {
       this.setState({add: false});
       return;
@@ -142,11 +149,24 @@ export default class Setlist extends Component {
     }
   }
 
-  vote(songId) {
-    console.log(songId);
+  async showSong(songId, visible) {
     try {
-      this.props.upvoteSong({ _id: songId });
+      await this.props.updateSong({ _id: songId, visible });
       this.updateSongList();
+    } catch (err) {
+      console.error('ERROR updating song visibilty', err);
+    }
+  }
+
+  async vote(song, sentiment) {
+    try {
+      await this.props.voteSong({ _id: song._id, sentiment });
+      if (sentiment) {
+        this.setState({likes: [...this.state.likes, song._id]});
+      } else {
+        this.setState({likes: this.state.likes.filter(i=>i!==song._id)});
+      }
+      await this.updateSongList();
     } catch (err) {
       console.error('ERROR voting song', err);
     }
@@ -177,7 +197,25 @@ export default class Setlist extends Component {
   }
 
   render() {
-    if (this.state.loading) {
+
+    const {
+      title, author, edit_title, edit_author,
+      loading, update, add, songs,
+      titleComplete, artistComplete, mbid,
+      artist, likes, isArtist
+    } = this.state;
+
+    if (!isArtist && !artist.live) {
+      return (
+        <View>
+          <Text style={styles.text}>
+            {`${artist.name.toUpperCase()} has no current performance.`}
+          </Text>
+        </View>
+      );
+    }
+
+    if (loading) {
       return (
         <View style={styles.container}>
           <ActivityIndicator size='large'/>
@@ -188,47 +226,56 @@ export default class Setlist extends Component {
       <View style={styles.container}>
         <Text style={styles.text}>Tell Me What To Play!</Text>
 
-        {this.state.add && (
-          <SongForm
-            handleChange={this.handleChange.bind(this)}
-            onSubmit={this.addSong.bind(this)}
-            edit_title={this.state.edit_title}
-            edit_author={this.state.edit_author}
-            command={'Add'}
-            titleComplete={this.state.titleComplete}
-            artistComplete={this.state.artistComplete}
-          />
-        )}
-        {!this.state.add &&
-          <RNButton
-            backgroundColor={'#8888ff'}
-            borderRadius={10}
-            icon={{name: 'music', type: 'font-awesome'}}
-            onPress={this.openAddForm.bind(this)}
-            title={'Add Song'}
-          />
+        {
+          isArtist && add && (
+            <SongForm
+              handleChange={this.handleChange.bind(this)}
+              onSubmit={this.addSong.bind(this)}
+              edit_title={edit_title}
+              edit_author={edit_author}
+              command={'Add'}
+              titleComplete={titleComplete}
+              artistComplete={artistComplete}
+            />
+          )
+        }
+        {
+          isArtist && !add && (
+            <RNButton
+              backgroundColor={'#8888ff'}
+              borderRadius={10}
+              icon={{name: 'music', type: 'font-awesome'}}
+              onPress={this.openAddForm.bind(this)}
+              title={'Add Song'}
+            />
+          )
         }
 
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
         >
-          {this.state.songs.map((song, i) => {
-            return this.state.update === i
+          {songs.map((song, i) => {
+            // console.log('map', song);
+            return update === i
               ? <SongForm
                   key={i}
                   handleChange={this.handleEditChange.bind(this)}
                   onSubmit={() => this.updateSongItem(song._id)}
-                  title={this.state.edit_title}
-                  author={this.state.edit_author}
+                  title={edit_title}
+                  author={edit_author}
                   command={'Save'}
               />
               : <SongItem
                   key={i}
                   song={song}
+                  userType={this.props.userType}
+                  liked={likes.indexOf(song._id) > -1}
                   vote={this.vote.bind(this)}
+                  artistLiveStatus={artist.live}
                   showEditForm={() => this.showEditForm(i, song._id)}
                   showLyrics={() => this.showLyrics(i, song._id)}
                   deleteSong={this.deleteSong.bind(this)}
+                  showSong={this.showSong.bind(this)}
               />
           })}
         </ScrollView>
@@ -236,6 +283,12 @@ export default class Setlist extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  authorized: state.login.authorized,
+  userType: state.login.userType,
+});
+export default connect(mapStateToProps)(Setlist);
 
 const styles = StyleSheet.create({
   container: {
