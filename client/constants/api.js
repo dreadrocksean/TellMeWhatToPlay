@@ -13,7 +13,7 @@ const apiSeeds = {
 
 const localIPs = [
 	// '172.20.10.3', // (hotspot)
-	'192.168.1.238', // (Grinders)
+	// '192.168.1.238', // (Grinders)
 	'192.168.1.250',
 	'10.128.1.56',
 ]

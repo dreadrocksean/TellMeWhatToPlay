@@ -6,6 +6,7 @@ import Options from '../containers/Options';
 import ArtistAdmin from '../containers/ArtistAdmin';
 import ArtistList from '../containers/ArtistList';
 import SetList from '../containers/SetList';
+import UserForm from '../containers/UserForm';
 import Lyrics from '../containers/Lyrics';
 
 import SignupScreen from '../containers/SignupScreen';
@@ -61,6 +62,7 @@ const LoginStack = StackNavigator({
   ArtistAdmin: { screen: ArtistAdmin },
   SetList: { screen: SetList },
   Lyrics: { screen: Lyrics },
+  UserForm: { screen: UserForm },
 
   loginScreen: { screen: LoginScreen },
   signupScreen: { screen: SignupScreen },

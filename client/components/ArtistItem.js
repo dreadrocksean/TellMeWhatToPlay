@@ -9,6 +9,7 @@ const ArtistItem = props => {
         <Button
           title={props.artist.name}
           onPress={props.showSetList}
+          disabled={!props.artist.live}
         />
       </View>
     </View>

@@ -159,6 +159,13 @@ class Setlist extends Component {
   }
 
   async vote(song, sentiment) {
+    const { authorized, navigation } = this.props;
+    const { isArtist, artist } = this.state;
+    const { navigate } = navigation;
+    if (!isArtist && !authorized) {
+      navigate('UserForm', { name: 'UserForm', artist });
+      return;
+    }
     try {
       await this.props.voteSong({ _id: song._id, sentiment });
       if (sentiment) {

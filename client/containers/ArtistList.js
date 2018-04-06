@@ -76,7 +76,7 @@ export default class ArtistList extends Component {
           pagingEnabled = {true}
         >
           {this.state.artists.map((artist, i) => {
-            return artist.live && (
+            return (
               <ArtistItem
                   key={i}
                   artist={artist}

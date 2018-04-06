@@ -38,7 +38,7 @@ class ArtistAdmin extends Component {
 
   async loadStorage() {
     try {
-      // AsyncStorage.clear();
+      AsyncStorage.clear();
       const userJson = await AsyncStorage.getItem('user');
       const user = JSON.parse(userJson).user;
       const artistJson = await AsyncStorage.getItem('artist');
