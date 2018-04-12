@@ -1,6 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
 const SongSchema = new Schema({
+	artist_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'Artist',
+		required: true,
+	},
 	title: {
 		type: String,
 		required: true,
@@ -8,6 +13,11 @@ const SongSchema = new Schema({
 	author: {
 		type: String,
 		required: false,
+	},
+	visible: {
+		type: Boolean,
+		required: false,
+		default: true,
 	},
 	votes: {
 		type: Number,
@@ -20,6 +30,11 @@ const SongSchema = new Schema({
 		required: false,
 	},
 	mbid: {
+		type: String,
+		default: '',
+		required: false,
+	},
+	lyrics: {
 		type: String,
 		default: '',
 		required: false,
