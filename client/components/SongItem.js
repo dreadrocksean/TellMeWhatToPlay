@@ -21,82 +21,84 @@ const SongItem = props => {
     console.log(isArtist, visible, artistLiveStatus);
     if (!isArtist && (!visible || !artistLiveStatus)) { return null; }
 
-    return <View style={styles.item}>
-      <View style={styles.info}>
-        <Button styles={styles.button}
-          onPress={showLyrics}
-          disabled={!visible}
-          title={`${title.substring(0, compTitleLength).trim()} - ${author.substring(0, compAuthorLength).trim()}`}
-        />
-        {currVotes > 0 && isArtist &&
-          <View style={styles.voteWrapper}>
-            <Text style={styles.vote}>
-              {currVotes}
-            </Text>
-          </View>
-        }
-      </View>
-      <View style={styles.iconGroup}>
-        {!isArtist && (
-          <View style={styles.iconGroup}>
-            <Icon
-              iconStyle={styles.icon}
-              onPress={() => {
-                vote(_id, !liked);
-              }}
-              name='thumb-up'
-              type='material-community'
-              color={liked ? "#99f" : "#d4d4d4"}
-              size={44}
-            />
-            <View style={[
-              styles.voteWrapper,
-              {
-                position: 'relative',
-                backgroundColor: '#d00',
-                marginLeft: 15,
-                borderWidth: 1,
-                top: 0,
-                left: 0,
-              }
-            ]}>
-              <Text style={[
-                styles.vote.fan,
-                {
-                  color: '#fff',
-                  // width: 44,
-                  // height: 44,
-                  // borderRadius: 44,
-                },
-              ]}>
+    return (
+      <View style={styles.item}>
+        <View style={styles.info}>
+          <Button styles={styles.button}
+            onPress={showLyrics}
+            disabled={!visible}
+            title={`${title.substring(0, compTitleLength).trim()} - ${author.substring(0, compAuthorLength).trim()}`}
+          />
+          {currVotes > 0 && isArtist &&
+            <View style={styles.voteWrapper}>
+              <Text style={styles.vote}>
                 {currVotes}
               </Text>
             </View>
-          </View>
-        )}
-        {isArtist && (
-          <View style={styles.iconGroup}>
-            <Icon
-              iconStyle={styles.icon}
-              onPress={() => showSong(_id, !visible)}
-              name='eye-slash'
-              type='font-awesome'
-              color={visible ? "#9999ff" : "#d4d4d4"}
-              size={44}
-              // containerStyle={{width:44, height:44, backgroundColor: '#000'}}
-            />
-            <Icon
-              iconStyle={styles.icon}
-              onPress={() => deleteSong(_id)}
-              name='trash'
-              type='font-awesome'
-              color="#d4d4d4"
-              size={44}
-            />
-          </View>
-        )}
+          }
+        </View>
+        <View style={styles.iconGroup}>
+          {!isArtist && (
+            <View style={styles.iconGroup}>
+              <Icon
+                iconStyle={styles.icon}
+                onPress={() => {
+                  vote(_id, !liked);
+                }}
+                name='thumb-up'
+                type='material-community'
+                color={liked ? "#99f" : "#d4d4d4"}
+                size={44}
+              />
+              <View style={[
+                styles.voteWrapper,
+                {
+                  position: 'relative',
+                  backgroundColor: '#d00',
+                  marginLeft: 15,
+                  borderWidth: 1,
+                  top: 0,
+                  left: 0,
+                }
+              ]}>
+                <Text style={[
+                  styles.vote.fan,
+                  {
+                    color: '#fff',
+                    // width: 44,
+                    // height: 44,
+                    // borderRadius: 44,
+                  },
+                ]}>
+                  {currVotes}
+                </Text>
+              </View>
+            </View>
+          )}
+          {isArtist && (
+            <View style={styles.iconGroup}>
+              <Icon
+                iconStyle={styles.icon}
+                onPress={() => showSong(_id, !visible)}
+                name='eye-slash'
+                type='font-awesome'
+                color={visible ? "#9999ff" : "#d4d4d4"}
+                size={44}
+                // containerStyle={{width:44, height:44, backgroundColor: '#000'}}
+              />
+              <Icon
+                iconStyle={styles.icon}
+                onPress={() => deleteSong(_id)}
+                name='trash'
+                type='font-awesome'
+                color="#d4d4d4"
+                size={44}
+              />
+            </View>
+          )}
+        </View>
       </View>
-    </View>
+    );
 };
 const styles = StyleSheet.create({
   button: {

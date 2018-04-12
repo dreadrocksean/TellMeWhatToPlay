@@ -5,6 +5,7 @@ const GuestTypeArtist = 'GUEST_ARTIST';
 const LoginUser = 'LOGIN_USER';
 const LoginArtist = 'LOGIN_ARTIST';
 const Logout = 'LOGOUT';
+const LoginError = 'LOGINERROR';
 const Register = 'REGISTER';
 const RegisterSuccess = 'REGISTER_SUCCESS';
 const NavigateToLogoutScreen = 'NAVIGATE_TO_LOGOUT_SCREEN';

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
 import {
   StyleSheet, Text, View, ScrollView
@@ -9,13 +10,22 @@ import * as Animatable from 'react-native-animatable';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ArtistItem from '../components/ArtistItem';
+import { updateHeader } from '../utils/UpdateHeader';
 
-import { fetchArtists } from '../constants/api';
+import { fetchArtists } from '../services/api';
 
-export default class ArtistList extends Component {
+class ArtistList extends Component {
 
-  static navigationOptions = {
-    title: 'Artist List',
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    const headerStyle = Object.assign({},
+      params.bg ? {backgroundColor: params.bg} : null
+    );
+    return {
+      title: `${params.title || params.screen || 'Artist List'}`,
+      headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
+      headerStyle,
+    };
   };
 
   static defaultProps = { fetchArtists };
@@ -26,6 +36,7 @@ export default class ArtistList extends Component {
       loading: false, update: null, add: false, artists: [],
       nameComplete: '',
     };
+    updateHeader(this.props);
   }
 
   componentDidMount() {
@@ -106,3 +117,8 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
   },
 });
+
+const mapStateToProps = state => ({
+  authorized: state.login.authorized,
+});
+export default connect(mapStateToProps)(ArtistList);

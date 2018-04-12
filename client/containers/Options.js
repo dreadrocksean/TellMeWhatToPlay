@@ -10,23 +10,46 @@ import {
 import { Button as RNButton, Icon } from 'react-native-elements';
 
 import bg from '../images/musicbg.jpg';
+import { updateHeader } from '../utils/UpdateHeader';
 
 const {height, width} = Dimensions.get('window');
 
 class Options extends Component {
 
-  static navigationOptions = {
-    title: 'Options',
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+
+    return {
+      title: `${params.title || params.screen || 'Options'}`,
+      headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
+      headerStyle:{
+        backgroundColor: `${params.bg || 'red'}`,
+      },
+      headerLeft: null
+    };
   };
 
   state = {};
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.artist === this.props.artist
+      && nextProps.authorized === this.props.authorized
+    ) {
+      console.log('no change');
+      return;
+    }
+    updateHeader(nextProps);
+  }
 
   navigate(pageName) {
     const {navigate} = this.props.navigation;
     const action = pageName === 'ArtistAdmin'
       ? guestTypeArtist() : guestTypeFan();
     this.props.dispatch(action);
-    navigate(pageName, { name: pageName })
+    navigate(pageName, {
+      name: pageName,
+    })
   }
 
   render() {
@@ -76,8 +99,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    authorized: state.authorized,
-    userType: state.userType,
-  }};
+    authorized: state.login.authorized,
+    userType: state.login.userType,
+    artist: state.login.artist,
+}};
 
 export default connect(mapStateToProps)(Options);

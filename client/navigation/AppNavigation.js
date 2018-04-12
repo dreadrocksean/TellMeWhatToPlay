@@ -6,7 +6,8 @@ import Options from '../containers/Options';
 import ArtistAdmin from '../containers/ArtistAdmin';
 import ArtistList from '../containers/ArtistList';
 import SetList from '../containers/SetList';
-import UserForm from '../containers/UserForm';
+import UserFormWrapper from '../services/user/UserFormWrapper';
+import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
 import Lyrics from '../containers/Lyrics';
 
 import SignupScreen from '../containers/SignupScreen';
@@ -17,12 +18,30 @@ import Screen3 from '../containers/Screen3';
 import DrawerContainer from '../containers/DrawerContainer';
 
 const AppRouteConfigs = {
-  // Options: { screen: Options },
-  // ArtistList: { screen: ArtistList },
-  // ArtistAdmin: { screen: ArtistAdmin },
-  // SetList: { screen: SetList },
-  // Lyrics: { screen: Lyrics },
+  Options: { screen: Options },
+  ArtistList: { screen: ArtistList },
+  ArtistAdmin: { screen: ArtistAdmin },
+  SetList: { screen: SetList },
+  Lyrics: { screen: Lyrics },
+  UserFormWrapper: { screen: UserFormWrapper },
+  ArtistFormWrapper: { screen: ArtistFormWrapper },
+
+  loginScreen: { screen: LoginScreen },
+  signupScreen: { screen: SignupScreen },
+  forgottenPasswordScreen: {
+    screen: ForgottenPasswordScreen,
+    navigationOptions: { title: 'Forgot Password' }
+  },
 };
+
+// login stack
+const LoginStack = StackNavigator(AppRouteConfigs, {
+  headerMode: 'float',
+  navigationOptions: navigation => ({
+      headerStyle: {backgroundColor: 'red'},
+      title: 'You are not logged in'
+  })
+});
 
 
 // drawer stack
@@ -53,26 +72,6 @@ const DrawerNavigation = StackNavigator({
     		
     	}}>Menu</Text>
   })
-});
-
-// login stack
-const LoginStack = StackNavigator({
-  Options: { screen: Options },
-  ArtistList: { screen: ArtistList },
-  ArtistAdmin: { screen: ArtistAdmin },
-  SetList: { screen: SetList },
-  Lyrics: { screen: Lyrics },
-  UserForm: { screen: UserForm },
-
-  loginScreen: { screen: LoginScreen },
-  signupScreen: { screen: SignupScreen },
-  forgottenPasswordScreen: { screen: ForgottenPasswordScreen, navigationOptions: { title: 'Forgot Password' } }
-}, {
-  headerMode: 'float',
-  navigationOptions: {
-    headerStyle: {backgroundColor: 'red'},
-    title: 'You are not logged in'
-  }
 });
 
 const noTransitionConfig = () => ({

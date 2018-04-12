@@ -3,17 +3,28 @@ import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
+import Modal from 'react-native-modal';
 
 import { UserType } from '../redux/reducers/LoginReducer';
 import SongForm from './SongForm';
 import SongItem from '../components/SongItem';
-import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong,
-  fetchLastFMSong, fetchLyrics} from '../constants/api';
+import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
+  fetchLastFMSong, fetchLyrics} from '../services/api';
+import UserForm from '../services/user/UserForm';
+import { updateHeader } from '../utils/UpdateHeader';
 
 class Setlist extends Component {
 
-  static navigationOptions = {
-    title: 'Set List',
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    const headerStyle = Object.assign({},
+      params.bg ? {backgroundColor: params.bg} : null
+    );
+    return {
+      title: `${params.title || params.screen || 'Set List'}`,
+      headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
+      headerStyle,
+    };
   };
 
   static defaultProps = { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong,
@@ -27,12 +38,19 @@ class Setlist extends Component {
       titleComplete: '', artistComplete: '', mbid: '',
       artist: props.navigation.state.params.artist,
       likes: [],
-      isArtist: props.userType === UserType.ARTIST
+      isArtist: props.userType === UserType.ARTIST,
+      edit_email: '', edit_password: '',
+      showModal: false,
     };
+    updateHeader(this.props);
   }
 
   componentDidMount() {
     this.updateSongList();
+    updateHeader(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
   }
 
   async updateSongList() {
@@ -163,7 +181,8 @@ class Setlist extends Component {
     const { isArtist, artist } = this.state;
     const { navigate } = navigation;
     if (!isArtist && !authorized) {
-      navigate('UserForm', { name: 'UserForm', artist });
+      this.setState(showModal: true);
+      // navigate('UserForm', { name: 'UserForm', artist });
       return;
     }
     try {
@@ -204,12 +223,13 @@ class Setlist extends Component {
   }
 
   render() {
+    const { authorized } = this.props;
 
     const {
       title, author, edit_title, edit_author,
       loading, update, add, songs,
       titleComplete, artistComplete, mbid,
-      artist, likes, isArtist
+      artist, likes, isArtist, showModal
     } = this.state;
 
     if (!isArtist && !artist.live) {
@@ -286,6 +306,19 @@ class Setlist extends Component {
               />
           })}
         </ScrollView>
+        <Modal style={styles.modalContainer}
+          isVisible={showModal}
+          backdropColor={'#000'}
+          backdropOpacity={0.7}
+          animationIn={'zoomInDown'}
+          animationOut={'zoomOutUp'}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={1000}
+          backdropTransitionOutTiming={1000}
+        >
+          <UserForm />
+        </Modal>
       </View>
     );
   }
@@ -305,6 +338,11 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     // justifyContent: 'center',
     padding: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scroll: {
     flex: 1,

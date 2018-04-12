@@ -16,16 +16,25 @@ const guestTypeArtist = () => ({
   type: AT.GuestTypeArtist
 });
 
-const loginUser = () => ({
-  type: AT.LoginUser
+const loginUser = user => ({
+  type: AT.LoginUser,
+  payload: user,
 });
 
-const loginArtist = () => ({
-  type: AT.LoginArtist
-});
+const loginArtist = artist => {
+  console.log('loginArtist', artist);
+  return {
+  type: AT.LoginArtist,
+  payload: artist,
+}};
 
 const logout = () => ({
   type: AT.Logout
+});
+
+const loginError = payload => ({
+  type: AT.LoginError,
+  errorMessage: payload.errorMessage,
 });
 
 const register = () => ({
@@ -56,6 +65,7 @@ export {
   loginUser,
   loginArtist,
   logout,
+  loginError,
   register,
   registerSuccess,
   navigateToLogoutScreen,
