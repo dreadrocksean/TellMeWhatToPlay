@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
-import bg from '../images/musicbg.jpg';
+import bg from '../images/bg.png';
 import { updateHeader } from '../utils/UpdateHeader';
 
 const {height, width} = Dimensions.get('window');
@@ -57,20 +57,31 @@ class Options extends Component {
     return (
         <View style={styles.container}>
           <Image source={bg}  style={styles.backgroundImage} />
-          <RNButton style={styles.button}
-            borderRadius={200}
-            onPress={this.navigate.bind(this, 'ArtistList')}
-            title={'Fan'}
-            fontSize={60}
-            buttonStyle={[styles.button, {backgroundColor: '#66cc66'}]}
-          />
-          <RNButton
-            borderRadius={200}
-            onPress={this.navigate.bind(this, 'ArtistAdmin')}
-            title={'Artist'}
-            fontSize={60}
-            buttonStyle={[styles.button, {backgroundColor: '#8888ff'}]}
-          />
+          <View style={{alignItems: 'center'}} >
+            <RNButton
+              borderRadius={100}
+              onPress={this.navigate.bind(this, 'ArtistList')}
+              title={'I AM AN ARTIST'}
+              color={'rgba(0,0,0,0.9)'}
+              fontSize={24}
+              buttonStyle={[styles.button, {backgroundColor: '#62f9ff'}]}
+            />
+            <View style={styles.textSeparator}>
+              <View style={styles.line} />
+              <Text style={[styles.text, {flex: 2}]}>OR</Text>
+              <View style={styles.line} />
+            </View>
+            <RNButton
+              borderRadius={100}
+              onPress={this.navigate.bind(this, 'ArtistAdmin')}
+              title={'I AM A FAN'}
+              titleStyle={styles.buttonText}
+              color={'rgba(0,0,0,0.9)'}
+              fontSize={24}
+              buttonStyle={[styles.button, {backgroundColor: '#ffd52b'}]}
+            />
+            <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT</Text>
+          </View>
         </View>
     );
   }
@@ -83,16 +94,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
   },
+  text: {
+    color: 'rgba(220,220,255,0.9)',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center',
+    // fontFamily: 'cochin',
+  },
+  textCustomPos: {
+    position: 'absolute',
+    top: -60,
+    // left: 0,
+    // width: 100,
+    // height: 50,
+  },
   button: {
-    height: 200,
-    width: 200,
+    height: 70,
+    width: width * 0.8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+  },
+  textSeparator: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
+    marginBottom: 15,
+    width: width * 0.6,
+  },
+  line: {
+    borderBottomColor: 'rgba(220,220,255,0.9)',
+    borderBottomWidth: 3,
+    flex: 3,
   },
   backgroundImage: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width,
+    height,
     // resizeMode: 'cover',
   },
 });

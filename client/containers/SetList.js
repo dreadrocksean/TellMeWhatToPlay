@@ -177,8 +177,8 @@ class Setlist extends Component {
   }
 
   async vote(song, sentiment) {
-    const { authorized, navigation } = this.props;
-    const { isArtist, artist } = this.state;
+    const { authorized, artist, navigation } = this.props;
+    const { isArtist } = this.state;
     const { navigate } = navigation;
     if (!isArtist && !authorized) {
       this.setState(showModal: true);
@@ -326,6 +326,7 @@ class Setlist extends Component {
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
+  artist: state.login.artist,
   userType: state.login.userType,
 });
 export default connect(mapStateToProps)(Setlist);

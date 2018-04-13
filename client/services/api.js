@@ -83,6 +83,7 @@ export const updateSong = req => {
 };
 
 export const voteSong = req => {
+	console.log('voteSong req', req);
 	const { _id, sentiment } = req;
 	delete req._id;
 	return fetch(`http://${localIPs[0]}:4000/api/song/${_id}`, {

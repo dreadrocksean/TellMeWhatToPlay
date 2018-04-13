@@ -21,6 +21,8 @@ const SongItem = props => {
     console.log(isArtist, visible, artistLiveStatus);
     if (!isArtist && (!visible || !artistLiveStatus)) { return null; }
 
+                console.log('song id', _id);
+
     return (
       <View style={styles.item}>
         <View style={styles.info}>
@@ -43,6 +45,7 @@ const SongItem = props => {
               <Icon
                 iconStyle={styles.icon}
                 onPress={() => {
+                console.log('song id', _id);
                   vote(_id, !liked);
                 }}
                 name='thumb-up'
