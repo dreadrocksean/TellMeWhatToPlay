@@ -34,8 +34,6 @@ class ArtistAdmin extends Component {
     };
   };
 
-  static defaultProps = { updateArtist };
-
   state = {
     user: null,
     onAir: false,
@@ -54,6 +52,7 @@ class ArtistAdmin extends Component {
   }
 
   async componentDidMount() {
+    //Set store on mount
     const artist = await loadStorage('artist');
     if (!this.props.artist && artist) {
       this.props.dispatch(loginArtist(artist));
@@ -62,6 +61,7 @@ class ArtistAdmin extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // Secure against endless cycle
     if (
       nextProps.artist === this.props.artist
       && nextProps.authorized === this.props.authorized
@@ -77,19 +77,21 @@ class ArtistAdmin extends Component {
   }
 
   navigate(pageName) {
-    const { user, artist } = this.state;
-    const {navigate} = this.props.navigation;
-    navigate(pageName, { name: pageName, artist });
+    this.props.navigation.navigate(pageName, {
+      name: pageName, artist: this.props.artist
+    });
   }
 
   async toggleOnAir() {
-    const { artist } = this.state;
+    const { artist } = this.props;
     if (!artist) { return; }
-    const response = await this.props.updateArtist({
+    const response = await updateArtist({
       _id: artist._id,
       live: !artist.live
     });
-    this.setState({ artist: response.artist });
+    console.log('toggleOnAir response', response);
+    // this.setState({ artist: response.artist });
+    this.props.dispatch(loginArtist(response.artist));
   }
 
   renderButton (text, onPress) {
@@ -156,7 +158,7 @@ class ArtistAdmin extends Component {
           fontSize={36}
           buttonStyle={styles.button}
         />
-        <Modal  style={styles.modalContainer}
+        {(!authorized || !artist) && <Modal  style={styles.modalContainer}
           isVisible={(!authorized && showModal) || !artist}
           backdropColor={'#000'}
           backdropOpacity={0.7}
@@ -182,7 +184,7 @@ class ArtistAdmin extends Component {
               }
             )}
           </View>
-        </Modal>
+        </Modal>}
       </View>
     );
   }

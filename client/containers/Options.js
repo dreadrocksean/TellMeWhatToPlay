@@ -61,7 +61,7 @@ class Options extends Component {
             <RNButton
               borderRadius={100}
               onPress={this.navigate.bind(this, 'ArtistList')}
-              title={'I AM AN ARTIST'}
+              title={'I AM A FAN'}
               color={'rgba(0,0,0,0.9)'}
               fontSize={24}
               buttonStyle={[styles.button, {backgroundColor: '#62f9ff'}]}
@@ -74,7 +74,7 @@ class Options extends Component {
             <RNButton
               borderRadius={100}
               onPress={this.navigate.bind(this, 'ArtistAdmin')}
-              title={'I AM A FAN'}
+              title={'I AM AN ARTIST'}
               titleStyle={styles.buttonText}
               color={'rgba(0,0,0,0.9)'}
               fontSize={24}
@@ -104,9 +104,6 @@ const styles = StyleSheet.create({
   textCustomPos: {
     position: 'absolute',
     top: -60,
-    // left: 0,
-    // width: 100,
-    // height: 50,
   },
   button: {
     height: 70,
