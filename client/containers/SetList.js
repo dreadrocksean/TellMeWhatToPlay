@@ -181,7 +181,7 @@ class Setlist extends Component {
     const { isArtist, showModal } = this.state;
     const { navigate } = navigation;
     if (!isArtist && !authorized) {
-      this.setState(showModal: true);
+      this.setState({showModal: true});
       return;
     }
     // console.log('vote song', songId);

@@ -77,14 +77,15 @@ class Options extends Component {
   }
 
   async navigate(pageName) {
+console.log('pageName', pageName);
     const {navigate} = this.props.navigation;
     const action = pageName === 'ArtistAdmin'
       ? guestTypeArtist() : guestTypeFan();
     this.props.dispatch(action);
     const isUserStored = await !this.checkLocalUserStorage();
-
     if (pageName === 'ArtistAdmin' &&
-      ((!isUserStored && !this.props.user) ||
+      (
+        (!isUserStored && !this.props.user) ||
         !this.props.artist
       )
     ) {
@@ -116,7 +117,7 @@ class Options extends Component {
           <Image source={bg}  style={styles.backgroundImage} />
           <View style={{alignItems: 'center'}} >
             <TouchableHighlight
-              onPress={this.navigate.bind(this, 'ArtistAdmin')}
+              onPress={this.navigate.bind(this, 'ArtistList')}
             >
               <View >
                 <Image
