@@ -17,6 +17,8 @@ import UserFormWrapper from '../services/user/UserFormWrapper';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
 
 import bg from '../images/bg.png';
+import fanButton from '../images/buttons/fan_btn.png';
+import artistButton from '../images/buttons/artist_btn.png';
 
 const {height, width} = Dimensions.get('window');
 
@@ -113,43 +115,31 @@ class Options extends Component {
         <View style={styles.container}>
           <Image source={bg}  style={styles.backgroundImage} />
           <View style={{alignItems: 'center'}} >
-            <RNButton
-              borderRadius={100}
-              onPress={this.navigate.bind(this, 'ArtistList')}
-              title={'I AM A FAN'}
-              color={'rgba(0,0,0,0.9)'}
-              fontSize={24}
-              buttonStyle={[styles.button, {backgroundColor: '#62f9ff'}]}
-            />
-    {/*<TouchableHighlight
-      style={styles.imageButton}
-      onPress={this.navigate.bind(this, 'ArtistAdmin')}
-    >
-      <View style={styles.buttonContent} >
-        <Image
-          style={styles.buttonImage}
-          source={bg}
-          resizeMode={'cover'}
-        />
-        <View style={{height:70, flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.text}>I AM A FAN</Text>
-        </View>
-      </View>
-    </TouchableHighlight>*/}
+            <TouchableHighlight
+              onPress={this.navigate.bind(this, 'ArtistAdmin')}
+            >
+              <View >
+                <Image
+                  source={fanButton}
+                  resizeMode={'cover'}
+                />
+              </View>
+            </TouchableHighlight>
             <View style={styles.textSeparator}>
               <View style={styles.line} />
               <Text style={[styles.text, {flex: 2}]}>OR</Text>
               <View style={styles.line} />
             </View>
-            <RNButton
-              borderRadius={100}
+            <TouchableHighlight
               onPress={this.navigate.bind(this, 'ArtistAdmin')}
-              title={'I AM AN ARTIST'}
-              titleStyle={styles.buttonText}
-              color={'rgba(0,0,0,0.9)'}
-              fontSize={24}
-              buttonStyle={[styles.button, {backgroundColor: '#ffd52b'}]}
-            />
+            >
+              <View >
+                <Image
+                  source={artistButton}
+                  resizeMode={'cover'}
+                />
+              </View>
+            </TouchableHighlight>
             <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT
             </Text>
 
