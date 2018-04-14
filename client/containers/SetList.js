@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
-import { StyleSheet, Text, View, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableHighlight, ActivityIndicator, ScrollView, Image } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
 
+import bg from '../images/bg.png';
 import { UserType } from '../redux/reducers/LoginReducer';
 import SongForm from './SongForm';
 import SongItem from '../components/SongItem';
 import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
   fetchLastFMSong, fetchLyrics} from '../services/api';
-import UserForm from '../services/user/UserForm';
+import UserFormWrapper from '../services/user/UserFormWrapper';
 import { updateHeader } from '../utils/UpdateHeader';
+
+const { width, height } = Dimensions.get('window');
 
 class Setlist extends Component {
 
@@ -29,6 +32,7 @@ class Setlist extends Component {
 
   static defaultProps = { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong,
     fetchLastFMSong, fetchLyrics};
+
 
   constructor(props) {
     super(props);
@@ -51,6 +55,16 @@ class Setlist extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.artist === this.props.artist
+      && nextProps.user === this.props.user
+      && nextProps.authorized === this.props.authorized
+    ) {
+      // console.log('no change');
+      return;
+    }
+    updateHeader(nextProps);
+    this.setState({showModal: false});
   }
 
   async updateSongList() {
@@ -240,6 +254,8 @@ class Setlist extends Component {
   }
 
   render() {
+    console.log('bg', bg);
+    console.log('Dimensions', Dimensions);
     const { authorized } = this.props;
 
     const {
@@ -268,6 +284,7 @@ class Setlist extends Component {
     }
     return (
       <View style={styles.container}>
+        <Image source={bg} style={styles.backgroundImage} />
         <Text style={styles.text}>Tell Me What To Play!</Text>
 
         {
@@ -335,7 +352,7 @@ class Setlist extends Component {
           backdropTransitionOutTiming={1000}
         >
           <View>
-            <UserForm />
+            <UserFormWrapper isArtist={isArtist} />
             {this.renderButton(
               'X',
               () => {
@@ -359,9 +376,17 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps)(Setlist);
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width,
+    height,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
-    marginTop: 20,
+    // marginTop: 20,
     // backgroundColor: '#ddd',
     alignItems: 'stretch',
     // justifyContent: 'center',
@@ -386,5 +411,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 36,
     textAlign: 'center', 
+    color: 'white',
   },
 });

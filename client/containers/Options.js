@@ -118,7 +118,8 @@ console.log('pageName', pageName);
   render() {
     // console.log('props', this.props);
     const { showModal } = this.state;
-    const { authorized, artist, navigation } = this.props;
+    const { authorized, artist, navigation, userType } = this.props;
+    const isArtist = userType === 'ARTIST';
     return (
         <View style={styles.container}>
           <Image source={bg}  style={styles.backgroundImage} />
@@ -165,7 +166,9 @@ console.log('pageName', pageName);
                 backdropTransitionOutTiming={1000}
               >
                 <View>
-                  {!authorized && <UserFormWrapper />}
+                  {!authorized && <UserFormWrapper
+                    isArtist={isArtist}
+                  />}
                   {authorized && !artist && <ArtistFormWrapper
                   />}
                   {this.renderButton(

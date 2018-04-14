@@ -16,7 +16,7 @@ export const saveStorage = models => {//{user} [{user}, {artist}]
 
 export const loadStorage = async model => {
   try {
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
     const userJson = await AsyncStorage.getItem(model);
     // console.log('loadStorage', model, userJson);
     if (!userJson) { throw('userJson is null')}

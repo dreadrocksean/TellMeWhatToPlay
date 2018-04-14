@@ -53,8 +53,8 @@ class UserFormWrapper extends Component {
       this.setState({errorMessage: err});
       this.props.dispatch(logout());
     }
-
-    if (user && type === 'LogIn') {
+console.log('isArtist', this.props.isArtist);
+    if (this.props.isArtist && user && type === 'LogIn') {
       this.getArtist(user._id);
     }
   }
