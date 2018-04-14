@@ -47,6 +47,7 @@ class UserFormWrapper extends Component {
         throw 'User does not exist';
       }
       this.props.dispatch(loginUser(user));
+      saveStorage({user});
     } catch(err) {
       console.log('error:', err);
       this.setState({errorMessage: err});

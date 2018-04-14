@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
-import { StackNavigator } from 'react-navigation';
-import { connect } from 'react-redux';
-// import { Provider } from 'unstated';
-
-import { guestTypeArtist, guestTypeFan } from '../redux/actions/ActionCreator';
 import {
   Dimensions, StyleSheet,
-  TouchableHighlight,
+  TouchableHighlight, TouchableOpacity,
   Text, View, AsyncStorage, Image
 } from 'react-native';
+import Modal from 'react-native-modal';
+import { StackNavigator } from 'react-navigation';
+import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
+// import { Provider } from 'unstated';
+
+import { guestTypeArtist, guestTypeFan, loginArtist, loginUser, logout } from '../redux/actions/ActionCreator';
+import { loadStorage } from '../services/LocalStorage';
+import { updateHeader } from '../utils/UpdateHeader';
+import UserFormWrapper from '../services/user/UserFormWrapper';
+import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
 
 import bg from '../images/bg.png';
-import { updateHeader } from '../utils/UpdateHeader';
 
 const {height, width} = Dimensions.get('window');
 
@@ -31,11 +35,17 @@ class Options extends Component {
     };
   };
 
-  state = {};
+  state = {showModal: false};
+
+  async componentDidMount() {
+    this.checkLocalUserStorage();
+    this.checkLocalArtistStorage();
+  }
 
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.artist === this.props.artist
+      && nextProps.user === this.props.user
       && nextProps.authorized === this.props.authorized
     ) {
       // console.log('no change');
@@ -44,18 +54,61 @@ class Options extends Component {
     updateHeader(nextProps);
   }
 
-  navigate(pageName) {
+  async checkLocalUserStorage() {
+    //Set store on mount
+    const user = await loadStorage('user');
+    if (!this.props.user && user) {
+      this.props.dispatch(loginUser(user));
+    } else if(!user) {
+      this.props.dispatch(logout());
+    }
+    updateHeader(this.props);
+    return !!user;
+  }
+
+  async checkLocalArtistStorage() {
+    const artist = await loadStorage('artist');
+    if (!this.props.artist && artist) {
+      this.props.dispatch(loginArtist(artist));
+    }
+    return !!artist;
+  }
+
+  async navigate(pageName) {
     const {navigate} = this.props.navigation;
     const action = pageName === 'ArtistAdmin'
       ? guestTypeArtist() : guestTypeFan();
     this.props.dispatch(action);
+    const isUserStored = await !this.checkLocalUserStorage();
+
+    if (pageName === 'ArtistAdmin' &&
+      ((!isUserStored && !this.props.user) ||
+        !this.props.artist
+      )
+    ) {
+      this.setState({showModal: true});
+      return;
+    }
+
     navigate(pageName, {
       name: pageName,
     })
   }
 
+  renderButton (text, onPress) {
+    return (
+      <TouchableHighlight onPress={onPress}>
+        <View style={styles.button}>
+          <Text>{text}</Text>
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
   render() {
     // console.log('props', this.props);
+    const { showModal } = this.state;
+    const { authorized, artist, navigation } = this.props;
     return (
         <View style={styles.container}>
           <Image source={bg}  style={styles.backgroundImage} />
@@ -97,7 +150,38 @@ class Options extends Component {
               fontSize={24}
               buttonStyle={[styles.button, {backgroundColor: '#ffd52b'}]}
             />
-            <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT</Text>
+            <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT
+            </Text>
+
+            {
+              (!authorized || !artist) && showModal &&
+              <Modal  style={styles.modalContainer}
+                isVisible={(!authorized && showModal) || !artist}
+                backdropColor={'#000'}
+                backdropOpacity={0.7}
+                animationIn={'zoomInDown'}
+                animationOut={'zoomOutUp'}
+                animationInTiming={1000}
+                animationOutTiming={1000}
+                backdropTransitionInTiming={1000}
+                backdropTransitionOutTiming={1000}
+              >
+                <View>
+                  {!authorized && <UserFormWrapper />}
+                  {authorized && !artist && <ArtistFormWrapper
+                  />}
+                  {this.renderButton(
+                    'Cancel',
+                    () => {
+                      this.setState({
+                        showModal: false,
+                      })
+                    }
+                  )}
+                </View>
+              </Modal>
+            }
+
           </View>
         </View>
     );
@@ -182,6 +266,28 @@ const styles = StyleSheet.create({
     height,
     resizeMode: 'cover',
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  // button: {
+  //   backgroundColor: 'lightblue',
+  //   padding: 12,
+  //   // margin: 16,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderRadius: 4,
+  //   borderColor: 'rgba(0, 0, 0, 0.1)',
+  // },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
 });
 
 const mapStateToProps = state => {
@@ -189,6 +295,8 @@ const mapStateToProps = state => {
     authorized: state.login.authorized,
     userType: state.login.userType,
     artist: state.login.artist,
+    user: state.login.user,
+    errorMessage: state.login.errorMessage,
 }};
 
 export default connect(mapStateToProps)(Options);

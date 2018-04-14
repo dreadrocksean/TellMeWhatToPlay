@@ -15,7 +15,7 @@ const loginReducer = (state = initialState, action) => {
     }
     case AT.LoginArtist:
       // console.log('action.payload', action.payload);
-      return { ...state, authorized: true, userType: UserType.ARTIST, artist: action.payload };
+      return { ...state, userType: UserType.ARTIST, artist: action.payload };
     case AT.Logout:
       return { ...state, authorized: false, userType: null };
     case AT.LoginError:

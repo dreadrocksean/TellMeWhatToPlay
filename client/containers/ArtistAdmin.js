@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Modal from 'react-native-modal';
 import {
   Dimensions, StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
 } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
-import { onAir, offAir, loginArtist } from '../redux/actions/ActionCreator';
+import { onAir, offAir } from '../redux/actions/ActionCreator';
 import { LoginArtist } from '../redux/actions/ActionTypes';
 // import { Provider, Subscribe, Container } from 'unstated';
 
-import { updateArtist } from '../services/api';
-import { loadStorage } from '../services/LocalStorage';
-import UserFormWrapper from '../services/user/UserFormWrapper';
-import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
+import { updateHeader } from '../utils/UpdateHeader';
 
 import onair_off from '../images/onair_off_small.png';
 import onair_on from '../images/onair_on_small.png';
-import { updateHeader } from '../utils/UpdateHeader';
 
 const {height, width} = Dimensions.get('window');
 
@@ -49,14 +44,10 @@ class ArtistAdmin extends Component {
     if (!showModal && !authorized) {
       this.props.navigation.goBack();
     }
+    // updateHeader(this.props);
   }
 
   async componentDidMount() {
-    //Set store on mount
-    const artist = await loadStorage('artist');
-    if (!this.props.artist && artist) {
-      this.props.dispatch(loginArtist(artist));
-    }
     updateHeader(this.props);
   }
 
@@ -92,16 +83,6 @@ class ArtistAdmin extends Component {
     // console.log('toggleOnAir response', response);
     // this.setState({ artist: response.artist });
     this.props.dispatch(loginArtist(response.artist));
-  }
-
-  renderButton (text, onPress) {
-    return (
-      <TouchableOpacity onPress={onPress}>
-        <View style={styles.button}>
-          <Text>{text}</Text>
-        </View>
-      </TouchableOpacity>
-    )
   }
 
   handleError(err, msg) {
@@ -158,33 +139,6 @@ class ArtistAdmin extends Component {
           fontSize={36}
           buttonStyle={styles.button}
         />
-        {(!authorized || !artist) && <Modal  style={styles.modalContainer}
-          isVisible={(!authorized && showModal) || !artist}
-          backdropColor={'#000'}
-          backdropOpacity={0.7}
-          animationIn={'zoomInDown'}
-          animationOut={'zoomOutUp'}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={1000}
-        >
-          <View>
-            {!authorized && <UserFormWrapper
-              onGoBack={navigation.state.params.onGoBack}
-            />}
-            {authorized && !artist && <ArtistFormWrapper
-            />}
-            {this.renderButton(
-              'Cancel',
-              () => {
-                this.setState({
-                  showModal: false,
-                })
-              }
-            )}
-          </View>
-        </Modal>}
       </View>
     );
   }
@@ -241,35 +195,12 @@ const styles = StyleSheet.create({
     height: height,
     // resizeMode: 'cover',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'lightblue',
-    padding: 12,
-    // margin: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
 });
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.login.artist,
   showModal: state.login.showModal,
-  errorMessage: state.login.errorMessage,
 });
 
 export default connect(mapStateToProps)(ArtistAdmin);
