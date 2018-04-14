@@ -54,7 +54,7 @@ export const deleteSong = id => (
 );
 
 export const createSong = req => {
-	console.log('req', req);
+	// console.log('req', req);
 	return fetch(`http://${localIPs[0]}:4000/api/songs`, {
 		method: 'POST',
 		headers: {
@@ -83,7 +83,7 @@ export const updateSong = req => {
 };
 
 export const voteSong = req => {
-	console.log('voteSong req', req);
+	// console.log('voteSong req', req);
 	const { _id, sentiment } = req;
 	delete req._id;
 	return fetch(`http://${localIPs[0]}:4000/api/song/${_id}`, {
@@ -134,7 +134,7 @@ export const fetchArtist = req => {
 };
 
 export const updateArtist = req => {
-	console.log('api updateArtist', req);
+	// console.log('api updateArtist', req);
 	const id = req._id;
 	delete req._id;
 	return fetch(`http://${localIPs[0]}:4000/api/artist/${id}`, {

@@ -89,7 +89,7 @@ class ArtistAdmin extends Component {
       _id: artist._id,
       live: !artist.live
     });
-    console.log('toggleOnAir response', response);
+    // console.log('toggleOnAir response', response);
     // this.setState({ artist: response.artist });
     this.props.dispatch(loginArtist(response.artist));
   }

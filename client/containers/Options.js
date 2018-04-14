@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 
 import { guestTypeArtist, guestTypeFan } from '../redux/actions/ActionCreator';
 import {
-  Dimensions, StyleSheet, Text, View, AsyncStorage, Image
+  Dimensions, StyleSheet,
+  TouchableHighlight,
+  Text, View, AsyncStorage, Image
 } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
@@ -36,7 +38,7 @@ class Options extends Component {
       nextProps.artist === this.props.artist
       && nextProps.authorized === this.props.authorized
     ) {
-      console.log('no change');
+      // console.log('no change');
       return;
     }
     updateHeader(nextProps);
@@ -66,6 +68,21 @@ class Options extends Component {
               fontSize={24}
               buttonStyle={[styles.button, {backgroundColor: '#62f9ff'}]}
             />
+    {/*<TouchableHighlight
+      style={styles.imageButton}
+      onPress={this.navigate.bind(this, 'ArtistAdmin')}
+    >
+      <View style={styles.buttonContent} >
+        <Image
+          style={styles.buttonImage}
+          source={bg}
+          resizeMode={'cover'}
+        />
+        <View style={{height:70, flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.text}>I AM A FAN</Text>
+        </View>
+      </View>
+    </TouchableHighlight>*/}
             <View style={styles.textSeparator}>
               <View style={styles.line} />
               <Text style={[styles.text, {flex: 2}]}>OR</Text>
@@ -113,6 +130,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
   },
+  imageButton: {
+    height: 70,
+    width: width * 0.8,
+    backgroundColor: 'red',
+    // borderColor: 'white',
+    // borderWidth: 4,
+    borderRadius: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+  },
+  buttonImage: {
+    position: 'absolute',
+    borderRadius: 35,
+    flex: 1,
+    zIndex: -1,
+    top: 0,
+    left: 0,
+    height: 70,
+    width: width * 0.8,
+    borderColor: 'white',
+    borderWidth: 4,
+  },
+  buttonContent: {
+    alignItems: 'center',
+    borderRadius: 100,
+  },
   buttonText: {
     fontWeight: 'bold',
   },
@@ -135,7 +180,7 @@ const styles = StyleSheet.create({
     left: 0,
     width,
     height,
-    // resizeMode: 'cover',
+    resizeMode: 'cover',
   },
 });
 
