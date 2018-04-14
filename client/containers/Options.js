@@ -100,9 +100,16 @@ console.log('pageName', pageName);
 
   renderButton (text, onPress) {
     return (
-      <TouchableHighlight onPress={onPress}>
-        <View style={styles.button}>
-          <Text>{text}</Text>
+      <TouchableHighlight onPress={onPress} style={styles.close}>
+        <View>
+          <Text
+            style={{
+              color: '#d4d4ff',
+              fontSize: 20,
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >{text}</Text>
         </View>
       </TouchableHighlight>
     )
@@ -162,7 +169,7 @@ console.log('pageName', pageName);
                   {authorized && !artist && <ArtistFormWrapper
                   />}
                   {this.renderButton(
-                    'Cancel',
+                    'X',
                     () => {
                       this.setState({
                         showModal: false,
@@ -197,13 +204,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -60,
   },
-  button: {
-    height: 70,
-    width: width * 0.8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    height: 25,
+    width: 25,
+    // borderRadius: 25,
+    // borderColor: 'black',
+    // borderWidth: 1,
   },
   imageButton: {
     height: 70,
@@ -262,15 +271,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // button: {
-  //   backgroundColor: 'lightblue',
-  //   padding: 12,
-  //   // margin: 16,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   borderRadius: 4,
-  //   borderColor: 'rgba(0, 0, 0, 0.1)',
-  // },
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 12,
+    // margin: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
   modalContent: {
     backgroundColor: 'white',
     padding: 22,

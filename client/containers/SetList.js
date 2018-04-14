@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
 
@@ -222,6 +222,23 @@ class Setlist extends Component {
     });
   }
 
+  renderButton (text, onPress) {
+    return (
+      <TouchableHighlight onPress={onPress} style={styles.close}>
+        <View>
+          <Text
+            style={{
+              color: '#d4d4ff',
+              fontSize: 20,
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >{text}</Text>
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
   render() {
     const { authorized } = this.props;
 
@@ -317,7 +334,17 @@ class Setlist extends Component {
           backdropTransitionInTiming={1000}
           backdropTransitionOutTiming={1000}
         >
-          <UserForm />
+          <View>
+            <UserForm />
+            {this.renderButton(
+              'X',
+              () => {
+                this.setState({
+                  showModal: false,
+                })
+              }
+            )}
+          </View>
         </Modal>
       </View>
     );
@@ -344,6 +371,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    height: 25,
+    width: 25,
   },
   scroll: {
     flex: 1,
