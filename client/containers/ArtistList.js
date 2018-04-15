@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
 import {
-  StyleSheet, Text, View, ScrollView
+  Dimensions, StyleSheet, Image, Text, View, ScrollView
   , ActivityIndicator, AsyncStorage
   , Animated, PanResponder
 } from 'react-native';
@@ -12,7 +12,10 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 import ArtistItem from '../components/ArtistItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
+import bg from '../images/bg.png';
 import { fetchArtists } from '../services/api';
+
+const { width, height } = Dimensions.get('window');
 
 class ArtistList extends Component {
 
@@ -83,6 +86,7 @@ class ArtistList extends Component {
     }
     return (
       <View style={styles.container}>
+        <Image source={bg}  style={styles.backgroundImage} />
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
         >
@@ -102,19 +106,24 @@ class ArtistList extends Component {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width,
+    height,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
-    marginTop: 20,
-    alignItems: 'stretch',
+    // marginTop: 20,
+    // alignItems: 'stretch',
+
     padding: 5,
   },
   scroll: {
     flex: 1,
     marginTop: 10,
-  },
-  text: {
-    fontSize: 36,
-    textAlign: 'center', 
   },
 });
 

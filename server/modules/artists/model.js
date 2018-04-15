@@ -16,6 +16,7 @@ const ArtistSchema = new Schema({
 		type: String,
 		required: false,
 	},
+	instruments: [{type: String}],
 	songs: [{ type: ObjectId, ref: 'Song' }],
 	live: {
 		type: Boolean,
