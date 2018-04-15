@@ -45,8 +45,6 @@ class Options extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps', nextProps.userType);
-    console.log('componentWillReceiveProps user', nextProps.user);
     if (
       nextProps.artist === this.props.artist
       && nextProps.user === this.props.user

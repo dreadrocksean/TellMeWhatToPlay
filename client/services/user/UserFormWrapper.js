@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUser, fetchUser, createArtist, fetchArtist } from '../api';
-import * as AC from '../../redux/actions/ActionCreator';
-// import { loginUser, loginArtist, logout } from '../../redux/actions/ActionCreator';
+import * as ActionCreators from '../../redux/actions/ActionCreator';
 import { saveStorage } from '../LocalStorage';
 import UserForm from './UserForm';
 
@@ -55,9 +54,7 @@ class UserFormWrapper extends Component {
       console.log('error:', err);
       this.setState({errorMessage: err});
       this.props.logout();
-      // this.props.dispatch(logout());
     }
-    // console.log('this.props.userType', this.props.userType, user, type);
     if (this.props.userType === 'ARTIST' && user && type === 'LogIn') {
       this.getArtist(user._id);
     }
@@ -67,7 +64,6 @@ class UserFormWrapper extends Component {
     try {
       const response = await fetchArtist({userId});
       this.props.loginArtist(response.artist);
-      // this.props.dispatch(loginArtist(response.artist));
       saveStorage({artist: response.artist});
     } catch(err) {
       console.log('error:', err);
@@ -90,9 +86,8 @@ class UserFormWrapper extends Component {
 }
 
 const mapStateToProps = state => {
-  // console.log('WTFFFFF', state.login);
   return {
     userType: state.login.userType,
 }};
 
-export default connect(mapStateToProps, AC)(UserFormWrapper);
+export default connect(mapStateToProps, ActionCreators)(UserFormWrapper);
