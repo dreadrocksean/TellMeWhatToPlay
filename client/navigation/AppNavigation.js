@@ -10,69 +10,69 @@ import UserFormWrapper from '../services/user/UserFormWrapper';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
 import Lyrics from '../containers/Lyrics';
 
-import SignupScreen from '../containers/SignupScreen';
-import ForgottenPasswordScreen from '../containers/ForgottenPasswordScreen';
-import Screen1 from '../containers/Screen1';
-import Screen2 from '../containers/Screen2';
-import Screen3 from '../containers/Screen3';
-import DrawerContainer from '../containers/DrawerContainer';
+// import SignupScreen from '../containers/SignupScreen';
+// import ForgottenPasswordScreen from '../containers/ForgottenPasswordScreen';
+// import Screen1 from '../containers/Screen1';
+// import Screen2 from '../containers/Screen2';
+// import Screen3 from '../containers/Screen3';
+// import DrawerContainer from '../containers/DrawerContainer';
 
 const AppRouteConfigs = {
   Options: { screen: Options },
+  UserFormWrapper: { screen: UserFormWrapper },
+  ArtistFormWrapper: { screen: ArtistFormWrapper },
   ArtistList: { screen: ArtistList },
   ArtistAdmin: { screen: ArtistAdmin },
   SetList: { screen: SetList },
   Lyrics: { screen: Lyrics },
-  UserFormWrapper: { screen: UserFormWrapper },
-  ArtistFormWrapper: { screen: ArtistFormWrapper },
 
-  loginScreen: { screen: LoginScreen },
-  signupScreen: { screen: SignupScreen },
-  forgottenPasswordScreen: {
-    screen: ForgottenPasswordScreen,
-    navigationOptions: { title: 'Forgot Password' }
-  },
+  // loginScreen: { screen: LoginScreen },
+  // signupScreen: { screen: SignupScreen },
+  // forgottenPasswordScreen: {
+  //   screen: ForgottenPasswordScreen,
+  //   navigationOptions: { title: 'Forgot Password' }
+  // },
 };
 
 // login stack
 const LoginStack = StackNavigator(AppRouteConfigs, {
   headerMode: 'float',
   navigationOptions: navigation => ({
-      headerStyle: {backgroundColor: 'red'},
-      title: 'You are not logged in'
+    headerStyle: {backgroundColor: 'red'},
+    title: 'You are not logged in'
   })
 });
 
 
 // drawer stack
-const DrawerStack = DrawerNavigator({
-  screen1: { screen: Screen1 },
-  screen2: { screen: Screen2 },
-  screen3: { screen: Screen3 },
-}, {
-  gesturesEnabled: false,
-  contentComponent: DrawerContainer,
-});
+// const DrawerStack = DrawerNavigator({
+//   screen1: { screen: Screen1 },
+//   screen2: { screen: Screen2 },
+//   screen3: { screen: Screen3 },
+// }, {
+//   gesturesEnabled: false,
+//   contentComponent: DrawerContainer,
+// });
 
-const DrawerNavigation = StackNavigator({
-  DrawerStack: { screen: DrawerStack }
-}, {
-  headerMode: 'float',
-  navigationOptions: ({navigation}) => ({
-    headerStyle: {backgroundColor: 'green'},
-    title: 'Logged In to your app!',
-    gesturesEnabled: false,
-    headerLeft:
-    	<Text onPress={() => {
-    		if (navigation.state.index === 0) {
-    			navigation.navigate('DrawerOpen');
-    		} else {
-    			navigation.navigate('DrawerClose');
-    		}
+// const DrawerNavigation = StackNavigator({
+//   DrawerStack: { screen: DrawerStack }
+// }, {
+//   headerMode: 'float',
+//   navigationOptions: ({navigation}) => ({
+//     headerStyle: {backgroundColor: 'green'},
+//     title: 'Logged In to your app!',
+//     gesturesEnabled: false,
+//     headerLeft:
+//     	<Text onPress={() => {
+//     		if (navigation.state.index === 0) {
+//     			navigation.navigate('DrawerOpen');
+//     		} else {
+//     			navigation.navigate('DrawerClose');
+//     		}
     		
-    	}}>Menu</Text>
-  })
-});
+//     	}}>Menu</Text>
+//   })
+// });
 
 const noTransitionConfig = () => ({
   transitionSpec: {
@@ -85,7 +85,7 @@ const noTransitionConfig = () => ({
 // Manifest of possible screens
 const PrimaryNav = StackNavigator({
   loginStack: { screen: LoginStack },
-  drawerStack: { screen: DrawerNavigation }
+  // drawerStack: { screen: DrawerNavigation }
 }, {
   // Default config for all screens
   headerMode: 'none',

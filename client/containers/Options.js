@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
 // import { Provider } from 'unstated';
 
-import { guestTypeArtist, guestTypeFan, loginArtist, loginUser, logout } from '../redux/actions/ActionCreator';
+import * as ActionCreators from '../redux/actions/ActionCreator';
 import { loadStorage } from '../services/LocalStorage';
 import { updateHeader } from '../utils/UpdateHeader';
 import UserFormWrapper from '../services/user/UserFormWrapper';
@@ -45,6 +45,8 @@ class Options extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('componentWillReceiveProps', nextProps.userType);
+    console.log('componentWillReceiveProps user', nextProps.user);
     if (
       nextProps.artist === this.props.artist
       && nextProps.user === this.props.user
@@ -53,6 +55,7 @@ class Options extends Component {
       // console.log('no change');
       return;
     }
+    // console.log('updating header');
     updateHeader(nextProps);
   }
 
@@ -60,9 +63,9 @@ class Options extends Component {
     //Set store on mount
     const user = await loadStorage('user');
     if (!this.props.user && user) {
-      this.props.dispatch(loginUser(user));
+      this.props.loginUser(user);
     } else if(!user) {
-      this.props.dispatch(logout());
+      this.props.logout();
     }
     updateHeader(this.props);
     return !!user;
@@ -71,23 +74,19 @@ class Options extends Component {
   async checkLocalArtistStorage() {
     const artist = await loadStorage('artist');
     if (!this.props.artist && artist) {
-      this.props.dispatch(loginArtist(artist));
+      this.props.loginArtist(artist);
     }
     return !!artist;
   }
 
   async navigate(pageName) {
-console.log('pageName', pageName);
     const {navigate} = this.props.navigation;
     const action = pageName === 'ArtistAdmin'
-      ? guestTypeArtist() : guestTypeFan();
-    this.props.dispatch(action);
-    const isUserStored = await !this.checkLocalUserStorage();
+      ? this.props.guestTypeArtist : this.props.guestTypeFan;
+    action();
+
     if (pageName === 'ArtistAdmin' &&
-      (
-        (!isUserStored && !this.props.user) ||
-        !this.props.artist
-      )
+      (!this.props.user || !this.props.artist)
     ) {
       this.setState({showModal: true});
       return;
@@ -166,11 +165,8 @@ console.log('pageName', pageName);
                 backdropTransitionOutTiming={1000}
               >
                 <View>
-                  {!authorized && <UserFormWrapper
-                    isArtist={isArtist}
-                  />}
-                  {authorized && !artist && <ArtistFormWrapper
-                  />}
+                  {!authorized && <UserFormWrapper />}
+                  {authorized && !artist && <ArtistFormWrapper />}
                   {this.renderButton(
                     'X',
                     () => {
@@ -294,6 +290,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  // console.log('mapStateToProps state', state);
   return {
     authorized: state.login.authorized,
     userType: state.login.userType,
@@ -302,4 +299,4 @@ const mapStateToProps = state => {
     errorMessage: state.login.errorMessage,
 }};
 
-export default connect(mapStateToProps)(Options);
+export default connect(mapStateToProps, ActionCreators)(Options);

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUser, fetchUser, createArtist, fetchArtist } from '../api';
-import { loginUser, loginArtist, logout } from '../../redux/actions/ActionCreator';
+import * as AC from '../../redux/actions/ActionCreator';
+// import { loginUser, loginArtist, logout } from '../../redux/actions/ActionCreator';
 import { saveStorage } from '../LocalStorage';
 import UserForm from './UserForm';
 
@@ -27,6 +28,7 @@ class UserFormWrapper extends Component {
   }
 
   async onSubmit(type) {
+    // console.log('onsubmit props', this.props);
     const credentials = {
       email: this.state.email,
       password: this.state.password,
@@ -46,15 +48,17 @@ class UserFormWrapper extends Component {
       if (!user) {
         throw 'User does not exist';
       }
-      this.props.dispatch(loginUser(user));
       saveStorage({user});
+      console.log('props', this.props);
+      this.props.loginUser(user);
     } catch(err) {
       console.log('error:', err);
       this.setState({errorMessage: err});
-      this.props.dispatch(logout());
+      this.props.logout();
+      // this.props.dispatch(logout());
     }
-console.log('isArtist', this.props.isArtist);
-    if (this.props.isArtist && user && type === 'LogIn') {
+    // console.log('this.props.userType', this.props.userType, user, type);
+    if (this.props.userType === 'ARTIST' && user && type === 'LogIn') {
       this.getArtist(user._id);
     }
   }
@@ -62,7 +66,8 @@ console.log('isArtist', this.props.isArtist);
   async getArtist(userId) {
     try {
       const response = await fetchArtist({userId});
-      this.props.dispatch(loginArtist(response.artist));
+      this.props.loginArtist(response.artist);
+      // this.props.dispatch(loginArtist(response.artist));
       saveStorage({artist: response.artist});
     } catch(err) {
       console.log('error:', err);
@@ -70,6 +75,7 @@ console.log('isArtist', this.props.isArtist);
   }
 
   render() {
+    console.log('render userType', this.props.userType);
 	  return (
       <UserForm
         handleChange={this.handleChange.bind(this)}
@@ -83,8 +89,10 @@ console.log('isArtist', this.props.isArtist);
 
 }
 
-const mapDispatchToProps = () => ({
-  loginUser, loginArtist, logout
-});
+const mapStateToProps = state => {
+  // console.log('WTFFFFF', state.login);
+  return {
+    userType: state.login.userType,
+}};
 
-export default connect(mapDispatchToProps)(UserFormWrapper);
+export default connect(mapStateToProps, AC)(UserFormWrapper);
