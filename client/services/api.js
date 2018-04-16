@@ -4,19 +4,19 @@ const lastFMAPI = {
 	NAME: 'dreadrocksean',
 	EMAIL:'adrian@bartholomusic.com',
 	ENDPOINT: 'http://ws.audioscrobbler.com/2.0/?method=',
-}
+};
 
 const apiSeeds = {
 	API_KEY: 'WMgEiPpFQsYZWtep0Lyylax0Ncc1CByguiDFCKi7otLaKo4k9RzViN8zHVGspmyj',
 	ENDPOINT: 'https://orion.apiseeds.com/api/music/lyric',
-}
+};
 
 const localIPs = [
 	// '172.20.10.3', // (hotspot)
 	// '192.168.1.238', // (Grinders)
 	'192.168.1.250',
 	'10.128.1.56',
-]
+];
 
 export const fetchSongs = () => (
 	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')

@@ -16,7 +16,8 @@
     "express": "^4.16.2",
     "mongoose": "^5.0.10",
     "morgan": "^1.9.0",
-    "rapidapi-connect": "0.0.6"
+    "rapidapi-connect": "0.0.6",
+    "react-native-linear-gradient": "^2.4.0"
   },
   "devDependencies": {
     "nodemon": "^1.14.11"

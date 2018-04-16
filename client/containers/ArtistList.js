@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     // marginTop: 20,
     // alignItems: 'stretch',
 
-    padding: 5,
+    padding: 7,
   },
   scroll: {
     flex: 1,
