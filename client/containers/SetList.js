@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
-import { Dimensions, StyleSheet, Text, View, TouchableHighlight, ActivityIndicator, ScrollView, Image } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, ScrollView, Image } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
 
-import bg from '../images/bg.png';
+import listItemAvatar from '../images/list/test_avatar.png';
+
 import { UserType } from '../redux/reducers/LoginReducer';
+
 import SongForm from './SongForm';
+import ListHeader from '../components/ListHeader';
+import Background from '../components/Background';
 import SongItem from '../components/SongItem';
+import { updateHeader } from '../utils/UpdateHeader';
+
 import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
   fetchLastFMSong, fetchLyrics} from '../services/api';
 import UserFormWrapper from '../services/user/UserFormWrapper';
-import { updateHeader } from '../utils/UpdateHeader';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -51,7 +57,7 @@ class Setlist extends Component {
 
   componentDidMount() {
     this.updateSongList();
-    updateHeader(this.props);
+    // updateHeader(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -69,6 +75,7 @@ class Setlist extends Component {
 
   async updateSongList() {
     // this.setState({ loading: true });
+    console.log('updateSongList');
     try {
       const data = await this.props.fetchArtistSongs(this.state.artist._id);
       let songs = data.songs;
@@ -198,7 +205,7 @@ class Setlist extends Component {
       this.setState({showModal: true});
       return;
     }
-    // console.log('vote song', songId);
+    // console.log('vote song', songId, sentiment);
     try {
       await this.props.voteSong({ _id: songId, sentiment });
       if (sentiment) {
@@ -238,7 +245,7 @@ class Setlist extends Component {
 
   renderButton (text, onPress) {
     return (
-      <TouchableHighlight onPress={onPress} style={styles.close}>
+      <TouchableOpacity onPress={onPress} style={styles.close}>
         <View>
           <Text
             style={{
@@ -249,13 +256,15 @@ class Setlist extends Component {
             }}
           >{text}</Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
 
+  home() {
+    this.props.navigation.navigate('Options');
+  }
+
   render() {
-    console.log('bg', bg);
-    console.log('Dimensions', Dimensions);
     const { authorized } = this.props;
 
     const {
@@ -282,10 +291,27 @@ class Setlist extends Component {
         </View>
       )
     }
+
     return (
       <View style={styles.container}>
-        <Image source={bg} style={styles.backgroundImage} />
-        <Text style={styles.text}>Tell Me What To Play!</Text>
+        <Background />
+        <ListHeader style={{height: 50}}
+          home={this.home.bind(this)}
+        >
+          <View style={styles.artistInfoContainer}>
+            <View style={styles.avatarContainer}>
+              <Image style={styles.avatarImage}
+                source={listItemAvatar}
+                resizeMode={'cover'}
+              />
+            </View>
+            <View style={styles.artistInfo}>
+              <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>SETLIST</Text>
+              <Text style={{fontSize: 13, color: '#2bfbff', fontWeight: 'bold'}}>{artist.name}</Text>
+              <Text style={{fontSize: 11, color: '#ff3a80'}}>{artist.genre}</Text>
+            </View>
+          </View>
+        </ListHeader>
 
         {
           isArtist && add && (
@@ -376,14 +402,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps)(Setlist);
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width,
-    height,
-    resizeMode: 'cover',
-  },
   container: {
     flex: 1,
     // marginTop: 20,
@@ -412,5 +430,28 @@ const styles = StyleSheet.create({
     fontSize: 36,
     textAlign: 'center', 
     color: 'white',
+  },
+  avatarContainer: {
+    width: 55,
+    height: 55,
+    borderRadius: 55,
+    borderColor: '#ff3a80',
+    borderWidth: 2,
+    overflow: 'hidden', 
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  artistInfo: {
+    height: 70,
+    justifyContent: 'center',
+    marginLeft: 10,
+    // backgroundColor: 'rgba(220,220,255,0.9)',
+  },
+  artistInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
   },
 });

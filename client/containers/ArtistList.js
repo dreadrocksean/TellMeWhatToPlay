@@ -11,8 +11,12 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ArtistItem from '../components/ArtistItem';
 import { updateHeader } from '../utils/UpdateHeader';
+import ListHeader from '../components/ListHeader';
+import Background from '../components/Background';
 
 import bg from '../images/bg.png';
+import sortIcon from '../images/list/sort_btn.png';
+import findIcon from '../images/list/find_btn.png';
 import { fetchArtists } from '../services/api';
 
 const { width, height } = Dimensions.get('window');
@@ -71,9 +75,13 @@ class ArtistList extends Component {
     }
   }
 
-  async showSetList(artist) {
+  showSetList(artist) {
     const { navigate } = this.props.navigation;
     navigate('SetList', { name: 'SetList', artist })
+  }
+
+  home() {
+    this.props.navigation.navigate('Options');
   }
 
   render() {
@@ -86,7 +94,21 @@ class ArtistList extends Component {
     }
     return (
       <View style={styles.container}>
-        <Image source={bg}  style={styles.backgroundImage} />
+        <Background />
+        <ListHeader style={{height: 50}}
+          home={this.home.bind(this)}
+        >
+          <View style={styles.iconsContainer}>
+            <Image style={styles.icon}
+              source={sortIcon}
+              resizeMode={'cover'}
+            />
+            <Image style={styles.icon}
+              source={findIcon}
+              resizeMode={'cover'}
+            />
+          </View>
+        </ListHeader>
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
         >
@@ -106,25 +128,24 @@ class ArtistList extends Component {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width,
-    height,
-    resizeMode: 'cover',
-  },
   container: {
     flex: 1,
-    // marginTop: 20,
-    // alignItems: 'stretch',
-
     padding: 7,
   },
   scroll: {
     flex: 1,
     marginTop: 10,
   },
+  iconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 70,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  }
 });
 
 const mapStateToProps = state => ({

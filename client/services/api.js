@@ -18,12 +18,13 @@ const localIPs = [
 	'10.128.1.56',
 ];
 
-export const fetchSongs = () => (
+export const fetchSongs = () => {
+	console.log('fetchSongs');
 	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
-	fetch(`http://${localIPs[0]}:4000/api/songs`)
+	return fetch(`http://${localIPs[0]}:4000/api/songs`)
 		.then(res => res.json())
 		.catch(err => console.error('Error getting songs:', err))
-);
+};
 
 export const fetchArtistSongs = artistId => {
 	console.log('test', artistId);
@@ -83,10 +84,11 @@ export const updateSong = req => {
 };
 
 export const voteSong = req => {
-	// console.log('voteSong req', req);
+	console.log('voteSong req', req);
 	const { _id, sentiment } = req;
 	delete req._id;
-	return fetch(`http://${localIPs[0]}:4000/api/song/${_id}`, {
+	console.log('body', JSON.stringify(req));
+	return fetch(`http://${localIPs[0]}:4000/api/vote/song/${_id}`, {
 		method: 'PATCH',
 		headers: {
 			Accept: 'application/json',
@@ -94,7 +96,10 @@ export const voteSong = req => {
 		},
 		body: JSON.stringify(req),
 	})
-		.then(res => res.json())
+		.then(res => {
+			console.log('vote fetch', res);
+			return res.json()
+		})
 		.catch(err => console.error('Error upvoting song:', err));
 };
 
