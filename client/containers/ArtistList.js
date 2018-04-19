@@ -7,14 +7,11 @@ import {
   , Animated, PanResponder
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Button as RNButton, Icon } from 'react-native-elements';
 
+import DefaultContainer from './DefaultContainer';
 import ArtistItem from '../components/ArtistItem';
 import { updateHeader } from '../utils/UpdateHeader';
-import ListHeader from '../components/ListHeader';
-import Background from '../components/Background';
 
-import bg from '../images/bg.png';
 import sortIcon from '../images/list/sort_btn.png';
 import findIcon from '../images/list/find_btn.png';
 import { fetchArtists } from '../services/api';
@@ -29,7 +26,7 @@ class ArtistList extends Component {
       params.bg ? {backgroundColor: params.bg} : null
     );
     return {
-      title: `${params.title || params.screen || 'Artist List'}`,
+      title: `${params.title || params.screen}`,
       headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
       headerStyle,
     };
@@ -47,19 +44,7 @@ class ArtistList extends Component {
   }
 
   componentDidMount() {
-    this.loadStorage();
     this.updateArtistList();
-  }
-
-  async loadStorage() {
-    try {
-      const username = await AsyncStorage.getItem('user');
-      const user = JSON.parse(userJson).user;
-      if (!user) { return; }
-      this.setState({user});
-    } catch(e) {
-      console.log('Error getting storage username: ', e);
-    }
   }
 
   async updateArtistList() {
@@ -84,54 +69,47 @@ class ArtistList extends Component {
     this.props.navigation.navigate('Options');
   }
 
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator size='large'/>
-        </View>
-      )
-    }
+  renderHeaderChildren() {
     return (
-      <View style={styles.container}>
-        <Background />
-        <ListHeader style={{height: 50}}
-          home={this.home.bind(this)}
-        >
-          <View style={styles.iconsContainer}>
-            <Image style={styles.icon}
-              source={sortIcon}
-              resizeMode={'cover'}
-            />
-            <Image style={styles.icon}
-              source={findIcon}
-              resizeMode={'cover'}
-            />
-          </View>
-        </ListHeader>
+      <View style={styles.iconsContainer}>
+        <Image style={styles.icon}
+          source={sortIcon}
+          resizeMode={'cover'}
+        />
+        <Image style={styles.icon}
+          source={findIcon}
+          resizeMode={'cover'}
+        />
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <DefaultContainer
+        loading={this.state.loading}
+        headerChildren={this.renderHeaderChildren()}
+        goHome={() => this.props.navigation.navigate('Options')}
+      >
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
         >
           {this.state.artists.map((artist, i) => {
             return (
               <ArtistItem
-                  key={i}
-                  artist={artist}
-                  showSetList={this.showSetList.bind(this, artist)}
+                key={i}
+                artist={artist}
+                showSetList={this.showSetList.bind(this, artist)}
               />
             )
           })}
         </ScrollView>
-      </View>
+      </DefaultContainer>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 7,
-  },
   scroll: {
     flex: 1,
     marginTop: 10,

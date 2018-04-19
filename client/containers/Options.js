@@ -4,8 +4,8 @@ import {
   TouchableHighlight, TouchableOpacity,
   Text, View, AsyncStorage, Image
 } from 'react-native';
+import { Constants, Camera, FileSystem, Permissions } from 'expo';
 import Modal from 'react-native-modal';
-import { StackNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
 // import { Provider } from 'unstated';
@@ -37,11 +37,25 @@ class Options extends Component {
     };
   };
 
-  state = {showModal: false};
+  constructor(props) {
+    super(props);
+    this.state = {showModal: false, photos: []};
+    this.camera = null;
+  }
+
+  async componentWillMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ permissionsGranted: status === 'granted' });
+  }
+
 
   async componentDidMount() {
+    // console.log('this.props', this.props);
     this.checkLocalUserStorage();
     this.checkLocalArtistStorage();
+    FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
+      console.log(e, 'Directory exists');
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -86,7 +100,8 @@ class Options extends Component {
     if (pageName === 'ArtistAdmin' &&
       (!this.props.user || !this.props.artist)
     ) {
-      this.setState({showModal: true});
+      // this.setState({showModal: true});
+      navigate('SignupScreen', {name: 'SignupScreen'});
       return;
     }
 
@@ -112,6 +127,13 @@ class Options extends Component {
     )
   }
 
+  async snap() {
+    if (this.camera) {
+      let photo = await this.camera.takePictureAsync();
+      console.log('photo', photo.uri);
+    }
+  }
+
   render() {
     // console.log('props', this.props);
     const { showModal } = this.state;
@@ -119,8 +141,8 @@ class Options extends Component {
     const isArtist = userType === 'ARTIST';
     return (
         <View style={styles.container}>
-          <Image source={bg}  style={styles.backgroundImage} />
-          <View style={{alignItems: 'center'}} >
+          {<Image source={bg}  style={styles.backgroundImage} />}
+          {<View style={{alignItems: 'center'}} >
             <TouchableHighlight
               onPress={this.navigate.bind(this, 'ArtistList')}
             >
@@ -163,8 +185,8 @@ class Options extends Component {
                 backdropTransitionOutTiming={1000}
               >
                 <View>
-                  {!authorized && <UserFormWrapper />}
-                  {authorized && !artist && <ArtistFormWrapper />}
+                  {false && !authorized && <UserFormWrapper />}
+                  {/*authorized && !artist && */<ArtistFormWrapper />}
                   {this.renderButton(
                     'X',
                     () => {
@@ -176,8 +198,8 @@ class Options extends Component {
                 </View>
               </Modal>
             }
+          </View>}
 
-          </View>
         </View>
     );
   }

@@ -9,9 +9,8 @@ import listItemAvatar from '../images/list/test_avatar.png';
 
 import { UserType } from '../redux/reducers/LoginReducer';
 
+import DefaultContainer from './DefaultContainer';
 import SongForm from './SongForm';
-import ListHeader from '../components/ListHeader';
-import Background from '../components/Background';
 import SongItem from '../components/SongItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
@@ -264,6 +263,25 @@ class Setlist extends Component {
     this.props.navigation.navigate('Options');
   }
 
+  renderHeaderChildren() {
+    const { name, genre } = this.state.artist;
+    return (
+      <View style={styles.artistInfoContainer}>
+        <View style={styles.avatarContainer}>
+          <Image style={styles.avatarImage}
+            source={listItemAvatar}
+            resizeMode={'cover'}
+          />
+        </View>
+        <View style={styles.artistInfo}>
+          <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>SETLIST</Text>
+          <Text style={{fontSize: 13, color: '#2bfbff', fontWeight: 'bold'}}>{name}</Text>
+          <Text style={{fontSize: 11, color: '#ff3a80'}}>{genre}</Text>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const { authorized } = this.props;
 
@@ -284,34 +302,12 @@ class Setlist extends Component {
       );
     }
 
-    if (loading) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator size='large'/>
-        </View>
-      )
-    }
-
     return (
-      <View style={styles.container}>
-        <Background />
-        <ListHeader style={{height: 50}}
-          home={this.home.bind(this)}
-        >
-          <View style={styles.artistInfoContainer}>
-            <View style={styles.avatarContainer}>
-              <Image style={styles.avatarImage}
-                source={listItemAvatar}
-                resizeMode={'cover'}
-              />
-            </View>
-            <View style={styles.artistInfo}>
-              <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>SETLIST</Text>
-              <Text style={{fontSize: 13, color: '#2bfbff', fontWeight: 'bold'}}>{artist.name}</Text>
-              <Text style={{fontSize: 11, color: '#ff3a80'}}>{artist.genre}</Text>
-            </View>
-          </View>
-        </ListHeader>
+      <DefaultContainer
+        loading={this.state.loading}
+        goHome={() => this.props.navigation.navigate('Options')}
+        headerChildren={this.renderHeaderChildren()}
+      >
 
         {
           isArtist && add && (
@@ -389,7 +385,7 @@ class Setlist extends Component {
             )}
           </View>
         </Modal>
-      </View>
+      </DefaultContainer>
     );
   }
 }

@@ -1,12 +1,16 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { Component } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import UserFormWrapper from '../services/user/UserFormWrapper';
 
-export default class SignupScreen extends React.Component {
+export default class SignupScreen extends Component {
+
+  componentDidMount() {
+    console.log('props', this.props);
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>I am Signup Screen</Text>
-      </View>
+      <UserFormWrapper />
     )
   }
 }

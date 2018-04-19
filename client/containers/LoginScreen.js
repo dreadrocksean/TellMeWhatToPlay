@@ -11,7 +11,7 @@ export default class LoginScreen extends React.Component {
 
         <Text
           style={styles.linky}
-          onPress={() => navigate('signupScreen')} >
+          onPress={() => navigate('SignupScreen')} >
           Go to Signup
         </Text>
 
