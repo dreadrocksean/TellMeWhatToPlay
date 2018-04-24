@@ -16,12 +16,19 @@ const ArtistSchema = new Schema({
 		type: String,
 		required: false,
 	},
-	instruments: [{type: String}],
+	roles: [{type: String}],
 	songs: [{ type: ObjectId, ref: 'Song' }],
 	live: {
 		type: Boolean,
 		required: false,
 		default: false,
+	},
+	imageUrl: {
+		type: String,
+	},
+	geoPosition: {
+		type: String,
+		default: '',
 	}
 }, {timestamps: true});
 

@@ -51,6 +51,10 @@ export const updateSong = async (req, res) => {
 };
 
 export const voteSong = async (req, res) => {
+	console.log('voteSong controller', req.params, req.body);
+	if (!req.params._id) {
+		return console.log('WTF');
+	}
 	const { _id } = req.params;
 	const { sentiment } = req.body;
 	const num = sentiment ? 1 : -1;

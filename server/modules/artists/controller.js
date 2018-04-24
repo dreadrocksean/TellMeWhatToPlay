@@ -34,10 +34,10 @@ export const fetchSongs = async (req, res) => {
 };
 
 export const fetchArtist = async (req, res) => {
-	const { _id } = req.params;
-	console.log('fetchArtist Controller', _id);
+	const { artist_id } = req.params;
+	console.log('fetchArtist Controller', req.params);
 	try {
-		return res.status(200).json({ artist: await Artist.findOne({_id}) });
+		return res.status(200).json({ artist: await Artist.findOne({artist_id}) });
 	} catch (e) {
 		return res.status(e.status).json({ error: true, message: 'Error getting artist: ' + e.message });
 	}
@@ -45,7 +45,7 @@ export const fetchArtist = async (req, res) => {
 
 export const fetchUserArtist = async (req, res) => {
 	const { user_id } = req.params;
-	console.log('fetchArtist Controller', user_id);
+	console.log('fetchUserArtist Controller', user_id);
 	try {
 		return res.status(200).json({ artist: await Artist.findOne({userId: user_id}) });
 	} catch (e) {
@@ -54,19 +54,19 @@ export const fetchUserArtist = async (req, res) => {
 };
 
 export const updateArtist = async (req, res) => {
-	const { id } = req.params;
+	const { artist_id } = req.params;
 	console.log('req body', req.body);
 	try {
-		return res.status(200).json({ artist: await Artist.findByIdAndUpdate(id, req.body, {new: true}) });
+		return res.status(200).json({ artist: await Artist.findByIdAndUpdate(artist_id, req.body, {new: true}) });
 	} catch (e) {
 		return res.status(e.status).json({ error: true, message: 'Error updating artist' });
 	}
 };
 
 export const deleteArtist = async (req, res) => {
-	const { id } = req.params;
+	const { artist_id } = req.params;
 	try {
-		return res.status(200).json({ artists: await Artist.findByIdAndRemove(id) });
+		return res.status(200).json({ artists: await Artist.findByIdAndRemove(artist_id) });
 	} catch (e) {
 		return res.status(e.status).json({ error: true, message: 'Error getting artists' });
 	}

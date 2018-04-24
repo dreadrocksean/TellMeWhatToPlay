@@ -47,7 +47,7 @@ export const listItemStyle = {
     height: '100%',
   },
   leftInfo: {
-    flex: 4,
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
