@@ -3,15 +3,24 @@ import { connect } from 'react-redux';
 import {
   Dimensions, StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
 } from 'react-native';
+import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
 import { Button as RNButton, Icon } from 'react-native-elements';
-import { onAir, offAir } from '../redux/actions/ActionCreator';
-import { LoginArtist } from '../redux/actions/ActionTypes';
+import { onAir, offAir, loginArtist, logout } from '../redux/actions/ActionCreator';
+import { updateArtist } from '../services/api';
 // import { Provider, Subscribe, Container } from 'unstated';
 
-import { updateHeader } from '../utils/UpdateHeader';
+import listItemAvatar from '../images/list/test_avatar.png';
 
-import onair_off from '../images/onair_off_small.png';
-import onair_on from '../images/onair_on_small.png';
+import DefaultContainer from './DefaultContainer';
+import RoundImage from '../components/RoundImage';
+import { updateHeader } from '../utils/UpdateHeader';
+import { scale, verticalScale, moderateScale } from '../utils/Scales';
+
+import onAirIcon from '../images/list/onair_btn.png';
+import offAirIcon from '../images/list/offair_btn.png';
+import editIcon from '../images/list/edit_btn.png';
+import manageSetlistIcon from '../images/list/manage_btn.png';
+import logoutIcon from '../images/list/logout_btn.png';
 
 const {height, width} = Dimensions.get('window');
 
@@ -35,6 +44,7 @@ class ArtistAdmin extends Component {
     showModal: true,
     edit_email: '',
     edit_password: '',
+    location: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -44,11 +54,13 @@ class ArtistAdmin extends Component {
     if (!showModal && !authorized) {
       this.props.navigation.goBack();
     }
-    // updateHeader(this.props);
   }
 
   async componentDidMount() {
     updateHeader(this.props);
+    this._getLocationAsync();
+
+    // Image.getSize(myUri, (width, height) => {this.setState({width, height})});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,10 +73,35 @@ class ArtistAdmin extends Component {
   }
 
   async componentDidUnMount() {
-    const response = await this.props.updateArtist({
+    const response = await updateArtist({
       _id: artist._id,
       live: false
     });
+  }
+
+  async _getLocationAsync() {
+    try {
+      const permission = await this._getLocationPermission;
+      const geoLocation = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = geoLocation.coords;
+      const location = { latitude, longitude };
+      this.setState({ location });
+    } catch(err) {
+      throw Error('Must have a location', err);
+    }
+  }
+
+  async _getLocationPermission() {
+    try {
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted') {
+        throw 'Permission to access location was denied';
+      }
+      return true;
+    } catch(err) {
+        this.setState({ errorMessage: err });
+        throw Error(err);
+    }
   }
 
   navigate(pageName) {
@@ -73,16 +110,29 @@ class ArtistAdmin extends Component {
     });
   }
 
+  logout() {
+    this.props.dispatch(logout());
+    this.navigate('Options');
+  }
+
   async toggleOnAir() {
     const { artist } = this.props;
     if (!artist) { return; }
-    const response = await updateArtist({
-      _id: artist._id,
-      live: !artist.live
-    });
-    // console.log('toggleOnAir response', response);
-    // this.setState({ artist: response.artist });
-    this.props.dispatch(loginArtist(response.artist));
+    // If switching to on from (currently off)
+    if (!artist.live && !this.state.location) {
+
+    }
+    try {
+      const response = await updateArtist({
+        _id: artist._id,
+        live: !artist.live
+      });
+      // console.log('toggleOnAir response', response);
+      // this.setState({ artist: response.artist });
+      this.props.dispatch(loginArtist(response.artist));
+    } catch(err) {
+      this.setState({errorMessage: err});
+    }
   }
 
   handleError(err, msg) {
@@ -95,79 +145,163 @@ class ArtistAdmin extends Component {
 
   renderOnAirImage() {
     const { artist } = this.props;
-    const source = (artist || {}).live ? onair_on : onair_off;
-    return <Image style={styles.image} source={source} />
+    const source = (artist || {}).live ? onAirIcon : offAirIcon;
+    return <Image style={[styles.button, { height: 50 }]} source={source} />
+  }
+
+  renderHeaderChildren() {
+    return (
+      <View style={styles.iconsContainer}>
+        <Image style={styles.icon}
+          source={editIcon}
+          resizeMode={'cover'}
+        />
+        <View style={{transform: [{translate: [35, 0]}]}}>
+        <Text style={styles.headingText}>ARTIST</Text>
+        </View>
+      </View>
+    );
   }
 
   render() {
-    const { user, onAir, showModal } = this.state;
+    const { user, onAir, showModal, errorMessage } = this.state;
     const { authorized, artist, navigation } = this.props;
+    console.log('test', artist.roles.join(' | '));
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.onair}>
-            <TouchableOpacity style={styles.onairButton} onPress={this.toggleOnAir.bind(this)} >
-              { this.renderOnAirImage() }
+      <DefaultContainer
+        headerChildren={this.renderHeaderChildren()}
+      >
+        <View style={styles.container}>
+          {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+          <View style={styles.top}>
+            <RoundImage
+              source={listItemAvatar}
+              style={{
+                size: 150,
+                borderColor: '#ffd72b',
+                borderWidth: 4,
+              }}
+            />
+            <Text style={styles.title}>{artist.name}</Text>
+            <View>
+              <TouchableOpacity
+                onPress={this.toggleOnAir.bind(this)}
+              >
+                { this.renderOnAirImage() }
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.middle}>
+            <View style={styles.mainBox}>
+              <Text style={styles.h2}>Genre</Text>
+              <Text style={styles.h3}>{artist.genre}</Text>
+            </View>
+            <View style={styles.mainBox}>
+              <Text style={styles.h2}>Roles</Text>
+              <Text style={styles.h3}>{artist.roles.join(' | ')}</Text>
+            </View>
+          </View>
+          <View style={styles.bottom}>
+            <TouchableOpacity
+              onPress={this.navigate.bind(this, 'SetList')}
+            >
+              <Image
+                style={[styles.button, { height: 68 }]}
+                source={manageSetlistIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.logout.bind(this)}
+            >
+              <Image
+                style={[styles.button, { height: 55 }]}
+                source={logoutIcon} />
             </TouchableOpacity>
           </View>
-
-          <View style={styles.headerText}>
-            {artist &&
-              <Text style={{backgroundColor: 'blue'}}>
-                {`Welcome ${artist.name.toUpperCase()}`}
-              </Text>
-            }
-          </View>
-
-          <View style={styles.headerText}>
-            {artist &&
-              <Text style={{backgroundColor: 'blue'}}>
-                {`Welcome ${artist.name.toUpperCase()}`}
-              </Text>
-            }
-          </View>
-          
-          <TouchableOpacity style={styles.onairButton} onPress={this.toggleOnAir.bind(this)} >
-            { this.renderOnAirImage() }
-          </TouchableOpacity>
         </View>
-        <RNButton
-          borderRadius={10}
-          icon={{name: 'music', type: 'font-awesome'}}
-          onPress={this.navigate.bind(this, 'SetList')}
-          title={'Manage SetList'}
-          fontSize={36}
-          buttonStyle={styles.button}
-        />
-      </View>
+      </DefaultContainer>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  iconsContainer: {
+    flexDirection: 'row',
+    width: '50%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // backgroundColor: 'grey',
+  },
+  icon: {
+    width: 45,
+    height: 45,
+  },
+  button: {
+    // flex: 1,
+    // width: null,
+    resizeMode: 'contain',
+  },
   container: {
     display: 'flex',
     flex: 1,
     justifyContent: 'space-between',
     padding: 5,
-    backgroundColor: '#ddddff',
+    paddingBottom: 35,
+    backgroundColor: 'transparent',
   },
-  header: {
-    // flex: 1,
+  top: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: '45%',
+    // backgroundColor: '#666',
+  },
+  middle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // backgroundColor: '#ffdddd',
-    alignItems: 'center',
-    height: 60
+    // height: 75,
+    // backgroundColor: '#888',
   },
-  headerText: {
-    flex: 1
+  bottom: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: 150,
+    // backgroundColor: '#aaa',
+  },
+  headingText: {
+    color: 'white',
+    fontSize: 20,
+  },
+  title: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  mainBox: {
+    alignItems: 'center',
+    width: '40%',
+  },
+  h2: {
+    fontSize: 14,
+    fontWeight:'bold',
+    color: '#ffb401',
+  },
+  h3: {
+    fontSize: 18,
+    fontWeight:'normal',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  error: {
+    color: 'red',
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   onair: {
-    flex: 1
+    // flex: 1
   },
   onairButton: {
-    flex: 1
+    // flex: 1
   },
   hamburger: {
     flex: 1

@@ -2,66 +2,62 @@ import React from 'react';
 import { TouchableHighlight, TouchableOpacity, StyleSheet, Image, Text, Button, View } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
+import ListItem from '../components/ListItem/';
 import { UserType } from '../redux/reducers/LoginReducer';
-import {listItemStyle} from '../styles/listItemStyle';
+import { listItemStyle } from './ListItem/listItemStyle';
 import lyricsIcon from '../images/list/lyrics_btn1.png';
-import voteIcon from '../images/list/vote_btn1.png';
+import voteUpIcon from '../images/list/vote_btn1.png';
+import voteDownIcon from '../images/list/vote_down_btn.png';
 
 const SongItem = props => {
 
     const {
-      vote, showSong, deleteSong, showLyrics,
-      liked, song, userType, artistLiveStatus
+      vote, liked, showSong, deleteSong, showLyrics,
+      song, userType, artistLiveStatus
     } = props;
     const { _id, visible, title, author, currVotes } = song;
 
     const isArtist = userType === UserType.ARTIST;
     if (!isArtist && (!visible || !artistLiveStatus)) { return null; }
 
-  return <View style={styles.itemContainer}>
-    <View style={styles.item}>
-      <View
-        style={styles.button}
-      >
-        <View style={styles.content} >
-      
-          <View style={styles.leftInfo} >
-            <TouchableOpacity
-              onPress={showLyrics}
-            >
-              <View>
-                <Image style={styles.image}
-                  source={lyricsIcon}
-                  resizeMode={'cover'}
-                />
-              </View>
-            </TouchableOpacity>
-            <View style={styles.info}>
-              <Text style={{color:'#3c2385', fontWeight: 'bold', fontSize: 16}}>{title}</Text>
-              <Text style={{color:'#ff3a80', fontWeight: 'bold', fontSize: 11}}>{author}</Text>
-            </View>
+  return (
+    <ListItem
+      disabled={!visible}
+    >
+      <View style={styles.leftInfo} >
+        <TouchableOpacity
+          onPress={showLyrics}
+        >
+          <View>
+            <Image style={styles.image}
+              source={lyricsIcon}
+              resizeMode={'cover'}
+            />
           </View>
-
-          <View style={styles.rightInfo} >
-            <View style={styles.scoreContainer}>
-              <View style={styles.score}>
-                <Text style={styles.scoreText}>{currVotes}</Text>
-              </View>
-            </View>
-            <TouchableOpacity 
-              onPress={()=>vote(_id, !liked)}
-            >
-              <Image style={[styles.image, styles.voteIcon]}
-                source={voteIcon}
-                resizeMode={'cover'}
-              />
-            </TouchableOpacity>
-          </View>
-
+        </TouchableOpacity>
+        <View style={styles.info}>
+          <Text style={{color:'#3c2385', fontWeight: 'bold', fontSize: 16}}>{title}</Text>
+          <Text style={{color:'#ff3a80', fontWeight: 'bold', fontSize: 11}}>{author}</Text>
         </View>
       </View>
-    </View>
-  </View>
+
+      <View style={styles.rightInfo} >
+        <View style={styles.scoreContainer}>
+          <View style={styles.score}>
+            <Text style={styles.scoreText}>{currVotes}</Text>
+          </View>
+        </View>
+        <TouchableOpacity 
+          onPress={()=>vote(_id, !liked)}
+        >
+          <Image style={[styles.image, styles.voteIcon]}
+            source={liked ? voteDownIcon : voteUpIcon}
+            resizeMode={'cover'}
+          />
+        </TouchableOpacity>
+      </View>
+    </ListItem>
+  )
 
   return (
     <View style={styles.item}>

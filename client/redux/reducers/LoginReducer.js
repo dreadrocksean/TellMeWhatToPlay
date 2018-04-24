@@ -8,16 +8,17 @@ export const UserType = Object.freeze({
 const initialState = { authorized: false, userType: null, user: null, artist: null };
 
 const loginReducer = (state = initialState, action) => {
-	console.log('loginReducer', action);
+	// console.log('loginReducer', action);
   switch (action.type) {
     case AT.LoginUser: {
       const newState = { ...state, authorized: true, user: action.payload};
-      console.log('loginReducer LoginUser', newState);
+      // console.log('loginReducer LoginUser', newState, action);
       return newState;
     }
     case AT.LoginArtist:
-      // console.log('action.payload', action.payload);
-      return { ...state, userType: UserType.ARTIST, artist: action.payload };
+      let newState = { ...state, artist: action.payload};
+      // console.log('loginReducer LoginArtist', newState);
+      return newState;
     case AT.Logout:
       return { ...state, authorized: false };
     case AT.LoginError:
@@ -27,10 +28,11 @@ const loginReducer = (state = initialState, action) => {
       return { ...state, userType: UserType.FAN };
 
     case AT.GuestTypeArtist:
-    // console.log('GuestTypeArtist', action);
-      return { ...state, userType: UserType.ARTIST };
+      newState = { ...state, userType: UserType.ARTIST };
+      console.log('loginReducer GuestTypeArtist', newState);
+      return newState;
 
-    default: 
+    default:
       return state;
   }
 };

@@ -11,6 +11,7 @@ import { UserType } from '../redux/reducers/LoginReducer';
 
 import DefaultContainer from './DefaultContainer';
 import SongForm from './SongForm';
+import RoundImage from '../components/RoundImage';
 import SongItem from '../components/SongItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
@@ -267,12 +268,10 @@ class Setlist extends Component {
     const { name, genre } = this.state.artist;
     return (
       <View style={styles.artistInfoContainer}>
-        <View style={styles.avatarContainer}>
-          <Image style={styles.avatarImage}
-            source={listItemAvatar}
-            resizeMode={'cover'}
-          />
-        </View>
+        <RoundImage
+          source={listItemAvatar}
+          style={{size: 55}}
+        />
         <View style={styles.artistInfo}>
           <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>SETLIST</Text>
           <Text style={{fontSize: 13, color: '#2bfbff', fontWeight: 'bold'}}>{name}</Text>
@@ -305,7 +304,7 @@ class Setlist extends Component {
     return (
       <DefaultContainer
         loading={this.state.loading}
-        goHome={() => this.props.navigation.navigate('Options')}
+        navigation={this.props.navigation}
         headerChildren={this.renderHeaderChildren()}
       >
 
@@ -338,28 +337,22 @@ class Setlist extends Component {
           pagingEnabled = {true}
         >
           {songs.map((song, i) => {
-            // console.log('map', song);
-            return update === i
-              ? <SongForm
-                  key={i}
-                  handleChange={this.handleEditChange.bind(this)}
-                  onSubmit={() => this.updateSongItem(song._id)}
-                  title={edit_title}
-                  author={edit_author}
-                  command={'Save'}
+            // console.log('map artist.live', artist.live);
+            const showSong = song.visible || isArtist;
+            return showSong && (
+              <SongItem
+                key={i}
+                song={song}
+                userType={this.props.userType}
+                liked={likes.indexOf(song._id) > -1}
+                vote={this.vote.bind(this)}
+                artistLiveStatus={artist.live}
+                showEditForm={() => this.showEditForm(i, song._id)}
+                showLyrics={() => this.showLyrics(i, song._id)}
+                deleteSong={this.deleteSong.bind(this)}
+                showSong={this.showSong.bind(this)}
               />
-              : <SongItem
-                  key={i}
-                  song={song}
-                  userType={this.props.userType}
-                  liked={likes.indexOf(song._id) > -1}
-                  vote={this.vote.bind(this)}
-                  artistLiveStatus={artist.live}
-                  showEditForm={() => this.showEditForm(i, song._id)}
-                  showLyrics={() => this.showLyrics(i, song._id)}
-                  deleteSong={this.deleteSong.bind(this)}
-                  showSong={this.showSong.bind(this)}
-              />
+            );
           })}
         </ScrollView>
         <Modal style={styles.modalContainer}
@@ -426,18 +419,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     textAlign: 'center', 
     color: 'white',
-  },
-  avatarContainer: {
-    width: 55,
-    height: 55,
-    borderRadius: 55,
-    borderColor: '#ff3a80',
-    borderWidth: 2,
-    overflow: 'hidden', 
-  },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
   },
   artistInfo: {
     height: 70,

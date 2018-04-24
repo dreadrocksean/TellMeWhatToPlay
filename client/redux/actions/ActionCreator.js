@@ -22,7 +22,6 @@ const loginUser = user => ({
 });
 
 const loginArtist = artist => {
-  console.log('loginArtist', artist);
   return {
   type: AT.LoginArtist,
   payload: artist,

@@ -1,10 +1,11 @@
 import { AsyncStorage } from 'react-native';
 
-export const saveStorage = models => {//{user} [{user}, {artist}]
+export const saveStorage = async models => {
+  // console.log('saveStorage models', models);
   if (!models) { return; }
   const setStorage = async obj => {
     // console.log('setStorage', obj);
-    await AsyncStorage
+    return await AsyncStorage
       .setItem(Object.keys(obj)[0], JSON.stringify(obj));
   };
   if (Array.isArray(models)) {
@@ -12,11 +13,14 @@ export const saveStorage = models => {//{user} [{user}, {artist}]
       if (obj) { setStorage(obj); }
     });
   } else { setStorage(models); }
+
+  const test = await loadStorage('user');
+  console.log('test', test);
 };
 
 export const loadStorage = async model => {
   try {
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     const userJson = await AsyncStorage.getItem(model);
     // console.log('loadStorage', model, userJson);
     if (!userJson) { throw('userJson is null')}

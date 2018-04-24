@@ -1,4 +1,10 @@
 export const listItemStyle = {
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   itemContainer: {
     flex: 1,
     borderRadius: 22,
@@ -15,11 +21,17 @@ export const listItemStyle = {
     flex: 1,
     height: 62,
     borderRadius: 22,
-    backgroundColor: '#fff6d8',
-    shadowColor: '#edbc78',
+    shadowRadius: 0,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 1,
-    shadowRadius: 0,
+  },
+  itemActive: {
+    backgroundColor: '#fff6d8',
+    shadowColor: '#edbc78',
+  },
+  itemDisabled: {
+    backgroundColor: '#e1e1e1',
+    shadowColor: 'grey',
   },
   button: {
     position: 'absolute',
@@ -30,31 +42,27 @@ export const listItemStyle = {
     // backgroundColor: 'rgba(0,255,0,0.3)',
     overflow: 'hidden',
   },
-  content: {
-    // flex: 1,
+  image: {
     width: '100%',
-    // height: '100%',
-    paddingVertical: 5,
-    paddingLeft: 16,
-    paddingRight: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // backgroundColor: 'rgba(0,0,255,0.3)',
+    height: '100%',
   },
   leftInfo: {
+    flex: 4,
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: 'rgba(0,0,255,0.3)',
-  },
-  rightInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // backgroundColor: 'rgba(0,0,255,0.3)',
   },
   info: {
     marginLeft: 15,
     justifyContent: 'space-around',
-    maxWidth: '70%',
+    // backgroundColor: '#ddd',
+  },
+  rightInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    // height: '100%',
+    // backgroundColor: '#ddd',
   },
 }

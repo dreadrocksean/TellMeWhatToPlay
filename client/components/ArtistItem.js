@@ -2,28 +2,27 @@ import React from 'react';
 import { Dimensions, StyleSheet, Text, Button, View, Image, TouchableOpacity } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
+import ListItem from '../components/ListItem/';
+import { listItemStyle } from './ListItem/listItemStyle';
 import listItemBg from '../images/list/list_btn.png';
 import listItemAvatar from '../images/list/test_avatar.png';
 import listItemMarker from '../images/list/marker.png';
-import {listItemStyle} from '../styles/listItemStyle';
 
 const { width, height } = Dimensions.get('window');
+
 const ArtistItem = props => {
   const {
     name='Lindsey Stroud',
     genre='Alternative Hiphop',
-    instruments=['Singer Songwriter']
+    instruments=['Singer Songwriter'],
+    live,
   } = props.artist;
-  console.log('styles', styles);
-  return <View style={styles.itemContainer}>
-    <View style={styles.item}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={props.showSetList}
-        disabled={!props.artist.live}
-      >
-        <View style={styles.content} >
-      
+
+  return (
+    <ListItem
+      disabled={!live}
+      onClick={props.showSetList}
+    >
           <View style={styles.leftInfo} >
             <View style={styles.avatarContainer} >
               <Image style={styles.image}
@@ -44,12 +43,10 @@ const ArtistItem = props => {
                 resizeMode={'contain'}
               />
             </View>
-            <Text style={{color:'#35a3de', fontWeight: 'bold', fontSize: 11}}>{'25 KM'}</Text>
+            {<Text style={styles.distance}>{'25 KM'}</Text>}
           </View>
-        </View>
-      </TouchableOpacity>
-    </View>
-  </View>
+    </ListItem>
+  );
 };
 const styles = StyleSheet.create({
   ...listItemStyle,
@@ -61,20 +58,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     overflow: 'hidden', 
   },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
   markerContainer: {
     width: 10,
     marginRight: 2,
   },
-  info: {
-    marginLeft: 15,
-    justifyContent: 'space-around',
-  },
   icon: {
     marginLeft: 15,
+  },
+  distance: {
+    color: '#35a3de',
+    fontWeight: 'bold',
+    fontSize: 11,
   },
 });
 

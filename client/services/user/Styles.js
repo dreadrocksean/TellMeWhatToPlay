@@ -4,9 +4,9 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     padding: 22,
-    height: height / 4,
+    // height: height / 4,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
@@ -18,6 +18,7 @@ export default StyleSheet.create({
   input: {
     flexDirection: 'row',
     position: 'relative',
+    color: 'white',
     fontSize: 20,
     padding: 5,
     height: 40,
@@ -37,6 +38,11 @@ export default StyleSheet.create({
     backgroundColor: '#7a42f4',
     padding: 10,
     height: 40,
+    borderRadius: 10,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.8,
+    shadowColor: 'black',
+    shadowRadius: 3,
   },
   submitButtonText:{
     color: 'white'

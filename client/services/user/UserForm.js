@@ -4,7 +4,9 @@ import { StyleSheet, TextInput, Text, TouchableOpacity, View , Dimensions} from 
 import styles from './Styles';
 
 const UserForm = (props) => {
-  const {handleChange, email, password, onSubmit, errorMessage} = props;
+  const {handleChange, email, password, fname, lname, zip,
+    onSubmit, errorMessage
+  } = props;
   // console.log('props', props);
   // console.log('handleChange', handleChange);
   return (
@@ -14,6 +16,7 @@ const UserForm = (props) => {
           <TextInput
             style={styles.input}
             placeholder='Email'
+            placeholderTextColor='rgba(255,255,255,0.3)'
             onChangeText={email => handleChange({email})}
             value={email}
           />
@@ -22,8 +25,36 @@ const UserForm = (props) => {
           <TextInput
             style={styles.input}
             placeholder='Password'
+            placeholderTextColor='rgba(255,255,255,0.3)'
             onChangeText={password => handleChange({password})}
             value={password}
+          />
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder='First Name'
+            placeholderTextColor='rgba(255,255,255,0.3)'
+            onChangeText={fname => handleChange({fname})}
+            value={fname}
+          />
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder='Last Name'
+            placeholderTextColor='rgba(255,255,255,0.3)'
+            onChangeText={lname => handleChange({lname})}
+            value={lname}
+          />
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder='Zip Code'
+            placeholderTextColor='rgba(255,255,255,0.3)'
+            onChangeText={zip => handleChange({zip})}
+            value={zip}
           />
         </View>
         <View style={styles.submits}>

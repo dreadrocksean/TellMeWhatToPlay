@@ -128,9 +128,9 @@ export const fetchArtists = () => (
 );
 
 export const fetchArtist = req => {
-	const { userId } = req;
-	// console.log('req', req);
-	return fetch(`http://${localIPs[0]}:4000/api/artist/user/${userId}`)
+	const { artistId } = req;
+	console.log('req artistId', artistId);
+	return fetch(`http://${localIPs[0]}:4000/api/artist/${artistId}`)
 		.then(res => {
 			// console.log('fetchArtist response', res);
 			return res.json()
@@ -138,8 +138,19 @@ export const fetchArtist = req => {
 		.catch(err => console.error('Error getting artist', err))
 };
 
+export const fetchUserArtist = req => {
+	const { userId } = req;
+	// console.log('req userId', userId);
+	return fetch(`http://${localIPs[0]}:4000/api/artist/user/${userId}`)
+		.then(res => {
+			// console.log('fetchUserArtist response', res);
+			return res.json()
+		})
+		.catch(err => console.error('Error getting artist', err))
+};
+
 export const updateArtist = req => {
-	// console.log('api updateArtist', req);
+	console.log('api updateArtist', req);
 	const id = req._id;
 	delete req._id;
 	return fetch(`http://${localIPs[0]}:4000/api/artist/${id}`, {

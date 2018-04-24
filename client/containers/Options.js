@@ -4,13 +4,17 @@ import {
   TouchableHighlight, TouchableOpacity,
   Text, View, AsyncStorage, Image
 } from 'react-native';
-import { Constants, Camera, FileSystem, Permissions } from 'expo';
+import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
 // import { Provider } from 'unstated';
 
-import * as ActionCreators from '../redux/actions/ActionCreator';
+import DefaultContainer from './DefaultContainer';
+import { saveStorage } from '../services/LocalStorage';
+import { fetchUserArtist } from '../services/api';
+import { loginUser, loginArtist } from '../redux/actions/ActionCreator';
+import * as ActionTypes from '../redux/actions/ActionTypes';
 import { loadStorage } from '../services/LocalStorage';
 import { updateHeader } from '../utils/UpdateHeader';
 import UserFormWrapper from '../services/user/UserFormWrapper';
@@ -41,6 +45,13 @@ class Options extends Component {
     super(props);
     this.state = {showModal: false, photos: []};
     this.camera = null;
+    this.checkLocalUserStorage();
+    this.checkLocalArtistStorage();
+    FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
+      // console.log(e, 'Directory exists');
+    });
+    // console.log('constructor');
+
   }
 
   async componentWillMount() {
@@ -48,20 +59,12 @@ class Options extends Component {
     this.setState({ permissionsGranted: status === 'granted' });
   }
 
-
-  async componentDidMount() {
-    // console.log('this.props', this.props);
-    this.checkLocalUserStorage();
-    this.checkLocalArtistStorage();
-    FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
-      console.log(e, 'Directory exists');
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps this.props', this.props.userType, nextProps.userType);
     if (
       nextProps.artist === this.props.artist
       && nextProps.user === this.props.user
+      && nextProps.userType === this.props.userType
       && nextProps.authorized === this.props.authorized
     ) {
       // console.log('no change');
@@ -73,41 +76,64 @@ class Options extends Component {
 
   async checkLocalUserStorage() {
     //Set store on mount
-    const user = await loadStorage('user');
-    if (!this.props.user && user) {
-      this.props.loginUser(user);
-    } else if(!user) {
-      this.props.logout();
+    try {
+      const user = await loadStorage('user');
+      if (!this.props.user && user) {
+      // console.log('checkLocalUserStorage user', this.props);
+        this.props.loginUser(user);
+      } else if(!user && !this.props.user) {
+        throw Error('No user exists');
+      }
+      updateHeader(this.props);
+      this.getArtist(user._id);
+    } catch(err) {
+      // console.log('load storage error', err);
+        this.setState({errorMessage: err});
+        this.props.logout();
+        updateHeader(this.props);
     }
-    updateHeader(this.props);
-    return !!user;
+  }
+
+  async getArtist(userId) {
+    try {
+      console.log('getArtist userId', userId);
+      const { artist } = await fetchUserArtist({userId});
+      console.log('getArtist', artist);
+      if (!artist) {
+        artist = await this.checkLocalArtistStorage();
+      }
+      this.props.loginArtist(artist);
+      saveStorage({artist: artist});
+    } catch(err) {
+      this.setState({errorMessage: err});
+    }
   }
 
   async checkLocalArtistStorage() {
-    const artist = await loadStorage('artist');
-    if (!this.props.artist && artist) {
-      this.props.loginArtist(artist);
-    }
-    return !!artist;
+    return await loadStorage('artist');
   }
 
-  async navigate(pageName) {
-    const {navigate} = this.props.navigation;
-    const action = pageName === 'ArtistAdmin'
-      ? this.props.guestTypeArtist : this.props.guestTypeFan;
-    action();
+  onClick(userType) {
+    const routeName = this.getRouteName(userType);
+    // console.log('onClick', routeName);
+    this.props.navigation.navigate(routeName, {name: routeName});
+  }
 
-    if (pageName === 'ArtistAdmin' &&
-      (!this.props.user || !this.props.artist)
-    ) {
-      // this.setState({showModal: true});
-      navigate('SignupScreen', {name: 'SignupScreen'});
-      return;
+  getRouteName(userType) {
+    const { user, artist } = this.props;
+    // console.log('getRouteName', userType, user, artist);
+    if(userType === 'ARTIST' && !user) {
+      return 'UserSignup';
     }
-
-    navigate(pageName, {
-      name: pageName,
-    })
+    if(userType === 'ARTIST' && user && !artist) {
+      return 'ArtistSignup';
+    }
+    if(userType === 'ARTIST' && user && artist) {
+      return 'ArtistAdmin';
+    }
+    if(userType === 'FAN') {
+      return 'ArtistList';
+    }
   }
 
   renderButton (text, onPress) {
@@ -135,16 +161,16 @@ class Options extends Component {
   }
 
   render() {
-    // console.log('props', this.props);
+    // console.log('render');
     const { showModal } = this.state;
     const { authorized, artist, navigation, userType } = this.props;
     const isArtist = userType === 'ARTIST';
     return (
+      <DefaultContainer>
         <View style={styles.container}>
-          {<Image source={bg}  style={styles.backgroundImage} />}
           {<View style={{alignItems: 'center'}} >
             <TouchableHighlight
-              onPress={this.navigate.bind(this, 'ArtistList')}
+              onPress={this.onClick.bind(this, 'FAN')}
             >
               <View >
                 <Image
@@ -159,7 +185,7 @@ class Options extends Component {
               <View style={styles.line} />
             </View>
             <TouchableHighlight
-              onPress={this.navigate.bind(this, 'ArtistAdmin')}
+              onPress={this.onClick.bind(this, 'ARTIST')}
             >
               <View >
                 <Image
@@ -170,37 +196,9 @@ class Options extends Component {
             </TouchableHighlight>
             <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT
             </Text>
-
-            {
-              (!authorized || !artist) && showModal &&
-              <Modal  style={styles.modalContainer}
-                isVisible={(!authorized && showModal) || !artist}
-                backdropColor={'#000'}
-                backdropOpacity={0.7}
-                animationIn={'zoomInDown'}
-                animationOut={'zoomOutUp'}
-                animationInTiming={1000}
-                animationOutTiming={1000}
-                backdropTransitionInTiming={1000}
-                backdropTransitionOutTiming={1000}
-              >
-                <View>
-                  {false && !authorized && <UserFormWrapper />}
-                  {/*authorized && !artist && */<ArtistFormWrapper />}
-                  {this.renderButton(
-                    'X',
-                    () => {
-                      this.setState({
-                        showModal: false,
-                      })
-                    }
-                  )}
-                </View>
-              </Modal>
-            }
           </View>}
-
         </View>
+      </DefaultContainer>
     );
   }
 }
@@ -222,6 +220,10 @@ const styles = StyleSheet.create({
   textCustomPos: {
     position: 'absolute',
     top: -60,
+  },
+  test: {
+    position: 'absolute',
+    top: -200,
   },
   close: {
     position: 'absolute',
@@ -319,4 +321,11 @@ const mapStateToProps = state => {
     errorMessage: state.login.errorMessage,
 }};
 
-export default connect(mapStateToProps, ActionCreators)(Options);
+const mapDispatchToProps = dispatch => {
+  // console.log('mapStateToProps state', state);
+  return {
+    loginUser: user => dispatch(loginUser(user)),
+    loginArtist: artist => dispatch(loginArtist(artist)),
+}};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Options);

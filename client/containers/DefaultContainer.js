@@ -23,7 +23,9 @@ class DefaultContainer extends Component {
   }
 
   render() {
-    if (this.props.loading) {
+    const { loading, navigation, headerChildren, children } = this.props;
+    const home = navigation ? ()=>navigation.popToTop() : ()=>{};
+    if (loading) {
       return (
         <View style={styles.container}>
           <ActivityIndicator size='large'/>
@@ -33,12 +35,10 @@ class DefaultContainer extends Component {
     return (
       <View style={styles.container}>
         <Background />
-        <ListHeader style={{height: 50}}
-          home={this.props.goHome}
-        >
-          {this.props.headerChildren}
+        <ListHeader home={home} >
+          {headerChildren}
         </ListHeader>
-        {this.props.children}
+        {children}
       </View>
     );
   }
@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 7,
   },
+  body: {
+    marginTop: 60,
+  }
 });
 
 export default DefaultContainer;

@@ -26,7 +26,7 @@ class ArtistList extends Component {
       params.bg ? {backgroundColor: params.bg} : null
     );
     return {
-      title: `${params.title || params.screen}`,
+      title: `${params.title || params.screen || 'Artist List'}`,
       headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
       headerStyle,
     };
@@ -61,6 +61,7 @@ class ArtistList extends Component {
   }
 
   showSetList(artist) {
+    // console.log('showSetList artist', artist);
     const { navigate } = this.props.navigation;
     navigate('SetList', { name: 'SetList', artist })
   }
@@ -89,7 +90,7 @@ class ArtistList extends Component {
       <DefaultContainer
         loading={this.state.loading}
         headerChildren={this.renderHeaderChildren()}
-        goHome={() => this.props.navigation.navigate('Options')}
+        navigation={this.props.navigation}
       >
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
@@ -112,7 +113,7 @@ class ArtistList extends Component {
 const styles = StyleSheet.create({
   scroll: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 60,
   },
   iconsContainer: {
     flexDirection: 'row',

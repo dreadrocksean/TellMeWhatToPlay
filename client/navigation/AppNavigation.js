@@ -6,7 +6,8 @@ import { StackNavigator, DrawerNavigator } from 'react-navigation';
 import CameraScreen from '../containers/CameraScreen';
 // import DefaultContainer from '../containers/DefaultContainer';
 import Options from '../containers/Options';
-import SignupScreen from '../containers/SignupScreen';
+import UserSignup from '../containers/UserSignup';
+import ArtistSignup from '../containers/ArtistSignup';
 import LoginScreen from '../containers/LoginScreen';
 import ArtistAdmin from '../containers/ArtistAdmin';
 import ArtistList from '../containers/ArtistList';
@@ -75,7 +76,7 @@ const transitionConfig = () => {
       const height = layout.initHeight;
       const width = layout.initWidth;
 
-      console.log('Scene Indices', thisSceneIndex, toIndex, lastSceneIndex);
+      // console.log('Scene Indices', thisSceneIndex, toIndex, lastSceneIndex);
 
 // INTERPOLATIONS
       const translateX = position.interpolate({
@@ -136,7 +137,8 @@ const AppRouteConfigs = {
   ArtistList: { screen: ArtistList },
   SetList: { screen: SetList },
   Lyrics: { screen: Lyrics },
-  SignupScreen: { screen: SignupScreen },
+  UserSignup: { screen: UserSignup },
+  ArtistSignup: { screen: ArtistSignup },
   LoginScreen: { screen: LoginScreen },
   UserFormWrapper: { screen: UserFormWrapper },
   ArtistFormWrapper: { screen: ArtistFormWrapper },

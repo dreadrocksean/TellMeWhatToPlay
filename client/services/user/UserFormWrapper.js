@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createUser, fetchUser, createArtist, fetchArtist } from '../api';
-import * as ActionCreators from '../../redux/actions/ActionCreator';
+import { loginUser, loginArtist } from '../../redux/actions/ActionCreator';
 import { saveStorage } from '../LocalStorage';
 import UserForm from './UserForm';
 
@@ -15,6 +15,9 @@ class UserFormWrapper extends Component {
 			errorMessage: '',
 		};
 	}
+
+  async componentDidUpdate() {
+  }
 
   resetErrorMessage() {
   	this.setState({errorMessage: ''});
@@ -32,7 +35,7 @@ class UserFormWrapper extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    let user, userResponse, errorMessage;
+    let user, artist, userResponse, errorMessage;
     try {
       if (!credentials.email.trim() || !credentials.password.trim()) {
         throw 'Fields cannot be empty';
@@ -48,7 +51,7 @@ class UserFormWrapper extends Component {
         throw 'User does not exist';
       }
       saveStorage({user});
-      console.log('props', this.props);
+      // console.log('onSubmit this.props', this.props);
       this.props.loginUser(user);
     } catch(err) {
       console.log('error:', err);
@@ -56,22 +59,27 @@ class UserFormWrapper extends Component {
       this.props.logout();
     }
     if (this.props.userType === 'ARTIST' && user && type === 'LogIn') {
-      this.getArtist(user._id);
+      artist = await this.getArtist(user._id);
     }
+    this.props.navigateTo();
+
   }
 
   async getArtist(userId) {
     try {
       const response = await fetchArtist({userId});
-      this.props.loginArtist(response.artist);
-      saveStorage({artist: response.artist});
+      const artist = response.artist;
+      // console.log('getArtist', response.artist);
+      this.props.loginArtist(artist);
+      saveStorage({artist});
+      return artist;
     } catch(err) {
       console.log('error:', err);
     }
   }
 
   render() {
-    console.log('render userType', this.props.userType);
+    // console.log('render userType', this.props.userType);
 	  return (
       <UserForm
         handleChange={this.handleChange.bind(this)}
@@ -85,9 +93,16 @@ class UserFormWrapper extends Component {
 
 }
 
+const mapDispatchToProps = dispatch => ({
+  loginUser: payload => dispatch(loginUser(payload)),
+  loginArtist: payload => dispatch(loginArtist(payload))
+});
+
 const mapStateToProps = state => {
   return {
     userType: state.login.userType,
+    artist: state.login.artist,
+    user: state.login.user,
 }};
 
-export default connect(mapStateToProps, ActionCreators)(UserFormWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(UserFormWrapper);

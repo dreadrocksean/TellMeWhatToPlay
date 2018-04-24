@@ -25,40 +25,40 @@ const navigationReducer = (state = initialState, action) => {
         stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
       };
 
-    case AT.GuestTypeArtist:
-      return {
-        ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
-      };
+    // case AT.GuestTypeArtist:
+    //   return {
+    //     ...state,
+    //     stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
+    //   };
 
-    case AT.GuestTypeFan:
-      return {
-        ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
-      };
+    // case AT.GuestTypeFan:
+    //   return {
+    //     ...state,
+    //     stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
+    //   };
 
-    case AT.LoginUser:
-      return {
-        ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
-      };
+    // case AT.LoginUser:
+    //   return {
+    //     ...state,
+    //     stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
+    //   };
 
-    case AT.LoginArtist:
-      return {
-        ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
-      };
+    // case AT.LoginArtist:
+    //   return {
+    //     ...state,
+    //     stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
+    //   };
 
-    case AT.Logout:
-      return {
-        ...state,
-        stateForLoggedOut: AppNavigator.router.getStateForAction(
-          NavigationActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'login' })]
-          })
-        )
-      };
+    // case AT.Logout:
+    //   return {
+    //     ...state,
+    //     stateForLoggedOut: AppNavigator.router.getStateForAction(
+    //       NavigationActions.reset({
+    //         index: 0,
+    //         actions: [NavigationActions.navigate({ routeName: 'login' })]
+    //       })
+    //     )
+    //   };
 
     default:
       return {
