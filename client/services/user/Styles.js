@@ -4,37 +4,47 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: 'transparent',
-    padding: 22,
-    // height: height / 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    marginTop: 15,
   },
   form: {
-    alignItems: 'center',
+    padding: 10,
+  },
+  inputWrap: {
+    flexDirection: 'row',
   },
   input: {
-    flexDirection: 'row',
-    position: 'relative',
     color: 'white',
+    flex: 1,
     fontSize: 20,
     padding: 5,
     paddingLeft: 15,
     height: 60,
-    width: width * 0.8,
-    alignSelf: 'stretch',
     borderColor: '#7a42f4',
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 15,
 
   },
+  inputIcon: {
+    width: 25,
+    height: 60,
+    position: 'absolute',
+    right: 15,
+    opacity: 0.5,
+    // backgroundColor: 'grey',
+  },
+  label: {
+    color: 'rgba(230,230,255,0.7)',
+    marginTop: 10,
+    marginBottom: 12,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   submits: {
-    flex: 1,
-    alignSelf: 'stretch',
-    flexDirection: 'row',
+    // flex: 1,
+    // alignSelf: 'stretch',
+    // flexDirection: 'row',
     justifyContent: 'space-around',
   },
   submitButton: {

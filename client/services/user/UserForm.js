@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View , Dimensions} from 'react-native';
+import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View , Dimensions} from 'react-native';
 
 import styles from './Styles';
+import signupButton from '../../images/buttons/signup_btn.png';
+import loginButton from '../../images/buttons/login_btn.png';
+import eyeslashIcon from '../../images/icons/eyeslash_icon1.png';
 
 const UserForm = (props) => {
   const {handleChange, email, password, fname, lname, zip,
-    onSubmit, errorMessage
+    onSubmit, errorMessage, togglePassword, showPassword
   } = props;
   const fields = [
     {
@@ -13,8 +16,9 @@ const UserForm = (props) => {
       onChange: val => handleChange({email: val})
     },
     {
-      placeholder: 'Password', value: password,
-      onChange: val => handleChange({password: val})
+      placeholder: 'Password', value: password, icon: eyeslashIcon,
+      onChange: val => handleChange({password: val}),
+      showPassword
     },
     {
       placeholder: 'First Name', value: fname,
@@ -34,27 +38,38 @@ const UserForm = (props) => {
       <View style={styles.form}>
         {
           fields.map((field, i) => (
-            <View key={i}>
+            <View style={styles.inputWrap} key={i} >
               <TextInput
                 style={styles.input}
                 placeholder={field.placeholder}
                 placeholderTextColor='rgba(255,255,255,0.3)'
                 onChangeText={field.onChange}
                 value={field.value}
+                secureTextEntry={!showPassword}
               />
+              {field.icon && (
+                <TouchableOpacity onPress={togglePassword}>
+                  <Image resizeMode='contain'
+                    style={styles.inputIcon} source={field.icon}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           ))
         }
         <View style={styles.submits}>
           <TouchableOpacity
-            style = {styles.submitButton}
-            onPress = { () => onSubmit('LogIn') }>
-            <Text style = {styles.submitButtonText}> Log In </Text>
+            onPress={ () => onSubmit('LogIn') }>
+            <Image
+              source={loginButton}
+            />
           </TouchableOpacity>
+          <Text style={styles.label}>ALREADY HAVE AN ACCOUNT?</Text>
           <TouchableOpacity
-            style = {styles.submitButton}
-            onPress = { () => onSubmit('SignUp') }>
-            <Text style = {styles.submitButtonText}> Sign Up </Text>
+            onPress={ () => onSubmit('SignUp') }>
+            <Image
+              source={signupButton}
+            />
           </TouchableOpacity>
         </View>
         <Text style={styles.error}>{errorMessage}</Text>
