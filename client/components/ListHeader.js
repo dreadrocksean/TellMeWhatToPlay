@@ -5,13 +5,11 @@ import Logo from '../images/logo.png';
 const ListHeader = props => {
 	return (
 		<View style={styles.component}>
-			{props.children}
-			<TouchableOpacity
-				onPress={props.home}
-			>
+			<View style={styles.children}>{props.children}</View>
+			<TouchableOpacity style={styles.logoWrap} onPress={props.home} >
 				<Image style={styles.logo}
 					source={Logo}
-				        resizeMode={'contain'}
+			        resizeMode={'contain'}
 				/>
 			</TouchableOpacity>
 		</View>
@@ -23,7 +21,6 @@ export default ListHeader;
 const styles = StyleSheet.create({
 	component: {
 		padding: 10,
-		// flex: 1,
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
@@ -31,9 +28,16 @@ const styles = StyleSheet.create({
 		height: 70,
 		// overflow: 'hidden',
 	},
+	logoWrap: {
+		flex: 1,
+	},
 	logo: {
+		flex: 1,
 		height: 70,
 		width: 70,
+	},
+	children: {
+		flex: 4,
 	},
 });
 

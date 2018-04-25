@@ -4,8 +4,10 @@ import { StackNavigator } from 'react-navigation';
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, ScrollView, Image } from 'react-native';
 import { Button as RNButton, Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
+import { HubConnection } from '@aspnet/signalr';
+import signalr from 'react-native-signalr';
 
-import listItemAvatar from '../images/list/test_avatar.png';
+import listItemAvatar from '../images/test_avatar.png';
 
 import { UserType } from '../redux/reducers/LoginReducer';
 
@@ -55,9 +57,37 @@ class Setlist extends Component {
     updateHeader(this.props);
   }
 
+  sendMessage() {
+    this.state.hubConnection
+      .invoke('sendToAll', this.state.nick, this.state.message)
+      .catch(err => console.error(err));
+
+      this.setState({message: ''});      
+  }
+
   componentDidMount() {
     this.updateSongList();
     // updateHeader(this.props);
+
+    this.connectWebSocket();
+
+
+    // const hubConnection = new HubConnection('http://roadiethreeeightapi.azurewebsites.net/chat');
+
+    // const nick = window.prompt('Your name:', 'John');
+
+    // this.setState({ hubConnection/*, nick*/ }, () => {
+    //   this.state.hubConnection
+    //     .start()
+    //     .then(() => console.log('Connection started!'))
+    //     .catch(err => console.log('Error while establishing connection :('));
+    // });
+
+    // this.state.hubConnection.on('sendToAll', (nick, receivedMessage) => {
+    //   const text = `${nick}: ${receivedMessage}`;
+    //   const messages = this.state.messages.concat([text]);
+    //   this.setState({ messages });
+    // });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -71,6 +101,53 @@ class Setlist extends Component {
     }
     updateHeader(nextProps);
     this.setState({showModal: false});
+  }
+
+  connectWebSocket() {
+
+    //This is the server under /example/server published on azure.
+    const connection = signalr.hubConnection('https://react-native-signalr.olofdahlbom.se');
+    connection.logging = true;
+
+    const proxy = connection.createHubProxy('chatHub');
+    //receives broadcast messages from a hub function, called "helloApp"
+    proxy.on('helloApp', (argOne, argTwo, argThree, argFour) => {
+      console.log('message-from-server', argOne, argTwo, argThree, argFour);
+      //Here I could response by calling something else on the server...
+    });
+
+    // atempt connection, and handle errors
+    connection.start().done(() => {
+      console.log('Now connected, connection ID=' + connection.id);
+
+      proxy.invoke('helloServer', 'Hello Server, how are you?')
+        .done((directResponse) => {
+          console.log('direct-response-from-server', directResponse);
+        }).fail(() => {
+          console.warn('Something went wrong when calling server, it might not be up and running?')
+        });
+
+    }).fail(() => {
+      console.log('Failed');
+    });
+    
+
+    //connection-handling
+    connection.connectionSlow(() => {
+      console.log('We are currently experiencing difficulties with the connection.')
+    });
+
+    connection.error((error) => {
+      const errorMessage = error.message;
+      let detailedError = '';
+      if (error.source && error.source._response) {
+        detailedError = error.source._response;
+      }
+      if (detailedError === 'An SSL error has occurred and a secure connection to the server cannot be made.') {
+        console.log('When using react-native-signalr on ios with http remember to enable http in App Transport Security https://github.com/olofd/react-native-signalr/issues/14')
+      }
+      console.debug('SignalR error: ' + errorMessage, detailedError)
+    });
   }
 
   async updateSongList() {

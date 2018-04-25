@@ -3,13 +3,28 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import DefaultContainer from './DefaultContainer';
+import { updateHeader } from '../utils/UpdateHeader';
 
 class Lyrics extends Component {
 
-  static navigationOptions = {
-    title: 'Lyrics',
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    const headerStyle = Object.assign({},
+      params.bg ? {backgroundColor: params.bg} : null
+    );
+    return {
+      title: `${params.title || params.screen || 'Lyrics'}`,
+      headerTitleStyle : {textAlign: 'center', alignSelf:'center'},
+      headerStyle,
+    };
   };
+
+
   state = {}
+
+  componentWillReceiveProps(nextProps) {
+    updateHeader(nextProps);
+  }
 
   render() {
     return (

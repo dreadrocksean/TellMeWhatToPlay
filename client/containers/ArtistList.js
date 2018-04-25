@@ -12,8 +12,8 @@ import DefaultContainer from './DefaultContainer';
 import ArtistItem from '../components/ArtistItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
-import sortIcon from '../images/list/sort_btn.png';
-import findIcon from '../images/list/find_btn.png';
+import sortIcon from '../images/icons/sort_btn.png';
+import findIcon from '../images/icons/find_btn.png';
 import { fetchArtists } from '../services/api';
 
 const { width, height } = Dimensions.get('window');

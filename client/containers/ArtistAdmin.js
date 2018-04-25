@@ -9,18 +9,18 @@ import { onAir, offAir, loginArtist, logout } from '../redux/actions/ActionCreat
 import { updateArtist } from '../services/api';
 // import { Provider, Subscribe, Container } from 'unstated';
 
-import listItemAvatar from '../images/list/test_avatar.png';
+import listItemAvatar from '../images/test_avatar.png';
 
 import DefaultContainer from './DefaultContainer';
 import RoundImage from '../components/RoundImage';
 import { updateHeader } from '../utils/UpdateHeader';
 import { scale, verticalScale, moderateScale } from '../utils/Scales';
 
-import onAirIcon from '../images/list/onair_btn.png';
-import offAirIcon from '../images/list/offair_btn.png';
-import editIcon from '../images/list/edit_btn.png';
-import manageSetlistIcon from '../images/list/manage_btn.png';
-import logoutIcon from '../images/list/logout_btn.png';
+import onAirButton from '../images/buttons/onair_btn.png';
+import offAirButton from '../images/buttons/offair_btn.png';
+import editIcon from '../images/icons/edit_btn.png';
+import manageSetlistButton from '../images/buttons/manage_btn.png';
+import logoutButton from '../images/buttons/logout_btn.png';
 
 const {height, width} = Dimensions.get('window');
 
@@ -145,7 +145,7 @@ class ArtistAdmin extends Component {
 
   renderOnAirImage() {
     const { artist } = this.props;
-    const source = (artist || {}).live ? onAirIcon : offAirIcon;
+    const source = (artist || {}).live ? onAirButton : offAirButton;
     return <Image style={[styles.button, { height: 50 }]} source={source} />
   }
 
@@ -207,14 +207,14 @@ class ArtistAdmin extends Component {
             >
               <Image
                 style={[styles.button, { height: 68 }]}
-                source={manageSetlistIcon} />
+                source={manageSetlistButton} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={this.logout.bind(this)}
             >
               <Image
                 style={[styles.button, { height: 55 }]}
-                source={logoutIcon} />
+                source={logoutButton} />
             </TouchableOpacity>
           </View>
         </View>

@@ -13,7 +13,7 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 import DefaultContainer from './DefaultContainer';
 import { saveStorage } from '../services/LocalStorage';
 import { fetchUserArtist } from '../services/api';
-import { loginUser, loginArtist } from '../redux/actions/ActionCreator';
+import { loginUser, loginArtist, logout } from '../redux/actions/ActionCreator';
 import * as ActionTypes from '../redux/actions/ActionTypes';
 import { loadStorage } from '../services/LocalStorage';
 import { updateHeader } from '../utils/UpdateHeader';
@@ -96,9 +96,9 @@ class Options extends Component {
 
   async getArtist(userId) {
     try {
-      console.log('getArtist userId', userId);
+      // console.log('getArtist userId', userId);
       const { artist } = await fetchUserArtist({userId});
-      console.log('getArtist', artist);
+      // console.log('getArtist', artist);
       if (!artist) {
         artist = await this.checkLocalArtistStorage();
       }
@@ -221,10 +221,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -60,
   },
-  test: {
-    position: 'absolute',
-    top: -200,
-  },
   close: {
     position: 'absolute',
     top: 0,
@@ -324,6 +320,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   // console.log('mapStateToProps state', state);
   return {
+    logout: () => dispatch(logout()),
     loginUser: user => dispatch(loginUser(user)),
     loginArtist: artist => dispatch(loginArtist(artist)),
 }};

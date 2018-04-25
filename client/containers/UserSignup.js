@@ -31,10 +31,20 @@ class UserSignup extends Component {
     this.props.navigation.replace(routeName, {name: routeName});
   }
 
+  renderHeaderChildren() {
+    return (
+        <View>
+          <Text style={styles.h1}>CREATE ACCOUNT</Text>
+        </View>
+    );
+  }
+
   render() {
     // console.log('render userType', this.props.userType);
     return (
-      <DefaultContainer style={styles.body}>
+      <DefaultContainer style={styles.body}
+        headerChildren={this.renderHeaderChildren()}
+      >
         <UserFormWrapper navigateTo={this.navigateTo.bind(this)}/>
       </DefaultContainer>
     )
@@ -46,6 +56,12 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     justifyContent: 'center',
+  },
+  h1: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
 })
 

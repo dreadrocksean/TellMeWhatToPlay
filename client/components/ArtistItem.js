@@ -4,9 +4,9 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ListItem from '../components/ListItem/';
 import { listItemStyle } from './ListItem/listItemStyle';
-import listItemBg from '../images/list/list_btn.png';
-import listItemAvatar from '../images/list/test_avatar.png';
-import listItemMarker from '../images/list/marker.png';
+import listItemBg from '../images/buttons/list_btn.png';
+import listItemAvatar from '../images/test_avatar.png';
+import geoMarkerIcon from '../images/icons/marker.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,7 +39,7 @@ const ArtistItem = props => {
           <View style={styles.rightInfo} >
             <View style={styles.markerContainer} >
               <Image style={styles.image}
-                source={listItemMarker}
+                source={geoMarkerIcon}
                 resizeMode={'contain'}
               />
             </View>

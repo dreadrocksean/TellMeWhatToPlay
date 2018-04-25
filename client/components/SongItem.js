@@ -5,9 +5,9 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 import ListItem from '../components/ListItem/';
 import { UserType } from '../redux/reducers/LoginReducer';
 import { listItemStyle } from './ListItem/listItemStyle';
-import lyricsIcon from '../images/list/lyrics_btn1.png';
-import voteUpIcon from '../images/list/vote_btn1.png';
-import voteDownIcon from '../images/list/vote_down_btn.png';
+import lyricsIcon from '../images/icons/lyrics_btn1.png';
+import voteUpIcon from '../images/icons/vote_up_btn.png';
+import voteDownIcon from '../images/icons/vote_down_btn.png';
 
 const SongItem = props => {
 
