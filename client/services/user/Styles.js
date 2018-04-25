@@ -21,12 +21,15 @@ export default StyleSheet.create({
     color: 'white',
     fontSize: 20,
     padding: 5,
-    height: 40,
+    paddingLeft: 15,
+    height: 60,
     width: width * 0.8,
     alignSelf: 'stretch',
     borderColor: '#7a42f4',
     borderWidth: 1,
     marginBottom: 10,
+    borderRadius: 15,
+
   },
   submits: {
     flex: 1,

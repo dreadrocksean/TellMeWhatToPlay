@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createUser, fetchUser, createArtist, fetchArtist } from '../api';
+import { createUser, fetchUser, createArtist, fetchUserArtist } from '../api';
 import { loginUser, loginArtist } from '../../redux/actions/ActionCreator';
 import { saveStorage } from '../LocalStorage';
 import UserForm from './UserForm';
@@ -67,7 +67,7 @@ class UserFormWrapper extends Component {
 
   async getArtist(userId) {
     try {
-      const response = await fetchArtist({userId});
+      const response = await fetchUserArtist({userId});
       const artist = response.artist;
       // console.log('getArtist', response.artist);
       this.props.loginArtist(artist);

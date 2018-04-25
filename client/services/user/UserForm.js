@@ -7,56 +7,44 @@ const UserForm = (props) => {
   const {handleChange, email, password, fname, lname, zip,
     onSubmit, errorMessage
   } = props;
-  // console.log('props', props);
-  // console.log('handleChange', handleChange);
+  const fields = [
+    {
+      placeholder: 'Email', value: email,
+      onChange: val => handleChange({email: val})
+    },
+    {
+      placeholder: 'Password', value: password,
+      onChange: val => handleChange({password: val})
+    },
+    {
+      placeholder: 'First Name', value: fname,
+      onChange: val => handleChange({fname: val})
+    },
+    {
+      placeholder: 'Last Name', value: lname,
+      onChange: val => handleChange({lname: val})
+    },
+    {
+      placeholder: 'Zip Code', value: zip,
+      onChange: val => handleChange({zip: val})
+    },
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder='Email'
-            placeholderTextColor='rgba(255,255,255,0.3)'
-            onChangeText={email => handleChange({email})}
-            value={email}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder='Password'
-            placeholderTextColor='rgba(255,255,255,0.3)'
-            onChangeText={password => handleChange({password})}
-            value={password}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder='First Name'
-            placeholderTextColor='rgba(255,255,255,0.3)'
-            onChangeText={fname => handleChange({fname})}
-            value={fname}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder='Last Name'
-            placeholderTextColor='rgba(255,255,255,0.3)'
-            onChangeText={lname => handleChange({lname})}
-            value={lname}
-          />
-        </View>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder='Zip Code'
-            placeholderTextColor='rgba(255,255,255,0.3)'
-            onChangeText={zip => handleChange({zip})}
-            value={zip}
-          />
-        </View>
+        {
+          fields.map((field, i) => (
+            <View key={i}>
+              <TextInput
+                style={styles.input}
+                placeholder={field.placeholder}
+                placeholderTextColor='rgba(255,255,255,0.3)'
+                onChangeText={field.onChange}
+                value={field.value}
+              />
+            </View>
+          ))
+        }
         <View style={styles.submits}>
           <TouchableOpacity
             style = {styles.submitButton}
