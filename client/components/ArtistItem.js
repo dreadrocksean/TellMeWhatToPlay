@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, Text, Button, View, Image, TouchableOpacity } f
 import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ListItem from '../components/ListItem/';
+import AppText from '../components/AppText';
 import { listItemStyle } from './ListItem/listItemStyle';
 import listItemBg from '../images/buttons/list_btn.png';
 import listItemAvatar from '../images/test_avatar.png';
@@ -31,9 +32,18 @@ const ArtistItem = props => {
               />
             </View>
             <View style={styles.info}>
-              <Text style={{color:'#3c2385', fontWeight: 'bold', fontSize: 16}}>{name}</Text>
-              <Text style={{color:'#ff3a80', fontWeight: 'bold', fontSize: 11}}>{genre}</Text>
-              <Text style={{color:'#9c9c9c', fontWeight: 'bold', fontSize: 11}}>{instruments.join(' | ')}</Text>
+              <AppText
+                textStyle={
+                  [styles.text, {color:'#3c2385', fontSize: 16,}]
+                }>{name}</AppText>
+              <AppText
+                textStyle={
+                  [styles.text, {color:'#ff3a80', fontSize: 11,}]
+                }>{genre}</AppText>
+              <AppText
+                textStyle={
+                  [styles.text, {color:'#9c9c9c', fontSize: 11,}]
+                }>{instruments.join(' | ')}</AppText>
             </View>
           </View>
           <View style={styles.rightInfo} >
@@ -43,7 +53,7 @@ const ArtistItem = props => {
                 resizeMode={'contain'}
               />
             </View>
-            {<Text style={styles.distance}>{'25 KM'}</Text>}
+            {<AppText textStyle={styles.distance}>{'25 KM'}</AppText>}
           </View>
     </ListItem>
   );
@@ -70,6 +80,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 11,
   },
+  text: {
+     textAlign: 'left',
+     fontFamily: 'montserrat-regular',
+     fontWeight: 'normal',
+  }
 });
 
 export default ArtistItem;

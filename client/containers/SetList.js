@@ -14,6 +14,7 @@ import { UserType } from '../redux/reducers/LoginReducer';
 import DefaultContainer from './DefaultContainer';
 import SongForm from './SongForm';
 import RoundImage from '../components/RoundImage';
+import AppText from '../components/AppText';
 import SongItem from '../components/SongItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
@@ -350,9 +351,15 @@ class Setlist extends Component {
           style={{size: 55}}
         />
         <View style={styles.artistInfo}>
-          <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>SETLIST</Text>
-          <Text style={{fontSize: 13, color: '#2bfbff', fontWeight: 'bold'}}>{name}</Text>
-          <Text style={{fontSize: 11, color: '#ff3a80'}}>{genre}</Text>
+          <AppText
+            textStyle={[styles.text, {fontSize: 16, color: 'white'}]}
+          >SETLIST</AppText>
+          <AppText
+            textStyle={[styles.text, {fontSize: 13, color: '#2bfbff'}]}
+          >{name}</AppText>
+          <AppText
+            textStyle={[styles.text, {fontSize: 11, color: '#ff3a80'}]}
+          >{genre}</AppText>
         </View>
       </View>
     );
@@ -494,8 +501,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 36,
-    textAlign: 'center', 
+    textAlign: 'left', 
     color: 'white',
+    fontFamily: 'montserrat-regular',
   },
   artistInfo: {
     height: 70,

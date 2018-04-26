@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View , Dimensions} from 'react-native';
 
 import styles from './Styles';
+import AppText from '../../components/AppText';
 import signupButton from '../../images/buttons/signup_btn.png';
 import loginButton from '../../images/buttons/login_btn.png';
 import eyeslashIcon from '../../images/icons/eyeslash_icon1.png';
 
 const UserForm = (props) => {
   const {handleChange, email, password, fname, lname, zip,
-    onSubmit, errorMessage, togglePassword, showPassword
+    onSubmit, errorMessage, togglePassword, hidePassword
   } = props;
   const fields = [
     {
@@ -18,7 +19,7 @@ const UserForm = (props) => {
     {
       placeholder: 'Password', value: password, icon: eyeslashIcon,
       onChange: val => handleChange({password: val}),
-      showPassword
+      hidePassword
     },
     {
       placeholder: 'First Name', value: fname,
@@ -45,7 +46,7 @@ const UserForm = (props) => {
                 placeholderTextColor='rgba(255,255,255,0.3)'
                 onChangeText={field.onChange}
                 value={field.value}
-                secureTextEntry={!showPassword}
+                secureTextEntry={field.hidePassword}
               />
               {field.icon && (
                 <TouchableOpacity onPress={togglePassword}>
@@ -59,20 +60,23 @@ const UserForm = (props) => {
         }
         <View style={styles.submits}>
           <TouchableOpacity
-            onPress={ () => onSubmit('LogIn') }>
-            <Image
-              source={loginButton}
-            />
-          </TouchableOpacity>
-          <Text style={styles.label}>ALREADY HAVE AN ACCOUNT?</Text>
-          <TouchableOpacity
             onPress={ () => onSubmit('SignUp') }>
             <Image
               source={signupButton}
             />
           </TouchableOpacity>
+          <AppText
+            style={styles.label}
+            textStyle={styles.labelText}
+          >ALREADY HAVE AN ACCOUNT? </AppText>
+          <TouchableOpacity
+            onPress={ () => onSubmit('LogIn') }>
+            <Image
+              source={loginButton}
+            />
+          </TouchableOpacity>
         </View>
-        <Text style={styles.error}>{errorMessage}</Text>
+        <AppText textStyle={styles.error}>{errorMessage}</AppText>
       </View>
     </View>
 )};

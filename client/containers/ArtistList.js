@@ -9,6 +9,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 
 import DefaultContainer from './DefaultContainer';
+import AppText from '../components/AppText';
 import ArtistItem from '../components/ArtistItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
@@ -72,7 +73,7 @@ class ArtistList extends Component {
 
   renderHeaderChildren() {
     return (
-      <View style={styles.iconsContainer}>
+      <View style={styles.headerContainer}>
         <Image style={styles.icon}
           source={sortIcon}
           resizeMode={'cover'}
@@ -81,6 +82,9 @@ class ArtistList extends Component {
           source={findIcon}
           resizeMode={'cover'}
         />
+        <AppText
+          textStyle={[styles.text,]}
+        >ARTIST LIST</AppText>
       </View>
     );
   }
@@ -115,16 +119,24 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 60,
   },
-  iconsContainer: {
+  headerContainer: {
+    // backgroundColor: 'grey',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 70,
+    justifyContent: 'flex-start',
+    flex: 1,
   },
   icon: {
     width: 30,
     height: 30,
-  }
+    marginRight: 10,
+  },
+  text: {
+    textAlign: 'right',
+    color: 'white',
+    fontSize: 17,
+    fontFamily: 'montserrat-regular',
+  },
 });
 
 const mapStateToProps = state => ({

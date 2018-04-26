@@ -4,21 +4,24 @@ import {
   TouchableHighlight, TouchableOpacity,
   Text, View, AsyncStorage, Image
 } from 'react-native';
-import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
+import { Constants, Camera, Font, Location, FileSystem, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
 // import { Provider } from 'unstated';
 
-import DefaultContainer from './DefaultContainer';
-import { saveStorage } from '../services/LocalStorage';
+import { saveStorage, loadStorage } from '../services/LocalStorage';
 import { fetchUserArtist } from '../services/api';
 import { loginUser, loginArtist, logout } from '../redux/actions/ActionCreator';
 import * as ActionTypes from '../redux/actions/ActionTypes';
-import { loadStorage } from '../services/LocalStorage';
+
+import DefaultContainer from './DefaultContainer';
 import { updateHeader } from '../utils/UpdateHeader';
+import AppText from '../components/AppText';
+
 import UserFormWrapper from '../services/user/UserFormWrapper';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
+
 
 import bg from '../images/bg.png';
 import fanButton from '../images/buttons/fan_btn.png';
@@ -43,7 +46,7 @@ class Options extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {showModal: false, photos: []};
+    this.state = {showModal: false, photos: [], fontLoaded: false};
     this.camera = null;
     this.checkLocalUserStorage();
     this.checkLocalArtistStorage();
@@ -52,6 +55,15 @@ class Options extends Component {
     });
     // console.log('constructor');
 
+  }
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      'montserrat-bold': require('../assets/fonts/montserrat/Montserrat-Bold.otf'),
+      'montserrat-black': require('../assets/fonts/montserrat/Montserrat-Black.ttf'),
+      'montserrat-regular': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+    });
+    this.setState({fontLoaded: true});
   }
 
   async componentWillMount() {
@@ -172,7 +184,7 @@ class Options extends Component {
             <TouchableHighlight
               onPress={this.onClick.bind(this, 'FAN')}
             >
-              <View >
+              <View>
                 <Image
                   source={fanButton}
                   resizeMode={'cover'}
@@ -181,7 +193,9 @@ class Options extends Component {
             </TouchableHighlight>
             <View style={styles.textSeparator}>
               <View style={styles.line} />
-              <Text style={[styles.text, {flex: 2}]}>OR</Text>
+              { this.state.fontLoaded && (
+                <AppText style={[{flex: 2}]}>OR</AppText>
+              )}
               <View style={styles.line} />
             </View>
             <TouchableHighlight
@@ -194,8 +208,10 @@ class Options extends Component {
                 />
               </View>
             </TouchableHighlight>
-            <Text style={[styles.text, styles.textCustomPos]}>PLEASE SELECT
-            </Text>
+            { this.state.fontLoaded && (
+              <AppText style={[styles.textCustomPos]}>PLEASE SELECT
+              </AppText>
+            )}
           </View>}
         </View>
       </DefaultContainer>
@@ -213,9 +229,9 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(220,220,255,0.9)',
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
     textAlign: 'center',
-    // fontFamily: 'cochin',
+    fontFamily: 'montserrat-bold',
   },
   textCustomPos: {
     position: 'absolute',

@@ -3,6 +3,7 @@ import { TouchableHighlight, TouchableOpacity, StyleSheet, Image, Text, Button, 
 import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ListItem from '../components/ListItem/';
+import AppText from '../components/AppText';
 import { UserType } from '../redux/reducers/LoginReducer';
 import { listItemStyle } from './ListItem/listItemStyle';
 import lyricsIcon from '../images/icons/lyrics_btn1.png';
@@ -36,15 +37,20 @@ const SongItem = props => {
           </View>
         </TouchableOpacity>
         <View style={styles.info}>
-          <Text style={{color:'#3c2385', fontWeight: 'bold', fontSize: 16}}>{title}</Text>
-          <Text style={{color:'#ff3a80', fontWeight: 'bold', fontSize: 11}}>{author}</Text>
+          <AppText
+            textStyle={[styles.text, {color:'#3c2385', fontSize: 16}]}
+          >{title}</AppText>
+          <AppText
+            textStyle={[styles.text, {color:'#ff3a80', fontSize: 11}]}
+          >{author}</AppText>
         </View>
       </View>
 
       <View style={styles.rightInfo} >
         <View style={styles.scoreContainer}>
           <View style={styles.score}>
-            <Text style={styles.scoreText}>{currVotes}</Text>
+            <AppText
+              textStyle={[styles.text, styles.scoreText]}>{currVotes}</AppText>
           </View>
         </View>
         <TouchableOpacity 
@@ -153,6 +159,11 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     // backgroundColor: 'rgba(0,0,255,0.3)',
+  },
+  text: {
+    fontWeight: 'normal',
+    textAlign: 'left',
+    fontFamily: 'montserrat-regular',
   },
   score: {
     right: 0,

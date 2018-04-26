@@ -34,17 +34,17 @@ export default StyleSheet.create({
     // backgroundColor: 'grey',
   },
   label: {
-    color: 'rgba(230,230,255,0.7)',
     marginTop: 10,
     marginBottom: 12,
+  },
+  labelText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   submits: {
     // flex: 1,
     // alignSelf: 'stretch',
     // flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-around',
   },
   submitButton: {

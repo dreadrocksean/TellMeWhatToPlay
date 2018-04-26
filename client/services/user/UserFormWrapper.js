@@ -13,7 +13,7 @@ class UserFormWrapper extends Component {
 			email: '',
 			password: '',
 			errorMessage: '',
-      showPassword: false,
+      hidePassword: true,
 		};
 	}
 
@@ -31,7 +31,7 @@ class UserFormWrapper extends Component {
   }
 
   togglePassword() {
-    this.setState({showPassword: !this.state.showPassword});
+    this.setState({hidePassword: !this.state.hidePassword});
   }
 
   async onSubmit(type) {
@@ -93,7 +93,7 @@ class UserFormWrapper extends Component {
         password={this.state.password}
         errorMessage={this.state.errorMessage}
         togglePassword={this.togglePassword.bind(this)}
-        showPassword={this.state.showPassword}
+        hidePassword={this.state.hidePassword}
       />
 	  );
 	}

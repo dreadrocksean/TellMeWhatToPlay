@@ -12,6 +12,7 @@ import { updateArtist } from '../services/api';
 import listItemAvatar from '../images/test_avatar.png';
 
 import DefaultContainer from './DefaultContainer';
+import AppText from '../components/AppText';
 import RoundImage from '../components/RoundImage';
 import { updateHeader } from '../utils/UpdateHeader';
 import { scale, verticalScale, moderateScale } from '../utils/Scales';
@@ -172,7 +173,7 @@ class ArtistAdmin extends Component {
         headerChildren={this.renderHeaderChildren()}
       >
         <View style={styles.container}>
-          {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+          {errorMessage && <AppText textStyle={styles.error}>{errorMessage}</AppText>}
           <View style={styles.top}>
             <RoundImage
               source={listItemAvatar}
@@ -182,7 +183,7 @@ class ArtistAdmin extends Component {
                 borderWidth: 4,
               }}
             />
-            <Text style={styles.title}>{artist.name}</Text>
+            <AppText textStyle={styles.title}>{artist.name}</AppText>
             <View>
               <TouchableOpacity
                 onPress={this.toggleOnAir.bind(this)}
@@ -193,12 +194,12 @@ class ArtistAdmin extends Component {
           </View>
           <View style={styles.middle}>
             <View style={styles.mainBox}>
-              <Text style={styles.h2}>Genre</Text>
-              <Text style={styles.h3}>{artist.genre}</Text>
+              <AppText textStyle={styles.h2}>Genre</AppText>
+              <AppText textStyle={styles.h3}>{artist.genre}</AppText>
             </View>
             <View style={styles.mainBox}>
-              <Text style={styles.h2}>Roles</Text>
-              <Text style={styles.h3}>{artist.roles.join(' | ')}</Text>
+              <AppText textStyle={styles.h2}>Roles</AppText>
+              <AppText textStyle={styles.h3}>{artist.roles.join(' | ')}</AppText>
             </View>
           </View>
           <View style={styles.bottom}>
@@ -272,24 +273,27 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: 'normal',
     textAlign: 'center',
+    fontFamily: 'montserrat-regular',
   },
   mainBox: {
     alignItems: 'center',
     width: '40%',
   },
   h2: {
-    fontSize: 14,
-    fontWeight:'bold',
+    fontSize: 12,
+    fontWeight:'normal',
     color: '#ffb401',
+    fontFamily: 'montserrat-regular',
   },
   h3: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight:'normal',
     color: '#fff',
     textAlign: 'center',
+    fontFamily: 'montserrat-regular',
   },
   error: {
     color: 'red',

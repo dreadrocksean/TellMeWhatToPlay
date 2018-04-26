@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native';
 
 import styles from './Styles';
+import AppText from '../../components/AppText';
 
 const ArtistForm = ({
   handleChange,
@@ -30,9 +31,9 @@ const ArtistForm = ({
       <TouchableOpacity
         style = {styles.submitButton}
         onPress = { () => onSubmit() }>
-        <Text style = {styles.submitButtonText}> {submitText || 'Submit'} </Text>
+        <AppText textStyle={styles.submitButtonText}> {submitText || 'Submit'} </AppText>
       </TouchableOpacity>
-      <Text style={styles.error}>{errorMessage}</Text>
+      <AppText textStyle={styles.error}>{errorMessage}</AppText>
     </View>
   );
 };
