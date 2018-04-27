@@ -18,6 +18,8 @@ import * as ActionTypes from '../redux/actions/ActionTypes';
 import DefaultContainer from './DefaultContainer';
 import { updateHeader } from '../utils/UpdateHeader';
 import AppText from '../components/AppText';
+import CheckBox from '../components/CheckBox';
+import RadioButton from '../components/RadioButton';
 
 import UserFormWrapper from '../services/user/UserFormWrapper';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
@@ -172,7 +174,16 @@ class Options extends Component {
     }
   }
 
+  toggleCheckbox() {
+    this.setState({checkbox: !this.state.checkbox})
+  }
+
+  toggleRadioButton() {
+    this.setState({radioButton: !this.state.radioButton})
+  }
+
   render() {
+    if (!this.state.fontLoaded) {return null;}
     // console.log('render');
     const { showModal } = this.state;
     const { authorized, artist, navigation, userType } = this.props;

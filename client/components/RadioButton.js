@@ -1,50 +1,69 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, ViewPropTypes, Text, View, Image, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Check from '../images/icons/check_icon.png';
+import AppText from '../components/AppText';
 
-export default class AppText extends Component {
+const RadioButton = ({ toggle, checked, label, disabled }) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      checked: true,
-      disabled: false,
-    };
-  }
+  const disabledStyles = disabled
+    ? {
+      opacity: 0.5,
+    }
+    : {};
 
-  toggle() {
-    this.setState({checked: !this.state.checked});
-    (this.props.toggleCheckBox || (()=>{}))();
-  }
-
-  render() {
-    const bg = this.state.checked ? 'white' : null;
-    return (
-      <TouchableOpacity
-        style={[styles.container, {backgroundColor: bg}]}
-        onPress={this.toggle.bind(this)}
+  const bg = checked ? 'white' : null;
+  return (
+    <TouchableOpacity style={styles.container}
+      onPress={disabled ? null : toggle}
+      activeOpacity={disabled ? 1 : 0.2}
+    >
+      <View style={[styles.circle, {backgroundColor: bg}, disabledStyles]}>
+      </View>
+      <AppText
+        textStyle={styles.labelText}
+        style={[styles.label, disabledStyles]}
       >
-      </TouchableOpacity>
-    );
-  }
-}
+        {label}
+      </AppText>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: 'yellow',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  circle: {
+    borderColor: '#ebca0b',
     borderWidth: 3,
     borderRadius: 22,
     width: 22,
     height: 22,
-    // position: 'relative',
     padding: 3,
   },
   image: {
     flex: 1,
-    // alignItems: 'center',5
     width: null,
     height: null,
     resizeMode: 'contain',
   },
+  label: {
+    marginLeft: 7,
+  },
+  labelText: {
+    color: 'white',
+    fontSize: 12,
+  },
 });
+
+RadioButton.propTypes = {
+  toggle: PropTypes.func.isRequired,
+  checked: PropTypes.bool.isRequired,
+  label: PropTypes.string,
+  disabled: PropTypes.bool,
+};
+
+export default RadioButton;

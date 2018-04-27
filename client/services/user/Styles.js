@@ -5,33 +5,14 @@ const { height, width } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     marginTop: 15,
+    backgroundColor: 'transparent',
   },
   form: {
     padding: 10,
   },
-  inputWrap: {
-    flexDirection: 'row',
-  },
   input: {
-    color: 'white',
-    flex: 1,
-    fontSize: 20,
-    padding: 5,
-    paddingLeft: 15,
-    height: 60,
-    borderColor: '#7a42f4',
-    borderWidth: 1,
-    marginBottom: 20,
-    borderRadius: 15,
-
-  },
-  inputIcon: {
-    width: 25,
-    height: 60,
-    position: 'absolute',
-    right: 15,
-    opacity: 0.5,
-    // backgroundColor: 'grey',
+    backgroundColor: '#f3f3f3',
+    color: 'purple',
   },
   label: {
     marginTop: 10,
@@ -41,9 +22,6 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   submits: {
-    // flex: 1,
-    // alignSelf: 'stretch',
-    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
   },

@@ -3,6 +3,9 @@ import { StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-nativ
 
 import styles from './Styles';
 import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
+import CheckBox from '../../components/CheckBox';
+import RadioButton from '../../components/RadioButton';
 
 const ArtistForm = ({
   handleChange,
@@ -28,6 +31,8 @@ const ArtistForm = ({
           value={artistName}
         />
       </View>
+      <CheckBox checked={this.state.checkbox || false} toggle={this.toggleCheckbox.bind(this)} label='TESTCHECKBOX' />
+      <RadioButton checked={this.state.radioButton || false} toggle={this.toggleRadioButton.bind(this)} label='TESTRADIOBTN' />
       <TouchableOpacity
         style = {styles.submitButton}
         onPress = { () => onSubmit() }>

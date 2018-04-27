@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ViewPropTypes, StyleSheet, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
 
-export default class AppText extends Component {
-
-  render() {
-    return (
-      <View style={this.props.style}>
-        <Text style={[styles.text, this.props.textStyle]}>
-          {this.props.children}
-        </Text>
-      </View>
-    );
-  }
-}
+const AppText = ({ style, textStyle, children }) => (
+  <View style={style}>
+    <Text style={[styles.text, textStyle]}>
+      {children}
+    </Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   text: {
@@ -23,3 +19,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
+
+AppText.propTypes = {
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+    ViewPropTypes.style,
+  ]),
+  textStyle: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.number,
+  ]),
+  children: PropTypes.any.isRequired,
+};
+
+export default AppText;

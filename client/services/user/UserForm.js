@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View , Dimensions
 
 import styles from './Styles';
 import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 import signupButton from '../../images/buttons/signup_btn.png';
 import loginButton from '../../images/buttons/login_btn.png';
 import eyeslashIcon from '../../images/icons/eyeslash_icon1.png';
@@ -39,23 +40,13 @@ const UserForm = (props) => {
       <View style={styles.form}>
         {
           fields.map((field, i) => (
-            <View style={styles.inputWrap} key={i} >
-              <TextInput
-                style={styles.input}
-                placeholder={field.placeholder}
-                placeholderTextColor='rgba(255,255,255,0.3)'
-                onChangeText={field.onChange}
-                value={field.value}
-                secureTextEntry={field.hidePassword}
-              />
-              {field.icon && (
-                <TouchableOpacity onPress={togglePassword}>
-                  <Image resizeMode='contain'
-                    style={styles.inputIcon} source={field.icon}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
+            <AppTextInput key={i} 
+              placeholder={field.placeholder}
+              onChangeText={field.onChange}
+              value={field.value}
+              secureTextEntry={field.hidePassword}
+              icon={field.icon}
+            />
           ))
         }
         <View style={styles.submits}>
