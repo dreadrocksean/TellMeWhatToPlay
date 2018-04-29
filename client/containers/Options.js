@@ -18,8 +18,8 @@ import * as ActionTypes from '../redux/actions/ActionTypes';
 import DefaultContainer from './DefaultContainer';
 import { updateHeader } from '../utils/UpdateHeader';
 import AppText from '../components/AppText';
-import CheckBox from '../components/CheckBox';
-import RadioButton from '../components/RadioButton';
+import CheckBox from '../components/CheckBox/';
+import RadioButton from '../components/RadioButton/';
 
 import UserFormWrapper from '../services/user/UserFormWrapper';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
@@ -134,6 +134,8 @@ class Options extends Component {
   }
 
   getRouteName(userType) {
+      // return 'UserSignup';
+      // return 'ArtistSignup';
     const { user, artist } = this.props;
     // console.log('getRouteName', userType, user, artist);
     if(userType === 'ARTIST' && !user) {

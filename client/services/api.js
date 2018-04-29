@@ -104,7 +104,8 @@ export const voteSong = req => {
 };
 
 export const createArtist = req => {
-			console.log(req);
+	// console.log(req);
+	// return;
 	return fetch(`http://${localIPs[0]}:4000/api/artist`, {
 		method: 'POST',
 		headers: {

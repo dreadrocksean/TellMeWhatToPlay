@@ -1,42 +1,75 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View } from 'react-native';
 
 import styles from './Styles';
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
-import CheckBox from '../../components/CheckBox';
-import RadioButton from '../../components/RadioButton';
+import CheckBox from '../../components/CheckBox/';
+import RadioButton from '../../components/RadioButton/';
+import createProfile from '../../images/buttons/create_profile_btn.png';
 
 const ArtistForm = ({
+  roles,
+  types,
+  getType,
   handleChange,
-  artistName,
+  handleRoleChange,
+  handleChooseType,
+  name,
   onSubmit,
-  artistNameComplete,
+  genre,
   submitText,
   errorMessage,
 }) => {
 
+  const roleKeys = Object.keys(roles);
+
   return (
     <View style={styles.container}>
-      <View style={{flex: 4}}>
-        <TextInput
-          style={styles.autocomplete}
-          placeholder={artistNameComplete || ''}
-          editable={false}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder='Artist Name'
-          onChangeText={artistName => handleChange({artistName})}
-          value={artistName}
-        />
+      <AppTextInput
+        textStyle={styles.input}
+        placeholder='Artist Name'
+        onChangeText={name => handleChange({name})}
+        value={name}
+      />
+      <AppTextInput
+        textStyle={styles.input}
+        placeholder='Music Genre'
+        onChangeText={genre => handleChange({genre})}
+        value={genre}
+      />
+      <AppText textStyle={styles.h2}>
+        ROLES
+      </AppText>
+      <AppText textStyle={styles.h2}>
+        ARTIST TYPE
+      </AppText>
+      <View style={styles.section}>
+        { Object.keys(types).map((f, i) => {
+          console.log('test', getType());
+          return <RadioButton key={i}
+            checked={f === getType()}
+            toggle={() => handleChooseType(f)}
+            label={f.toUpperCase()}
+          />
+        })}
+        </View>
+      <AppText textStyle={styles.h2}>
+        INSTRUMENTS
+      </AppText>
+      <View style={styles.section}>
+        { roleKeys.map((f, i) => (
+          <CheckBox key={i}
+            checked={roles[f]}
+            toggle={() => handleRoleChange(f)}
+            label={f.toUpperCase()}
+          />
+        ))}
       </View>
-      <CheckBox checked={this.state.checkbox || false} toggle={this.toggleCheckbox.bind(this)} label='TESTCHECKBOX' />
-      <RadioButton checked={this.state.radioButton || false} toggle={this.toggleRadioButton.bind(this)} label='TESTRADIOBTN' />
       <TouchableOpacity
-        style = {styles.submitButton}
-        onPress = { () => onSubmit() }>
-        <AppText textStyle={styles.submitButtonText}> {submitText || 'Submit'} </AppText>
+        style={styles.button}
+        onPress={ onSubmit }>
+        <Image source={createProfile} style={styles.image} />
       </TouchableOpacity>
       <AppText textStyle={styles.error}>{errorMessage}</AppText>
     </View>

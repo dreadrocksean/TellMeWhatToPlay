@@ -21,10 +21,6 @@ export default StyleSheet.create({
   labelText: {
     fontSize: 14,
   },
-  submits: {
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
   submitButton: {
     backgroundColor: '#7a42f4',
     padding: 10,

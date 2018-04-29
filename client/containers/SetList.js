@@ -107,13 +107,14 @@ class Setlist extends Component {
   connectWebSocket() {
 
     //This is the server under /example/server published on azure.
-    const connection = signalr.hubConnection('https://react-native-signalr.olofdahlbom.se');
+    const connection = signalr.hubConnection('http://roadiethreeeightapi.azurewebsites.net/chat');
+    // const connection = signalr.hubConnection('https://react-native-signalr.olofdahlbom.se');
     connection.logging = true;
 
     const proxy = connection.createHubProxy('chatHub');
     //receives broadcast messages from a hub function, called "helloApp"
-    proxy.on('helloApp', (argOne, argTwo, argThree, argFour) => {
-      console.log('message-from-server', argOne, argTwo, argThree, argFour);
+    proxy.on('helloApp', (response) => {
+      console.log('message-from-server', response);
       //Here I could response by calling something else on the server...
     });
 
@@ -121,7 +122,7 @@ class Setlist extends Component {
     connection.start().done(() => {
       console.log('Now connected, connection ID=' + connection.id);
 
-      proxy.invoke('helloServer', 'Hello Server, how are you?')
+      proxy.invoke('helloServer', this.state.artist._id)
         .done((directResponse) => {
           console.log('direct-response-from-server', directResponse);
         }).fail(() => {

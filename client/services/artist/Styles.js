@@ -3,13 +3,7 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    padding: 22,
-    height: height / 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    padding: 10,
   },
   autocomplete: {
     position: 'absolute',
@@ -31,14 +25,31 @@ export default StyleSheet.create({
     borderColor: '#7a42f4',
     borderWidth: 1,
   },
+  button: {
+    alignSelf: 'center',
+    width: '100%',
+  },
+  image: {
+    width: undefined,
+    resizeMode: 'contain',
+  },
   submitButton: {
     flex: 1,
     backgroundColor: '#7a42f4',
     padding: 10,
     height: 40,
   },
-  submitButtonText:{
+  submitButtonText: {
     color: 'white'
+  },
+  h2: {
+    fontSize: 13,
+    fontFamily: 'montserrat-bold',
+  },
+  section: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   error: {
     color: 'red',

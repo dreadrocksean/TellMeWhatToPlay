@@ -30,12 +30,29 @@ class ArtistFormWrapper extends Component {
 
 	constructor(props) {
 		super(props);
+
+    const roles = {
+      vocals: false,
+      piano: false,
+      guitar: false,
+      sax: false,
+      percussion: false,
+      harmonica: false,
+      violin: false,
+      ukelele: false,
+    };
+    const types = {
+      band: false,
+      solo: false,
+      // duo: false,
+    };
 		this.state = {
-			artistName: '',
+      types,
+			name: '',
       artistNameComplete: '',
       artistImageURL: '',
-      artistGenre: '',
-      artistRoles: [],
+      genre: '',
+      roles,
 			errorMessage: '',
       photos: [],
 		};
@@ -53,31 +70,61 @@ class ArtistFormWrapper extends Component {
   }
 
   handleChange(field) {
-    const key = Object.keys(field)[0];
-    this.setState({[key]: field[key]});
     this.setState(field);
   }
 
+  handleChooseType(fieldName) {
+    const typeKeys = Object.keys(this.state.types);
+    const newTypes = typeKeys.reduce(
+      (obj, k) => {
+        obj[k] = k === fieldName;
+        return obj;
+      }, {}
+    );
+    this.setState({ types: newTypes });
+  }
+
+  handleRoleChange(fieldName) {
+    const newRoles = {
+      ...this.state.roles,
+      [fieldName]: !this.state.roles[fieldName]
+    };
+    this.setState({roles: newRoles});
+  }
+
+  getType() {
+    return Object.keys(this.state.types)
+      .filter(k => this.state.types[k])[0];
+  }
+
+  getRoles() {
+    return Object.keys(this.state.roles)
+      .filter(k => this.state.roles[k]);
+  }
+
   async onSubmit() {
+    const type = this.getType();
+    const roles = this.getRoles();
     const {
-      artistName,
+      name,
       artistImageURL,
-      artistGenre,
-      artistRoles
+      genre,
     } = this.state;
     const artistData = {
-      artistName,
+      userId: this.props.user._id,
+      name,
       artistImageURL,
-      artistGenre,
-      artistRoles,
+      genre,
+      roles,
+      type,
     }
     try {
       const response = await createArtist(artistData);
-      this.props.dispatch(loginArtist(response.artist));
-      this.setState({successMessage: `Successfully created ${this.state.artistName}!`});
+      this.props.loginArtist(response.artist);
+      this.setState({successMessage: `Successfully created ${this.state.name}!`});
     } catch(err) {
       console.log('error:', err);
-      this.setState({errorMessage: `Problem creating ${this.state.artistName}`});
+      this.setState({errorMessage: `Problem creating ${this.state.name}`});
     }
   }
 
@@ -109,25 +156,30 @@ class ArtistFormWrapper extends Component {
   }
 
   render() {
+    // console.log('render state', this.state);
     const imgW = (width - 40) / 4;
     const showPhotos = this.state.photos.length;
     return (
       <View>
         <ArtistForm
           handleChange={this.handleChange.bind(this)}
+          handleRoleChange={this.handleRoleChange.bind(this)}
+          handleChooseType={this.handleChooseType.bind(this)}
           onSubmit={this.onSubmit.bind(this)}
-          artistNameComplete={this.state.artistNameComplete}
-          artistName={this.state.artistName}
-          submitText={'Add Me'}
+          genre={this.state.genre}
+          name={this.state.name}
           errorMessage={this.state.errorMessage}
           successMessage={this.state.successMessage}
+          roles={this.state.roles}
+          types={this.state.types}
+          getType={this.getType.bind(this)}
         />
-        <TouchableOpacity
+        {/*<TouchableOpacity
           style={styles.cambtn}
           onPress={this.showCam}
         >
           <Text>CAM</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
     );
 	}
@@ -151,11 +203,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  user: state.user,
+  user: state.login.user,
 })
 
-const mapDispatchToProps = () => ({
-  loginArtist
+const mapDispatchToProps = dispatch => ({
+  loginArtist: payload => dispatch(loginArtist(payload))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArtistFormWrapper);

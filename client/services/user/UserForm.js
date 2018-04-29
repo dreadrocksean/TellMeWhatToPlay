@@ -49,12 +49,10 @@ const UserForm = (props) => {
             />
           ))
         }
-        <View style={styles.submits}>
+        <View>
           <TouchableOpacity
             onPress={ () => onSubmit('SignUp') }>
-            <Image
-              source={signupButton}
-            />
+            <Image source={signupButton} />
           </TouchableOpacity>
           <AppText
             style={styles.label}
@@ -62,9 +60,7 @@ const UserForm = (props) => {
           >ALREADY HAVE AN ACCOUNT? </AppText>
           <TouchableOpacity
             onPress={ () => onSubmit('LogIn') }>
-            <Image
-              source={loginButton}
-            />
+            <Image source={loginButton} />
           </TouchableOpacity>
         </View>
         <AppText textStyle={styles.error}>{errorMessage}</AppText>

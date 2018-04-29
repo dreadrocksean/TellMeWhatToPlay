@@ -25,8 +25,8 @@ class UserFormWrapper extends Component {
   }
 
   handleChange(field) {
-    const key = Object.keys(field)[0];
-    this.setState({[key]: field[key]});
+    // const key = Object.keys(field)[0];
+    // this.setState({[key]: field[key]});
     this.setState(field);
   }
 
