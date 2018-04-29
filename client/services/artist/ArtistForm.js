@@ -6,6 +6,7 @@ import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
 import CheckBox from '../../components/CheckBox/';
 import RadioButton from '../../components/RadioButton/';
+import Separator from '../../components/Separator/';
 import createProfile from '../../images/buttons/create_profile_btn.png';
 
 const ArtistForm = ({
@@ -18,12 +19,11 @@ const ArtistForm = ({
   name,
   onSubmit,
   genre,
-  submitText,
   errorMessage,
 }) => {
 
   const roleKeys = Object.keys(roles);
-
+  console.log('artistform', roles);
   return (
     <View style={styles.container}>
       <AppTextInput
@@ -38,10 +38,8 @@ const ArtistForm = ({
         onChangeText={genre => handleChange({genre})}
         value={genre}
       />
-      <AppText textStyle={styles.h2}>
-        ROLES
-      </AppText>
-      <AppText textStyle={styles.h2}>
+      <Separator label='ROLES' />
+      <AppText textStyle={[styles.h2, styles.sectionHeader]}>
         ARTIST TYPE
       </AppText>
       <View style={styles.section}>
@@ -54,7 +52,7 @@ const ArtistForm = ({
           />
         })}
         </View>
-      <AppText textStyle={styles.h2}>
+      <AppText textStyle={[styles.h2, styles.sectionHeader]}>
         INSTRUMENTS
       </AppText>
       <View style={styles.section}>

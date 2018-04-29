@@ -135,7 +135,7 @@ class Options extends Component {
 
   getRouteName(userType) {
       // return 'UserSignup';
-      // return 'ArtistSignup';
+      return 'ArtistSignup';
     const { user, artist } = this.props;
     // console.log('getRouteName', userType, user, artist);
     if(userType === 'ARTIST' && !user) {

@@ -28,16 +28,11 @@ export default StyleSheet.create({
   button: {
     alignSelf: 'center',
     width: '100%',
+    marginTop: 20,
   },
   image: {
     width: undefined,
     resizeMode: 'contain',
-  },
-  submitButton: {
-    flex: 1,
-    backgroundColor: '#7a42f4',
-    padding: 10,
-    height: 40,
   },
   submitButtonText: {
     color: 'white'
@@ -45,6 +40,13 @@ export default StyleSheet.create({
   h2: {
     fontSize: 13,
     fontFamily: 'montserrat-bold',
+    color: 'rgba(220,220,255,0.7)',
+  },
+  sectionHeader: {
+    marginTop: 20,
+    marginBottom: 15,
+    marginLeft: 15,
+    textAlign: 'left',
   },
   section: {
     flexDirection: 'row',

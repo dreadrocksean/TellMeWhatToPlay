@@ -141,7 +141,7 @@ export const fetchArtist = req => {
 
 export const fetchUserArtist = req => {
 	const { userId } = req;
-	console.log('req artistuserId', userId);
+	// console.log('req artistuserId', userId);
 	return fetch(`http://${localIPs[0]}:4000/api/artist/user/${userId}`)
 		.then(res => {
 			// console.log('fetchUserArtist response', res);

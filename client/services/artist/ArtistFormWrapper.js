@@ -31,27 +31,29 @@ class ArtistFormWrapper extends Component {
 	constructor(props) {
 		super(props);
 
+    const artist = props.artist || {};
+    const hasRole = key => (artist.roles || []).indexOf(key) > -1;
     const roles = {
-      vocals: false,
-      piano: false,
-      guitar: false,
-      sax: false,
-      percussion: false,
-      harmonica: false,
-      violin: false,
-      ukelele: false,
+      vocals: hasRole('vocals'),
+      piano: hasRole('piano'),
+      guitar: hasRole('guitar'),
+      sax: hasRole('sax'),
+      percussion: hasRole('percussion'),
+      harmonica: hasRole('harmonica'),
+      violin: hasRole('violin'),
+      ukelele: hasRole('ukelele'),
     };
     const types = {
-      band: false,
-      solo: false,
+      band: artist.type === 'band',
+      solo: artist.type === 'solo',
       // duo: false,
     };
 		this.state = {
       types,
-			name: '',
+			name: artist.name,
       artistNameComplete: '',
       artistImageURL: '',
-      genre: '',
+      genre: artist.genre,
       roles,
 			errorMessage: '',
       photos: [],
@@ -204,6 +206,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   user: state.login.user,
+  artist: state.login.artist,
 })
 
 const mapDispatchToProps = dispatch => ({
