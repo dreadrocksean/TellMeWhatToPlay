@@ -17,6 +17,7 @@ const ArtistSchema = new Schema({
 		required: false,
 	},
 	roles: [{type: String}],
+	type: {type: String},
 	songs: [{ type: ObjectId, ref: 'Song' }],
 	live: {
 		type: Boolean,

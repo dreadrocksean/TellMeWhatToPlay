@@ -1,9 +1,9 @@
 import Artist from './model';
 
 export const createArtist = async (req, res) => {
-	const { userId, artistName, genre } = req.body;
-	console.log('req', req.body);
-	const newArtist = new Artist({ userId, name: artistName, genre });
+	const { userId, name, genre, roles, type } = req.body;
+	// console.log('req', req.body);
+	const newArtist = new Artist({ userId, name, genre, roles, type });
 	console.log('newArtist', newArtist);
 
 	try {
