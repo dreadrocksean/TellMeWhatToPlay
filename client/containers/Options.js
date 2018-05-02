@@ -21,10 +21,6 @@ import AppText from '../components/AppText';
 import CheckBox from '../components/CheckBox/';
 import RadioButton from '../components/RadioButton/';
 
-import UserFormWrapper from '../services/user/UserFormWrapper';
-import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
-
-
 import bg from '../images/bg.png';
 import fanButton from '../images/buttons/fan_btn.png';
 import artistButton from '../images/buttons/artist_btn.png';
@@ -60,6 +56,7 @@ class Options extends Component {
   }
 
   async componentDidMount() {
+    // console.log('Options componentDidMount', this.props.navigation);
     await Font.loadAsync({
       'montserrat-bold': require('../assets/fonts/montserrat/Montserrat-Bold.otf'),
       'montserrat-black': require('../assets/fonts/montserrat/Montserrat-Black.ttf'),
@@ -244,7 +241,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     textAlign: 'center',
-    fontFamily: 'montserrat-bold',
+    // fontFamily: 'montserrat-bold',
   },
   textCustomPos: {
     position: 'absolute',

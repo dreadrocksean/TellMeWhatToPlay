@@ -5,13 +5,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 12,
+    marginRight: '20%',
   },
   circle: {
     borderColor: '#ebca0b',
     borderWidth: 3,
-    borderRadius: 22,
-    width: 22,
-    height: 22,
+    borderRadius: 25,
+    width: 25,
+    height: 25,
     padding: 3,
   },
   image: {
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     color: '#f3f3f3',
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: 'montserrat-bold',
   },
 });

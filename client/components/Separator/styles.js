@@ -5,7 +5,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 0,
+    marginBottom: 10,
+    // backgroundColor: 'grey',
   },
   hr: {
     height: 0,

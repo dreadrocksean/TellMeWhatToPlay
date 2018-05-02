@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View } from 'react-native';
 
+import testPhoto from '../../images/test_avatar.png';
+
 import styles from './Styles';
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
 import CheckBox from '../../components/CheckBox/';
 import RadioButton from '../../components/RadioButton/';
+import ImageUpload from '../../components/ImageUpload/';
 import Separator from '../../components/Separator/';
 import createProfile from '../../images/buttons/create_profile_btn.png';
 
@@ -20,12 +23,18 @@ const ArtistForm = ({
   onSubmit,
   genre,
   errorMessage,
+  onPressCam,
+  photo,
 }) => {
 
   const roleKeys = Object.keys(roles);
-  console.log('artistform', roles);
+
   return (
     <View style={styles.container}>
+      <ImageUpload style={styles.imageUpload}
+        source={photo}
+        onPress={onPressCam}
+      />
       <AppTextInput
         textStyle={styles.input}
         placeholder='Artist Name'
@@ -39,27 +48,26 @@ const ArtistForm = ({
         value={genre}
       />
       <Separator label='ROLES' />
-      <AppText textStyle={[styles.h2, styles.sectionHeader]}>
+      <AppText textStyle={styles.h2} style={styles.sectionHeader}>
         ARTIST TYPE
       </AppText>
       <View style={styles.section}>
         { Object.keys(types).map((f, i) => {
-          console.log('test', getType());
           return <RadioButton key={i}
             checked={f === getType()}
-            toggle={() => handleChooseType(f)}
+            onPress={() => handleChooseType(f)}
             label={f.toUpperCase()}
           />
         })}
-        </View>
-      <AppText textStyle={[styles.h2, styles.sectionHeader]}>
+      </View>
+      <AppText textStyle={styles.h2} style={styles.sectionHeader}>
         INSTRUMENTS
       </AppText>
       <View style={styles.section}>
         { roleKeys.map((f, i) => (
           <CheckBox key={i}
             checked={roles[f]}
-            toggle={() => handleRoleChange(f)}
+            onPress={() => handleRoleChange(f)}
             label={f.toUpperCase()}
           />
         ))}

@@ -6,7 +6,7 @@ import styles from './styles.js';
 import Check from '../../images/icons/check_icon.png';
 import AppText from '../../components/AppText';
 
-const CheckBox = ({ toggle, checked, label, disabled }) => {
+const CheckBox = ({ onPress, checked, label, disabled }) => {
 
   const disabledStyles = disabled
     ? {
@@ -15,7 +15,7 @@ const CheckBox = ({ toggle, checked, label, disabled }) => {
     : {};
   return (
     <TouchableOpacity style={styles.container}
-      onPress={disabled ? null : toggle}
+      onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >
       <View style={[styles.box, disabledStyles]}>
@@ -34,7 +34,7 @@ const CheckBox = ({ toggle, checked, label, disabled }) => {
 };
 
 CheckBox.propTypes = {
-  toggle: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
   disabled: PropTypes.bool,

@@ -23,6 +23,7 @@ class DefaultContainer extends Component {
   }
 
   render() {
+    // console.log('DefaultContainer, render');
     const { loading, navigation, headerChildren, children } = this.props;
     const home = navigation ? ()=>navigation.popToTop() : ()=>{};
     if (loading) {
@@ -48,9 +49,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 7,
+    paddingBottom: 0,
   },
   body: {
-    marginTop: 60,
+    marginTop: 0,
   }
 });
 

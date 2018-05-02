@@ -4,6 +4,17 @@ const { height, width } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     padding: 10,
+    paddingTop: 0,
+    alignItems: 'center',
+  },
+  photoTouch: {
+    width: 150,
+    height: 150,
+    backgroundColor: 'grey',
+  },
+  imageUpload: {
+    marginTop: -0,
+    marginBottom: 20,
   },
   autocomplete: {
     position: 'absolute',
@@ -43,15 +54,16 @@ export default StyleSheet.create({
     color: 'rgba(220,220,255,0.7)',
   },
   sectionHeader: {
-    marginTop: 20,
-    marginBottom: 15,
+    // marginTop: 10,
+    marginBottom: 12,
     marginLeft: 15,
-    textAlign: 'left',
+    alignSelf: 'flex-start',
   },
   section: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    alignSelf: 'flex-start',
   },
   error: {
     color: 'red',

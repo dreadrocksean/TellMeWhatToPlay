@@ -107,7 +107,7 @@ class Setlist extends Component {
   connectWebSocket() {
 
     //This is the server under /example/server published on azure.
-    const connection = signalr.hubConnection('http://roadiethreeeightapi.azurewebsites.net/chat');
+    const connection = signalr.hubConnection('http://roadiethreeeightapi.azurewebsites.net');
     // const connection = signalr.hubConnection('https://react-native-signalr.olofdahlbom.se');
     connection.logging = true;
 

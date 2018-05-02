@@ -6,7 +6,7 @@ import styles from './styles.js';
 import Check from '../../images/icons/check_icon.png';
 import AppText from '../../components/AppText';
 
-const RadioButton = ({ toggle, checked, label, disabled }) => {
+const RadioButton = ({ onPress, checked, label, disabled }) => {
 
   const disabledStyles = disabled
     ? {
@@ -17,7 +17,7 @@ const RadioButton = ({ toggle, checked, label, disabled }) => {
   const bg = checked ? 'white' : null;
   return (
     <TouchableOpacity style={styles.container}
-      onPress={disabled ? null : toggle}
+      onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >
       <View style={[styles.circle, {backgroundColor: bg}, disabledStyles]}>
@@ -33,7 +33,7 @@ const RadioButton = ({ toggle, checked, label, disabled }) => {
 };
 
 RadioButton.propTypes = {
-  toggle: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
   disabled: PropTypes.bool,

@@ -60,12 +60,6 @@ class ArtistFormWrapper extends Component {
 		};
     // this.upload();
 	}
-  componentWillReceiveProps () {
-  }
-
-  componentDidMount () {
-    console.log('this.props', this.props);
-  }
 
   resetErrorMessage() {
   	this.setState({errorMessage: ''});
@@ -154,11 +148,12 @@ class ArtistFormWrapper extends Component {
   }
 
   showCam() {
+    console.log('showCam props', this.props);
     this.props.navigation.navigate('CameraScreen');
   }
 
   render() {
-    // console.log('render state', this.state);
+    // console.log('render state', this.props);
     const imgW = (width - 40) / 4;
     const showPhotos = this.state.photos.length;
     return (
@@ -175,13 +170,8 @@ class ArtistFormWrapper extends Component {
           roles={this.state.roles}
           types={this.state.types}
           getType={this.getType.bind(this)}
+          onPressCam={this.showCam.bind(this)}
         />
-        {/*<TouchableOpacity
-          style={styles.cambtn}
-          onPress={this.showCam}
-        >
-          <Text>CAM</Text>
-        </TouchableOpacity>*/}
       </View>
     );
 	}
@@ -204,10 +194,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => {
+  // console.log('state', state);
+  return {
   user: state.login.user,
   artist: state.login.artist,
-})
+}};
 
 const mapDispatchToProps = dispatch => ({
   loginArtist: payload => dispatch(loginArtist(payload))

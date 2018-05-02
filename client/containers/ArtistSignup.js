@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import ArtistFormWrapper from '../services/artist/ArtistFormWrapper';
 
 import DefaultContainer from './DefaultContainer';
+import AppText from '../components/AppText';
 
 class ArtistSignup extends Component {
 
-  componentDidMount() {
-    // console.log('props', this.props);
+  state = {
+    headingText: '',
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate userType', this.props.userType);
     this.navigateTo();
   }
 
@@ -22,18 +22,26 @@ class ArtistSignup extends Component {
     // console.log('getRouteName', userType, user, artist);
     if(user && !artist) {
       routeName = 'ArtistSignup';
+      this.setState({headingText: 'ARTIST PROFILE'})
     }
     if(user && artist) {
       routeName = 'ArtistAdmin';
+      this.setState({headingText: ' ARTIST ADMIN'})
     }
     if (!routeName) {return;}
     this.props.navigation.navigate(routeName, {name: routeName});
   }
 
+  renderHeaderChildren() {
+    return <AppText>{this.state.headingText}</AppText>
+  }
+
   render() {
     return (
-      <DefaultContainer style={styles.body}>
-        <ArtistFormWrapper />
+      <DefaultContainer style={styles.body}
+        headerChildren={this.renderHeaderChildren()}
+      >
+        <ArtistFormWrapper navigation={this.props.navigation}/>
       </DefaultContainer>
     )
   }

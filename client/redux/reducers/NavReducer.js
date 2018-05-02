@@ -2,7 +2,7 @@
 import AppNavigation from '../../navigation/AppNavigation';
 
 const navReducer = (state, action) => {
-  // console.log('action', action);
+  // console.log('navReducer action', action);
   const newState = AppNavigation.router.getStateForAction(action, state)
   return newState || state
 };

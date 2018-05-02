@@ -15,12 +15,14 @@ const Separator = ({ label }) => {
     <View style={styles.container}
     >
       {renderLine()}
-      <AppText
-        textStyle={styles.labelText}
-        style={styles.label}
-      >
-        {label}
-      </AppText>
+      { label && (
+        <AppText
+          textStyle={styles.labelText}
+          style={styles.label}
+        >
+          {label}
+        </AppText>
+      )}
       {renderLine()}
     </View>
   );
