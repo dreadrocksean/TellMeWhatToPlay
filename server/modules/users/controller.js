@@ -3,7 +3,7 @@ import User from './model';
 export const createUser = async (req, res) => {
 	const { email, password } = req.body;
 	const newUser = new User({ email, password });
-	console.log('newUser Model', newUser);
+	// console.log('newUser Model', newUser);
 
 	try {
 		return res.status(201).json({ user: await newUser.save() });
