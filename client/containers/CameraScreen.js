@@ -1,7 +1,11 @@
 import { Constants, Camera, FileSystem, Permissions } from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Slider, Vibration } from 'react-native';
+import { connect } from 'react-redux';
+
 import GalleryScreen from './GalleryScreen';
+import { addArtistPhoto } from '../redux/actions/ActionCreator';
+
 import isIPhoneX from 'react-native-is-iphonex';
 
 const landmarkSize = 2;
@@ -22,7 +26,7 @@ const wbOrder = {
   incandescent: 'auto',
 };
 
-export default class CameraScreen extends React.Component {
+class CameraScreen extends React.Component {
   state = {
     flash: 'off',
     zoom: 0,
@@ -132,20 +136,27 @@ export default class CameraScreen extends React.Component {
   	console.warn('Faces detection error:', state);
   }
 
+  onChoose(imageURL) {
+    console.log('imageURL', imageURL);
+    this.props.addArtistPhoto(imageURL);
+    this.props.navigation.goBack();
+  }
+
   renderGallery() {
     return <GalleryScreen
     	onPress={this.toggleView.bind(this)}
-    	onChoose={this.props.onChoose}
+    	onChoose={this.onChoose.bind(this)}
     />;
   }
 
-  renderFace({ bounds, faceID, rollAngle, yawAngle }) {
+  renderFace({ bounds, faceID, rollAngle, yawAngle, pitchAngle, smilingProbability }) {
     return (
       <View
         key={faceID}
         transform={[
           { perspective: 600 },
           { rotateZ: `${rollAngle.toFixed(0)}deg` },
+          { rotateX: `${pitchAngle.toFixed(0)}deg` },
           { rotateY: `${yawAngle.toFixed(0)}deg` },
         ]}
         style={[
@@ -159,6 +170,7 @@ export default class CameraScreen extends React.Component {
         <Text style={styles.faceText}>ID: {faceID}</Text>
         <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
         <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
+        <Text style={styles.faceText}>😁 {(smilingProbability * 100).toFixed(0)}%</Text>
       </View>
     );
   }
@@ -235,8 +247,8 @@ export default class CameraScreen extends React.Component {
         whiteBalance={this.state.whiteBalance}
         ratio={this.state.ratio}
         faceDetectionLandmarks={Camera.Constants.FaceDetection.Landmarks.all}
-        onFacesDetected={this.onFacesDetected}
-        onFaceDetectionError={this.onFaceDetectionError}
+        onFacesDetected={this.onFacesDetected.bind(this)}
+        onFaceDetectionError={this.onFaceDetectionError.bind(this)}
         focusDepth={this.state.depth}>
         <View
           style={{
@@ -313,6 +325,7 @@ export default class CameraScreen extends React.Component {
   }
 
   render() {
+    console.log('CameraScreen render props', this.props);
     const cameraScreenContent = this.state.permissionsGranted
       ? this.renderCamera()
       : this.renderNoPermissions();
@@ -399,3 +412,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
+
+const mapDispatchToProps = dispatch => ({
+  addArtistPhoto:  payload => dispatch(addArtistPhoto(payload))
+});
+
+export default connect(null, mapDispatchToProps)(CameraScreen);

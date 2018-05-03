@@ -11,7 +11,7 @@ const ImageUpload = ({ label, style, onPress, source }) => {
 
   const Icon = source ? IconWhite : IconGrey;
   const textColor = {color: source ? '#f3f3f3' : '#bbbbbb'};
-
+  console.log('ImageUpload source', source);
   return (
     <TouchableOpacity style={[style, styles.container]}
       onPress={onPress}

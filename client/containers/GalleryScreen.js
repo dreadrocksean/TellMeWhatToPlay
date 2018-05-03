@@ -140,8 +140,8 @@ export default class GalleryScreen extends React.Component {
         </View>
         <ScrollView contentComponentStyle={{ flex: 1 }}>
           <View style={styles.pictures}>
-            {this.state.photos.map(photoUri => (
-              <TouchableOpacity
+            {this.state.photos.map((photoUri, i) => (
+              <TouchableOpacity key={i}
               	onPress={() => this.props.onChoose(photoUri)}
               >
               	<View style={styles.pictureWrapper} key={photoUri}>

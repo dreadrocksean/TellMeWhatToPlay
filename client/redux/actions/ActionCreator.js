@@ -56,6 +56,11 @@ const offAir = () => ({
   type: AT.OffAir
 });
 
+const addArtistPhoto = imageURL => ({
+  type: AT.addArtistPhoto,
+  payload: imageURL,
+});
+
 export {
   incrementVotes,
   decrementVotes,
@@ -70,4 +75,5 @@ export {
   navigateToLogoutScreen,
   onAir,
   offAir,
+  addArtistPhoto,
 };

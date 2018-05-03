@@ -11,6 +11,7 @@ const RegisterSuccess = 'REGISTER_SUCCESS';
 const NavigateToLogoutScreen = 'NAVIGATE_TO_LOGOUT_SCREEN';
 const OnAir = 'ON_AIR';
 const OffAir = 'OFF_AIR';
+const addArtistPhoto = 'ADD_ARTIST_PHOTO';
 
 export {
   IncrementVotes,
@@ -25,4 +26,5 @@ export {
   NavigateToLogoutScreen,
   OnAir,
   OffAir,
+  addArtistPhoto,
 };

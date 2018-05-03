@@ -153,7 +153,7 @@ class ArtistFormWrapper extends Component {
   }
 
   render() {
-    // console.log('render state', this.props);
+    console.log('ArtistFormWrapper render state', this.props);
     const imgW = (width - 40) / 4;
     const showPhotos = this.state.photos.length;
     return (
@@ -171,6 +171,7 @@ class ArtistFormWrapper extends Component {
           types={this.state.types}
           getType={this.getType.bind(this)}
           onPressCam={this.showCam.bind(this)}
+          photo={this.props.artistProfile.image}
         />
       </View>
     );
@@ -199,6 +200,7 @@ const mapStateToProps = state => {
   return {
   user: state.login.user,
   artist: state.login.artist,
+  artistProfile: state.artist,
 }};
 
 const mapDispatchToProps = dispatch => ({

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View } from 'react-native';
+import { FileSystem, FaceDetector, MediaLibrary } from 'expo';
 
 import testPhoto from '../../images/test_avatar.png';
 
@@ -32,7 +33,9 @@ const ArtistForm = ({
   return (
     <View style={styles.container}>
       <ImageUpload style={styles.imageUpload}
-        source={photo}
+        source={{
+          uri: `${FileSystem.documentDirectory}photos/${photo}`,
+        }}
         onPress={onPressCam}
       />
       <AppTextInput
