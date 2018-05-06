@@ -17,9 +17,7 @@ export default class GalleryScreen extends React.Component {
     FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'photos').then(photos => {
       if (this._mounted) {
         this.setState(
-          {
-            photos,
-          },
+          { photos, },
           this.detectFaces
         );
       }

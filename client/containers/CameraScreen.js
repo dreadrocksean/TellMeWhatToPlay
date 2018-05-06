@@ -137,8 +137,9 @@ class CameraScreen extends React.Component {
   }
 
   onChoose(imageURL) {
-    console.log('imageURL', imageURL);
-    this.props.addArtistPhoto(imageURL);
+    // console.log('imageURL', imageURL);
+    this.props.navigation.state.params.onChoosePhoto(imageURL);
+    // this.props.addArtistPhoto(imageURL);
     this.props.navigation.goBack();
   }
 
@@ -149,14 +150,13 @@ class CameraScreen extends React.Component {
     />;
   }
 
-  renderFace({ bounds, faceID, rollAngle, yawAngle, pitchAngle, smilingProbability }) {
+  renderFace({ bounds, faceID, rollAngle, yawAngle, smilingProbability }) {
     return (
       <View
         key={faceID}
         transform={[
           { perspective: 600 },
           { rotateZ: `${rollAngle.toFixed(0)}deg` },
-          { rotateX: `${pitchAngle.toFixed(0)}deg` },
           { rotateY: `${yawAngle.toFixed(0)}deg` },
         ]}
         style={[

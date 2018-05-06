@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, View, Image, TouchableOpacity, Text, CameraRoll, ScrollView } from 'react-native';
+import { Dimensions, StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
@@ -56,7 +56,7 @@ class ArtistFormWrapper extends Component {
       genre: artist.genre,
       roles,
 			errorMessage: '',
-      photos: [],
+      photo: artist.photo,
 		};
     // this.upload();
 	}
@@ -98,22 +98,30 @@ class ArtistFormWrapper extends Component {
       .filter(k => this.state.roles[k]);
   }
 
+  uploadImage(uri, cb) {
+    upload(uri, url => cb(url));
+  }
+
   async onSubmit() {
     const type = this.getType();
     const roles = this.getRoles();
     const {
       name,
-      artistImageURL,
       genre,
+      photo,
     } = this.state;
+    const imageURL = await this.uploadImage(photo);
+
+    // console.log('imageURL', imageURL);
     const artistData = {
       userId: this.props.user._id,
       name,
-      artistImageURL,
       genre,
       roles,
       type,
+      imageURL,
     }
+    // console.log('artist data', artistData); return;
     try {
       const response = await createArtist(artistData);
       this.props.loginArtist(response.artist);
@@ -124,38 +132,20 @@ class ArtistFormWrapper extends Component {
     }
   }
 
-  uploadImage(uri) {
-    upload(uri, url => {
-      this.setState({
-        artistImageURL: url,
-        photos: [],
-      });
-    });
-  }
-
-  cameraRoll() {
-    CameraRoll.getPhotos({
-       first: 100,
-       assetType: 'Photos',
-     })
-     .then(r => {
-       this.setState({ photos: r.edges });
-       console.log('test', r);
-     })
-     .catch(err => {
-       console.log('Error loading images', err);
-     });
+  onChoosePhoto(photoName) {
+    console.log('onChoosePhoto', photoName);
+    this.setState({ photo: photoName });
   }
 
   showCam() {
-    console.log('showCam props', this.props);
-    this.props.navigation.navigate('CameraScreen');
+    // console.log('showCam props', this.props);
+    this.props.navigation.navigate('CameraScreen', {onChoosePhoto: this.onChoosePhoto.bind(this)});
   }
 
   render() {
-    console.log('ArtistFormWrapper render state', this.props);
-    const imgW = (width - 40) / 4;
-    const showPhotos = this.state.photos.length;
+    // console.log('ArtistFormWrapper render state', this.props);
+    const { name, genre, roles, types, photo,
+      successMessage, errorMessage, } = this.state;
     return (
       <View>
         <ArtistForm
@@ -163,15 +153,15 @@ class ArtistFormWrapper extends Component {
           handleRoleChange={this.handleRoleChange.bind(this)}
           handleChooseType={this.handleChooseType.bind(this)}
           onSubmit={this.onSubmit.bind(this)}
-          genre={this.state.genre}
-          name={this.state.name}
-          errorMessage={this.state.errorMessage}
-          successMessage={this.state.successMessage}
-          roles={this.state.roles}
-          types={this.state.types}
+          genre={genre}
+          name={name}
+          errorMessage={errorMessage}
+          successMessage={successMessage}
+          roles={roles}
+          types={types}
           getType={this.getType.bind(this)}
           onPressCam={this.showCam.bind(this)}
-          photo={this.props.artistProfile.image}
+          photo={photo}
         />
       </View>
     );

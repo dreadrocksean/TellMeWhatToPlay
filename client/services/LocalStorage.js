@@ -9,24 +9,25 @@ export const saveStorage = async models => {
       .setItem(Object.keys(obj)[0], JSON.stringify(obj));
   };
   if (Array.isArray(models)) {
-    models.forEach(obj => {
-      if (obj) { setStorage(obj); }
+    const tuples = models.map(m => {
+      const key = m.keys[0];
+      return [ key, m[key] ]
     });
-  } else { setStorage(models); }
-
-  const test = await loadStorage('user');
-  console.log('test', test);
+    return multiSet(tuples);
+    // models.forEach(obj => {
+    //   if (obj) { setStorage(obj); }
+    // });
+  } else { return setStorage(models); }
 };
 
 export const loadStorage = async model => {
   try {
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
     const userJson = await AsyncStorage.getItem(model);
     // console.log('loadStorage', model, userJson);
-    if (!userJson) { throw('userJson is null')}
+    if (!userJson) { return null; }
     return JSON.parse(userJson)[model];
   } catch(e) {
     console.log(`Error getting storage ${model}: `, e);
-    return null;
   }
 };

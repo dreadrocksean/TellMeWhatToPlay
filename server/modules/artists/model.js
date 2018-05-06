@@ -24,7 +24,7 @@ const ArtistSchema = new Schema({
 		required: false,
 		default: false,
 	},
-	imageUrl: {
+	imageURL: {
 		type: String,
 	},
 	geoPosition: {

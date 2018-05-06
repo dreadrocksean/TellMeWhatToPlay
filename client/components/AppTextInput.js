@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 const AppTextInput = props => {
   const defaultProps = {
     editable: false,
+    hidePassword: true,
   }; 
   return <View style={styles.container}>
     <TextInput

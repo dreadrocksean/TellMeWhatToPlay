@@ -9,9 +9,11 @@ import loginButton from '../../images/buttons/login_btn.png';
 import eyeslashIcon from '../../images/icons/eyeslash_icon1.png';
 
 const UserForm = (props) => {
-  const {handleChange, email, password, fname, lname, zip,
+  const {hasAccount, onHasAccountChange, handleChange, fieldValues,
     onSubmit, errorMessage, togglePassword, hidePassword
   } = props;
+  console.log('UserForm fieldValues', fieldValues);
+  const { email, password, fname, lname, zip } = props.fieldValues;
   const fields = [
     {
       placeholder: 'Email', value: email,
@@ -39,28 +41,40 @@ const UserForm = (props) => {
     <View style={styles.container}>
       <View style={styles.form}>
         {
-          fields.map((field, i) => (
-            <AppTextInput key={i} 
-              placeholder={field.placeholder}
-              onChangeText={field.onChange}
-              value={field.value}
-              secureTextEntry={field.hidePassword}
-              icon={field.icon}
-            />
+          fields
+            .filter(f => (
+              f.placeholder === 'Email' ||
+              f.placeholder === 'Password' ||
+              !hasAccount
+            ))
+            .map((field, i) => (
+              <AppTextInput key={i} 
+                placeholder={field.placeholder}
+                onChangeText={field.onChange}
+                value={field.value}
+                secureTextEntry={field.hidePassword}
+                icon={field.icon}
+              />
           ))
         }
         <View>
           <TouchableOpacity
-            onPress={ () => onSubmit('SignUp') }>
-            <Image source={signupButton} />
+            onPress={ () => (
+              onSubmit(hasAccount ? 'LogIn' : 'SignUp')
+            )}>
+            <Image source={
+              hasAccount ? loginButton : signupButton
+            } />
           </TouchableOpacity>
           <AppText
             style={styles.label}
             textStyle={styles.labelText}
-          >ALREADY HAVE AN ACCOUNT? </AppText>
+          >
+            {hasAccount ? 'DON\'T' : 'ALREADY'} HAVE AN ACCOUNT?
+          </AppText>
           <TouchableOpacity
-            onPress={ () => onSubmit('LogIn') }>
-            <Image source={loginButton} />
+            onPress={ () => onHasAccountChange(!hasAccount) }>
+            <AppText>{hasAccount ? 'SIGNUP' : 'LOGIN'}</AppText>
           </TouchableOpacity>
         </View>
         <AppText textStyle={styles.error}>{errorMessage}</AppText>

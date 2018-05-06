@@ -4,7 +4,7 @@ import {
   TouchableHighlight, TouchableOpacity,
   Text, View, AsyncStorage, Image
 } from 'react-native';
-import { Constants, Camera, Font, Location, FileSystem, Permissions } from 'expo';
+import { Font } from 'expo';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import { Button as RNButton, Icon } from 'react-native-elements';
@@ -12,7 +12,7 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import { saveStorage, loadStorage } from '../services/LocalStorage';
 import { fetchUserArtist } from '../services/api';
-import { loginUser, loginArtist, logout } from '../redux/actions/ActionCreator';
+import { loginUser, loginArtist, logout, guestTypeFan, guestTypeArtist } from '../redux/actions/ActionCreator';
 import * as ActionTypes from '../redux/actions/ActionTypes';
 
 import DefaultContainer from './DefaultContainer';
@@ -45,14 +45,8 @@ class Options extends Component {
   constructor(props) {
     super(props);
     this.state = {showModal: false, photos: [], fontLoaded: false};
-    this.camera = null;
     this.checkLocalUserStorage();
     this.checkLocalArtistStorage();
-    FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos').catch(e => {
-      // console.log(e, 'Directory exists');
-    });
-    // console.log('constructor');
-
   }
 
   async componentDidMount() {
@@ -61,13 +55,9 @@ class Options extends Component {
       'montserrat-bold': require('../assets/fonts/montserrat/Montserrat-Bold.otf'),
       'montserrat-black': require('../assets/fonts/montserrat/Montserrat-Black.ttf'),
       'montserrat-regular': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+      'montserrat-thin': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
     });
     this.setState({fontLoaded: true});
-  }
-
-  async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ permissionsGranted: status === 'granted' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -88,17 +78,18 @@ class Options extends Component {
   async checkLocalUserStorage() {
     //Set store on mount
     try {
-      const user = await loadStorage('user');
-      if (!this.props.user && user) {
       // console.log('checkLocalUserStorage user', this.props);
+      const user = await loadStorage('user');
+    // console.log('Options user', user);
+      if (!this.props.user && user) {
         this.props.loginUser(user);
+        this.getArtist(user._id);
       } else if(!user && !this.props.user) {
         throw Error('No user exists');
       }
       updateHeader(this.props);
-      this.getArtist(user._id);
     } catch(err) {
-      // console.log('load storage error', err);
+        console.log('load storage error', err);
         this.setState({errorMessage: err});
         this.props.logout();
         updateHeader(this.props);
@@ -121,7 +112,11 @@ class Options extends Component {
   }
 
   async checkLocalArtistStorage() {
-    return await loadStorage('artist');
+    try {
+      await loadStorage('artist');
+    } catch(err) {
+      this.setState({errorMessage: err});
+    }
   }
 
   onClick(userType) {
@@ -132,20 +127,21 @@ class Options extends Component {
 
   getRouteName(userType) {
       // return 'UserSignup';
-      return 'ArtistSignup';
-    const { user, artist } = this.props;
-    // console.log('getRouteName', userType, user, artist);
-    if(userType === 'ARTIST' && !user) {
-      return 'UserSignup';
-    }
-    if(userType === 'ARTIST' && user && !artist) {
-      return 'ArtistSignup';
-    }
-    if(userType === 'ARTIST' && user && artist) {
-      return 'ArtistAdmin';
-    }
-    if(userType === 'FAN') {
-      return 'ArtistList';
+      // return 'ArtistSignup';
+
+    const { user, artist, authorized, guestTypeArtist, guestTypeFan } = this.props;
+    switch (userType) {
+      case 'ARTIST': {
+        guestTypeArtist();
+        if(!authorized) { return 'UserSignup'; }
+        else if(!artist) { return 'ArtistSignup'; }
+        return 'ArtistAdmin';
+      }
+      case 'FAN': {
+        guestTypeFan();
+        return 'ArtistList';
+      }
+      default: return null;
     }
   }
 
@@ -164,13 +160,6 @@ class Options extends Component {
         </View>
       </TouchableHighlight>
     )
-  }
-
-  async snap() {
-    if (this.camera) {
-      let photo = await this.camera.takePictureAsync();
-      console.log('photo', photo.uri);
-    }
   }
 
   toggleCheckbox() {
@@ -349,6 +338,8 @@ const mapDispatchToProps = dispatch => {
     logout: () => dispatch(logout()),
     loginUser: user => dispatch(loginUser(user)),
     loginArtist: artist => dispatch(loginArtist(artist)),
+    guestTypeFan: () => dispatch(guestTypeFan()),
+    guestTypeArtist: () => dispatch(guestTypeArtist()),
 }};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Options);

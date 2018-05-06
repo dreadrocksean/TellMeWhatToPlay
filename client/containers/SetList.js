@@ -8,19 +8,25 @@ import { HubConnection } from '@aspnet/signalr';
 import signalr from 'react-native-signalr';
 
 import listItemAvatar from '../images/test_avatar.png';
+import passwordIcon from '../images/icons/eyeslash_icon1.png';
+import continueButton from '../images/buttons/continue_btn.png';
 
 import { UserType } from '../redux/reducers/LoginReducer';
 
 import DefaultContainer from './DefaultContainer';
+import AppModal from '../components/Modal';
 import SongForm from './SongForm';
 import RoundImage from '../components/RoundImage';
 import AppText from '../components/AppText';
+import AppTextInput from '../components/AppTextInput';
 import SongItem from '../components/SongItem';
 import { updateHeader } from '../utils/UpdateHeader';
 
+import { loginUser } from '../redux/actions/ActionCreator';
 import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
   fetchLastFMSong, fetchLyrics} from '../services/api';
 import UserFormWrapper from '../services/user/UserFormWrapper';
+import { saveStorage } from '../services/LocalStorage';
 
 
 const { width, height } = Dimensions.get('window');
@@ -54,6 +60,9 @@ class Setlist extends Component {
       isArtist: props.userType === UserType.ARTIST,
       edit_email: '', edit_password: '',
       showModal: false,
+      email: '',
+      password: '',
+      hidePassword: true,
     };
     updateHeader(this.props);
   }
@@ -343,6 +352,32 @@ class Setlist extends Component {
     this.props.navigation.navigate('Options');
   }
 
+  onModalChange(field, value) {
+    this.setState({[field]: value});
+  }
+
+  togglePassword() {
+    this.setState({hidePassword: !this.state.hidePassword});
+  }
+
+  async continue() {
+    console.log('Setlist continue', this.state);
+    const { email, password } = this.state;
+    try {
+      const user = await fetchUser({ email, password });
+      console.log('Setlist continue', this.state);
+      if (user) {
+        this.setState({showModal: false});
+        this.props.loginUser(user);
+        await saveStorage({user});
+      } else {
+        this.setState({errorMessage: 'User not found'})
+      }
+    } catch(err) {
+      console.log('Error: user not found.', err);
+    }
+  }
+
   renderHeaderChildren() {
     const { name, genre } = this.state.artist;
     return (
@@ -440,40 +475,48 @@ class Setlist extends Component {
             );
           })}
         </ScrollView>
-        <Modal style={styles.modalContainer}
-          isVisible={showModal}
-          backdropColor={'#000'}
-          backdropOpacity={0.7}
-          animationIn={'zoomInDown'}
-          animationOut={'zoomOutUp'}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={1000}
-        >
-          <View>
-            <UserFormWrapper isArtist={isArtist} />
-            {this.renderButton(
-              'X',
-              () => {
-                this.setState({
-                  showModal: false,
-                })
-              }
-            )}
-          </View>
-        </Modal>
+      { showModal &&
+        <AppModal>
+          <AppText
+            style={{flex:1}}
+            textStyle={{fontFamily: 'montserrat-regular'}}
+          >LOG IN OR CREATE AN ACCOUNT</AppText>
+          <AppTextInput
+            style={{flex:1}}
+            placeholder='Email'
+            onChangeText={val => this.onModalChange.call(this, 'email', val)}
+            value={this.state.email}
+          />
+          <AppTextInput
+            style={{flex:1}}
+            placeholder='Password'
+            onChangeText={val => this.onModalChange.call(this, 'password', val)}
+            value={this.state.password}
+            hidePassword={this.state.hidePassword}
+            togglePassword={this.togglePassword.bind(this)}
+            icon={passwordIcon}
+          />
+          <TouchableOpacity style={{width: '100%', flex: 1}}
+            onPress={this.continue.bind(this)}>
+            <Image style={styles.image} source={continueButton} />
+          </TouchableOpacity>
+        </AppModal>
+      }
       </DefaultContainer>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  loginUser: payload => dispatch(loginUser(payload)),
+});
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.login.artist,
   userType: state.login.userType,
 });
-export default connect(mapStateToProps)(Setlist);
+export default connect(mapStateToProps, mapDispatchToProps)(Setlist);
 
 const styles = StyleSheet.create({
   container: {
@@ -517,4 +560,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 10,
   },
+  image: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: 'contain',
+  }
 });

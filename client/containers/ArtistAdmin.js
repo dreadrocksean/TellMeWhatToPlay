@@ -167,8 +167,7 @@ class ArtistAdmin extends Component {
   render() {
     const { user, onAir, showModal, errorMessage } = this.state;
     const { authorized, artist, navigation } = this.props;
-    console.log('test', artist.roles.join(' | '));
-    return (
+    return artist && (
       <DefaultContainer
         headerChildren={this.renderHeaderChildren()}
       >
@@ -176,7 +175,7 @@ class ArtistAdmin extends Component {
           {errorMessage && <AppText textStyle={styles.error}>{errorMessage}</AppText>}
           <View style={styles.top}>
             <RoundImage
-              source={listItemAvatar}
+              source={{uri: artist.imageURL}}
               style={{
                 size: 150,
                 borderColor: '#ffd72b',

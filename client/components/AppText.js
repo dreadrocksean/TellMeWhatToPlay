@@ -3,7 +3,7 @@ import { ViewPropTypes, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 const AppText = ({ style, textStyle, children }) => (
-  <View style={style}>
+  <View style={[style, {justifyContent: 'center'}]}>
     <Text style={[styles.text, textStyle]}>
       {children}
     </Text>
@@ -31,7 +31,7 @@ AppText.propTypes = {
     PropTypes.array,
     PropTypes.number,
   ]),
-  children: PropTypes.any.isRequired,
+  children: PropTypes.any,
 };
 
 export default AppText;
