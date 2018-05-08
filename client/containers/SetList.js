@@ -8,7 +8,6 @@ import { HubConnection } from '@aspnet/signalr';
 import signalr from 'react-native-signalr';
 
 import listItemAvatar from '../images/test_avatar.png';
-import passwordIcon from '../images/icons/eyeslash_icon1.png';
 import continueButton from '../images/buttons/continue_btn.png';
 
 import { UserType } from '../redux/reducers/LoginReducer';
@@ -62,7 +61,6 @@ class Setlist extends Component {
       showModal: false,
       email: '',
       password: '',
-      hidePassword: true,
     };
     updateHeader(this.props);
   }
@@ -356,10 +354,6 @@ class Setlist extends Component {
     this.setState({[field]: value});
   }
 
-  togglePassword() {
-    this.setState({hidePassword: !this.state.hidePassword});
-  }
-
   async continue() {
     console.log('Setlist continue', this.state);
     const { email, password } = this.state;
@@ -492,9 +486,7 @@ class Setlist extends Component {
             placeholder='Password'
             onChangeText={val => this.onModalChange.call(this, 'password', val)}
             value={this.state.password}
-            hidePassword={this.state.hidePassword}
-            togglePassword={this.togglePassword.bind(this)}
-            icon={passwordIcon}
+            secureTextEntry={true}
           />
           <TouchableOpacity style={{width: '100%', flex: 1}}
             onPress={this.continue.bind(this)}>

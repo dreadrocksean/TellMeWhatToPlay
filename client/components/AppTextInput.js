@@ -2,30 +2,49 @@ import React, { Component } from 'react';
 import { ViewPropTypes, StyleSheet, TextInput, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
-const AppTextInput = props => {
-  const defaultProps = {
-    editable: false,
-    hidePassword: true,
-  }; 
-  return <View style={styles.container}>
-    <TextInput
-      style={[styles.input, props.style]}
-      placeholder={props.placeholder}
-      placeholderTextColor='rgba(255,255,255,0.3)'
-      onChangeText={props.onChangeText}
-      value={props.value}
-      secureTextEntry={props.hidePassword}
-      editable={props.editable}
-    />
-    {props.icon && (
-      <TouchableOpacity onPress={props.togglePassword}>
-        <Image resizeMode='contain'
-          style={styles.inputIcon} source={props.icon}
-        />
-      </TouchableOpacity>
-    )}
-  </View>
-};
+import icon from '../images/icons/eyeslash_icon1.png'
+
+
+export default class AppTextInput extends Component {
+  static defaultProps = {
+    editable: true,
+  };
+
+  constructor(props) {
+    super(props);
+    this.togglePassword = this.togglePassword.bind(this);
+    this.state = {
+      showPassword: false,
+    };
+  }
+
+  togglePassword() {
+    this.setState({
+      showPassword: !this.state.showPassword,
+    });
+  }
+
+  render() {
+    return <View style={styles.container}>
+      <TextInput
+        style={[styles.input, this.props.style]}
+        placeholder={this.props.placeholder}
+        placeholderTextColor='rgba(255,255,255,0.3)'
+        onChangeText={this.props.onChangeText}
+        value={this.props.value}
+        secureTextEntry={this.props.secureTextEntry && !this.state.showPassword}
+        editable={this.props.editable}
+      />
+      {this.props.secureTextEntry && (
+        <TouchableOpacity onPress={this.togglePassword}>
+          <Image resizeMode='contain'
+            style={styles.inputIcon} source={icon}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
+  }
+}
 
 const styles = StyleSheet.create({
   text: {
@@ -68,5 +87,3 @@ AppTextInput.propTypes = {
   secureTextEntry: PropTypes.bool,
   editable: PropTypes.bool,
 };
-
-export default AppTextInput;

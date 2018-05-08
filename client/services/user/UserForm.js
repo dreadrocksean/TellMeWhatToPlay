@@ -52,8 +52,7 @@ const UserForm = (props) => {
                 placeholder={field.placeholder}
                 onChangeText={field.onChange}
                 value={field.value}
-                secureTextEntry={field.hidePassword}
-                icon={field.icon}
+                secureTextEntry={field.placeholder === 'Password'}
               />
           ))
         }
