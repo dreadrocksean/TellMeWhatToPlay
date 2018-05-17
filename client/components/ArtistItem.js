@@ -4,7 +4,7 @@ import { Button as RNButton, Icon } from 'react-native-elements';
 
 import ListItem from '../components/ListItem/';
 import AppText from '../components/AppText';
-import { listItemStyle } from './ListItem/listItemStyle';
+import listItemStyle from './ListItem/styles';
 import listItemBg from '../images/buttons/list_btn.png';
 import listItemAvatar from '../images/test_avatar.png';
 import geoMarkerIcon from '../images/icons/marker.png';

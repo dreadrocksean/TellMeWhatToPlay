@@ -8,13 +8,14 @@ import { HubConnection } from '@aspnet/signalr';
 import signalr from 'react-native-signalr';
 
 import listItemAvatar from '../images/test_avatar.png';
-import continueButton from '../images/buttons/continue_btn.png';
+import addIcon from '../images/icons/add_song_icon.png';
 
 import { UserType } from '../redux/reducers/LoginReducer';
 
 import DefaultContainer from './DefaultContainer';
-import AppModal from '../components/Modal';
+import FanSignup from '../containers/FanSignup';
 import SongForm from './SongForm';
+import AddSong from './AddSong';
 import RoundImage from '../components/RoundImage';
 import AppText from '../components/AppText';
 import AppTextInput from '../components/AppTextInput';
@@ -24,8 +25,8 @@ import { updateHeader } from '../utils/UpdateHeader';
 import { loginUser } from '../redux/actions/ActionCreator';
 import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
   fetchLastFMSong, fetchLyrics} from '../services/api';
-import UserFormWrapper from '../services/user/UserFormWrapper';
 import { saveStorage } from '../services/LocalStorage';
+import UserFormWrapper from '../services/user/UserFormWrapper';
 
 
 const { width, height } = Dimensions.get('window');
@@ -63,6 +64,7 @@ class Setlist extends Component {
       password: '',
     };
     updateHeader(this.props);
+    this.setShowModal = this.setShowModal.bind(this);
   }
 
   sendMessage() {
@@ -77,7 +79,7 @@ class Setlist extends Component {
     this.updateSongList();
     // updateHeader(this.props);
 
-    this.connectWebSocket();
+    // this.connectWebSocket();
 
 
     // const hubConnection = new HubConnection('http://roadiethreeeightapi.azurewebsites.net/chat');
@@ -194,6 +196,7 @@ class Setlist extends Component {
     try {
       const data = await this.props.fetchLastFMSong(title, artist);
       const songs = data.results.trackmatches.track.map(song => ({title:song.name, artist:song.artist, mbid:song.mbid}));
+    console.log('fetchLastFMSongList', songs);
       this.setState({
         titleComplete: (songs[0] || {}).title,
         artistComplete: (songs[0] || {}).artist,
@@ -287,6 +290,7 @@ class Setlist extends Component {
     const { authorized, artist, navigation } = this.props;
     const { isArtist, showModal } = this.state;
     const { navigate } = navigation;
+    console.log('vote status', isArtist, authorized, showModal);
     if (!isArtist && !authorized) {
       this.setState({showModal: true});
       return;
@@ -306,10 +310,7 @@ class Setlist extends Component {
   }
 
   handleChange(field) {
-    // const key = Object.keys(field)[0];
-    // this.setState({['edit_'+key]: field[key]});
     this.fetchLastFMSongList(field);
-    // this.setState(field);
   }
 
   handleEditChange(field) {
@@ -350,49 +351,29 @@ class Setlist extends Component {
     this.props.navigation.navigate('Options');
   }
 
-  onModalChange(field, value) {
-    this.setState({[field]: value});
-  }
-
-  async continue() {
-    console.log('Setlist continue', this.state);
-    const { email, password } = this.state;
-    try {
-      const user = await fetchUser({ email, password });
-      console.log('Setlist continue', this.state);
-      if (user) {
-        this.setState({showModal: false});
-        this.props.loginUser(user);
-        await saveStorage({user});
-      } else {
-        this.setState({errorMessage: 'User not found'})
-      }
-    } catch(err) {
-      console.log('Error: user not found.', err);
-    }
-  }
-
   renderHeaderChildren() {
     const { name, genre } = this.state.artist;
+    const headerPreface = this.state.isArtist ? 'MANAGE ' : '';
     return (
-      <View style={styles.artistInfoContainer}>
-        <RoundImage
-          source={listItemAvatar}
-          style={{size: 55}}
-        />
-        <View style={styles.artistInfo}>
-          <AppText
-            textStyle={[styles.text, {fontSize: 16, color: 'white'}]}
-          >SETLIST</AppText>
-          <AppText
-            textStyle={[styles.text, {fontSize: 13, color: '#2bfbff'}]}
-          >{name}</AppText>
-          <AppText
-            textStyle={[styles.text, {fontSize: 11, color: '#ff3a80'}]}
-          >{genre}</AppText>
-        </View>
-      </View>
+      <React.Fragment>
+        <TouchableOpacity
+          onPress={this.openAddForm.bind(this)}
+        >
+          <RoundImage
+            source={addIcon}
+            style={{size: 40, borderColor: 'transparent'}}
+          />
+        </TouchableOpacity>
+        <AppText
+          textStyle={[styles.text, {fontSize: 16, color: 'white'}]}
+        >{headerPreface}SETLIST</AppText>
+      </React.Fragment>
     );
+  }
+
+  setShowModal(show) {
+    console.log('setShowModal', show);
+    this.setState({showModal: show, add: show});
   }
 
   render() {
@@ -421,32 +402,6 @@ class Setlist extends Component {
         navigation={this.props.navigation}
         headerChildren={this.renderHeaderChildren()}
       >
-
-        {
-          isArtist && add && (
-            <SongForm
-              handleChange={this.handleChange.bind(this)}
-              onSubmit={this.addSong.bind(this)}
-              edit_title={edit_title}
-              edit_author={edit_author}
-              command={'Add'}
-              titleComplete={titleComplete}
-              artistComplete={artistComplete}
-            />
-          )
-        }
-        {
-          isArtist && !add && (
-            <RNButton
-              backgroundColor={'#8888ff'}
-              borderRadius={10}
-              icon={{name: 'music', type: 'font-awesome'}}
-              onPress={this.openAddForm.bind(this)}
-              title={'Add Song'}
-            />
-          )
-        }
-
         <ScrollView style={styles.scroll}
           pagingEnabled = {true}
         >
@@ -469,46 +424,27 @@ class Setlist extends Component {
             );
           })}
         </ScrollView>
-      { showModal &&
-        <AppModal>
-          <AppText
-            style={{flex:1}}
-            textStyle={{fontFamily: 'montserrat-regular'}}
-          >LOG IN OR CREATE AN ACCOUNT</AppText>
-          <AppTextInput
-            style={{flex:1}}
-            placeholder='Email'
-            onChangeText={val => this.onModalChange.call(this, 'email', val)}
-            value={this.state.email}
-          />
-          <AppTextInput
-            style={{flex:1}}
-            placeholder='Password'
-            onChangeText={val => this.onModalChange.call(this, 'password', val)}
-            value={this.state.password}
-            secureTextEntry={true}
-          />
-          <TouchableOpacity style={{width: '100%', flex: 1}}
-            onPress={this.continue.bind(this)}>
-            <Image style={styles.image} source={continueButton} />
-          </TouchableOpacity>
-        </AppModal>
-      }
+
+        <AddSong
+          showModal={isArtist && add}
+          setShowModal={this.setShowModal.bind(this)}
+          onSubmit={this.addSong.bind(this)}
+        />
+        <FanSignup
+          showModal={this.state.showModal}
+          setShowModal={this.setShowModal}
+        />
       </DefaultContainer>
     );
   }
 }
-
-const mapDispatchToProps = dispatch => ({
-  loginUser: payload => dispatch(loginUser(payload)),
-});
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.login.artist,
   userType: state.login.userType,
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Setlist);
+export default connect(mapStateToProps)(Setlist);
 
 const styles = StyleSheet.create({
   container: {
@@ -537,7 +473,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 36,
-    textAlign: 'left', 
+    // textAlign: 'left', 
     color: 'white',
     fontFamily: 'montserrat-regular',
   },

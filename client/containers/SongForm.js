@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     padding: 5,
     height: 40,
     borderColor: '#7a42f4',
-    borderWidth: 1
+    borderWidth: 1,
+    color: 'white',
   },
   submitButton: {
     flex: 1,

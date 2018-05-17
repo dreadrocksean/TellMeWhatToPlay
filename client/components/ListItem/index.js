@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dimensions, StyleSheet, View, TouchableOpacity } from 'react-native';
 
-import { listItemStyle } from './listItemStyle';
+import listItemStyle from './styles';
 
 const { width, height } = Dimensions.get('window');
 

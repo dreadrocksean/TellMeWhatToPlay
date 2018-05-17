@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View , Dimensions} from 'react-native';
+import { StyleSheet, ScrollView, TextInput, Text, Image, TouchableOpacity, View , Dimensions} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './Styles';
 import AppText from '../../components/AppText';
@@ -38,45 +39,49 @@ const UserForm = (props) => {
     },
   ];
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        {
-          fields
-            .filter(f => (
-              f.placeholder === 'Email' ||
-              f.placeholder === 'Password' ||
-              !hasAccount
+    <View>
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          style={styles.form}
+        >
+          {
+            fields
+              .filter(f => (
+                f.placeholder === 'Email' ||
+                f.placeholder === 'Password' ||
+                !hasAccount
+              ))
+              .map((field, i) => (
+                <AppTextInput key={i} 
+                  placeholder={field.placeholder}
+                  onChangeText={field.onChange}
+                  value={field.value}
+                  secureTextEntry={field.placeholder === 'Password'}
+                />
             ))
-            .map((field, i) => (
-              <AppTextInput key={i} 
-                placeholder={field.placeholder}
-                onChangeText={field.onChange}
-                value={field.value}
-                secureTextEntry={field.placeholder === 'Password'}
-              />
-          ))
-        }
-        <View>
-          <TouchableOpacity
-            onPress={ () => (
-              onSubmit(hasAccount ? 'LogIn' : 'SignUp')
-            )}>
-            <Image source={
-              hasAccount ? loginButton : signupButton
-            } />
-          </TouchableOpacity>
-          <AppText
-            style={styles.label}
-            textStyle={styles.labelText}
-          >
-            {hasAccount ? 'DON\'T' : 'ALREADY'} HAVE AN ACCOUNT?
-          </AppText>
-          <TouchableOpacity
-            onPress={ () => onHasAccountChange(!hasAccount) }>
-            <AppText>{hasAccount ? 'SIGNUP' : 'LOGIN'}</AppText>
-          </TouchableOpacity>
-        </View>
-        <AppText textStyle={styles.error}>{errorMessage}</AppText>
+          }
+          <View>
+            <TouchableOpacity
+              onPress={ () => (
+                onSubmit(hasAccount ? 'LogIn' : 'SignUp')
+              )}>
+              <Image source={
+                hasAccount ? loginButton : signupButton
+              } />
+            </TouchableOpacity>
+            <AppText
+              style={styles.label}
+              textStyle={styles.labelText}
+            >
+              {hasAccount ? 'DON\'T' : 'ALREADY'} HAVE AN ACCOUNT?
+            </AppText>
+            <TouchableOpacity
+              onPress={ () => onHasAccountChange(!hasAccount) }>
+              <AppText>{hasAccount ? 'SIGNUP' : 'LOG IN'}</AppText>
+            </TouchableOpacity>
+          </View>
+          <AppText textStyle={styles.error}>{errorMessage}</AppText>
+        </KeyboardAwareScrollView>
       </View>
     </View>
 )};

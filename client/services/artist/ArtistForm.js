@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, Image, TouchableOpacity, View } from 'react-native';
 import { FileSystem, FaceDetector, MediaLibrary } from 'expo';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import testPhoto from '../../images/test_avatar.png';
 
@@ -31,57 +32,59 @@ const ArtistForm = ({
   const roleKeys = Object.keys(roles);
 
   return (
-    <View style={styles.container}>
-      <ImageUpload style={styles.imageUpload}
-        source={{
-          uri: `${FileSystem.documentDirectory}photos/${photo}`,
-        }}
-        onPress={onPressCam}
-      />
-      <AppTextInput
-        textStyle={styles.input}
-        placeholder='Artist Name'
-        onChangeText={name => handleChange({name})}
-        value={name}
-      />
-      <AppTextInput
-        textStyle={styles.input}
-        placeholder='Music Genre'
-        onChangeText={genre => handleChange({genre})}
-        value={genre}
-      />
-      <Separator label='ROLES' />
-      <AppText textStyle={styles.h2} style={styles.sectionHeader}>
-        ARTIST TYPE
-      </AppText>
-      <View style={styles.section}>
-        { Object.keys(types).map((f, i) => {
-          return <RadioButton key={i}
-            checked={f === getType()}
-            onPress={() => handleChooseType(f)}
-            label={f.toUpperCase()}
-          />
-        })}
+    <KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <ImageUpload style={styles.imageUpload}
+          source={{
+            uri: `${FileSystem.documentDirectory}photos/${photo}`,
+          }}
+          onPress={onPressCam}
+        />
+        <AppTextInput
+          textStyle={styles.input}
+          placeholder='Artist Name'
+          onChangeText={name => handleChange({name})}
+          value={name}
+        />
+        <AppTextInput
+          textStyle={styles.input}
+          placeholder='Music Genre'
+          onChangeText={genre => handleChange({genre})}
+          value={genre}
+        />
+        <Separator label='ROLES' />
+        <AppText textStyle={styles.h2} style={styles.sectionHeader}>
+          ARTIST TYPE
+        </AppText>
+        <View style={styles.section}>
+          { Object.keys(types).map((f, i) => {
+            return <RadioButton key={i}
+              checked={f === getType()}
+              onPress={() => handleChooseType(f)}
+              label={f.toUpperCase()}
+            />
+          })}
+        </View>
+        <AppText textStyle={styles.h2} style={styles.sectionHeader}>
+          INSTRUMENTS
+        </AppText>
+        <View style={styles.section}>
+          { roleKeys.map((f, i) => (
+            <CheckBox key={i}
+              checked={roles[f]}
+              onPress={() => handleRoleChange(f)}
+              label={f.toUpperCase()}
+            />
+          ))}
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={ onSubmit }>
+          <Image source={createProfile} style={styles.image} />
+        </TouchableOpacity>
+        <AppText textStyle={styles.error}>{errorMessage}</AppText>
       </View>
-      <AppText textStyle={styles.h2} style={styles.sectionHeader}>
-        INSTRUMENTS
-      </AppText>
-      <View style={styles.section}>
-        { roleKeys.map((f, i) => (
-          <CheckBox key={i}
-            checked={roles[f]}
-            onPress={() => handleRoleChange(f)}
-            label={f.toUpperCase()}
-          />
-        ))}
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={ onSubmit }>
-        <Image source={createProfile} style={styles.image} />
-      </TouchableOpacity>
-      <AppText textStyle={styles.error}>{errorMessage}</AppText>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -29,7 +29,7 @@ export default class AppTextInput extends Component {
       <TextInput
         style={[styles.input, this.props.style]}
         placeholder={this.props.placeholder}
-        placeholderTextColor='rgba(255,255,255,0.3)'
+        placeholderTextColor={this.props.placeholderTextColor || 'rgba(255,255,255,0.3)'}
         onChangeText={this.props.onChangeText}
         value={this.props.value}
         secureTextEntry={this.props.secureTextEntry && !this.state.showPassword}
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     borderRadius: 15,
-
   },
   inputIcon: {
     width: 25,
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
 
 AppTextInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  onChangeText: PropTypes.func.isRequired,
+  onChangeText: PropTypes.func,
   value: PropTypes.any,
   secureTextEntry: PropTypes.bool,
   editable: PropTypes.bool,

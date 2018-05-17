@@ -57,8 +57,3 @@ const styles = StyleSheet.create({
 });
 
 export default DefaultContainer;
-
-// const mapStateToProps = state => ({
-//   authorized: state.login.authorized,
-// });
-// export default connect(mapStateToProps)(DefaultContainer);

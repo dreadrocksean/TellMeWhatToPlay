@@ -1,29 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
-  Dimensions, StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
+  StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
 } from 'react-native';
 import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
 import { Button as RNButton, Icon } from 'react-native-elements';
-import { onAir, offAir, loginArtist, logout } from '../redux/actions/ActionCreator';
-import { updateArtist } from '../services/api';
+
+import { onAir, offAir, loginArtist, logout } from '../../redux/actions/ActionCreator';
+import { updateArtist } from '../../services/api';
 // import { Provider, Subscribe, Container } from 'unstated';
 
-import listItemAvatar from '../images/test_avatar.png';
+import listItemAvatar from '../../images/test_avatar.png';
 
-import DefaultContainer from './DefaultContainer';
-import AppText from '../components/AppText';
-import RoundImage from '../components/RoundImage';
-import { updateHeader } from '../utils/UpdateHeader';
-import { scale, verticalScale, moderateScale } from '../utils/Scales';
+import { styles } from './styles';
 
-import onAirButton from '../images/buttons/onair_btn.png';
-import offAirButton from '../images/buttons/offair_btn.png';
-import editIcon from '../images/icons/edit_btn.png';
-import manageSetlistButton from '../images/buttons/manage_btn.png';
-import logoutButton from '../images/buttons/logout_btn.png';
+import DefaultContainer from '../DefaultContainer';
+import AppText from '../../components/AppText';
+import RoundImage from '../../components/RoundImage';
+import { updateHeader } from '../../utils/UpdateHeader';
+import { scale, verticalScale, moderateScale } from '../../utils/Scales';
 
-const {height, width} = Dimensions.get('window');
+import onAirButton from '../../images/buttons/onair_btn.png';
+import offAirButton from '../../images/buttons/offair_btn.png';
+import editIcon from '../../images/icons/edit_btn.png';
+import manageSetlistButton from '../../images/buttons/manage_btn.png';
+import logoutButton from '../../images/buttons/logout_btn.png';
 
 class ArtistAdmin extends Component {
 
@@ -59,7 +60,7 @@ class ArtistAdmin extends Component {
 
   async componentDidMount() {
     updateHeader(this.props);
-    this._getLocationAsync();
+    // this._getLocationAsync();
 
     // Image.getSize(myUri, (width, height) => {this.setState({width, height})});
   }
@@ -152,15 +153,13 @@ class ArtistAdmin extends Component {
 
   renderHeaderChildren() {
     return (
-      <View style={styles.iconsContainer}>
+      <Fragment>
         <Image style={styles.icon}
           source={editIcon}
           resizeMode={'cover'}
         />
-        <View style={{transform: [{translate: [35, 0]}]}}>
         <Text style={styles.headingText}>ARTIST</Text>
-        </View>
-      </View>
+      </Fragment>
     );
   }
 
@@ -222,117 +221,6 @@ class ArtistAdmin extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  iconsContainer: {
-    flexDirection: 'row',
-    width: '50%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // backgroundColor: 'grey',
-  },
-  icon: {
-    width: 45,
-    height: 45,
-  },
-  button: {
-    // flex: 1,
-    // width: null,
-    resizeMode: 'contain',
-  },
-  container: {
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: 5,
-    paddingBottom: 35,
-    backgroundColor: 'transparent',
-  },
-  top: {
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: '45%',
-    // backgroundColor: '#666',
-  },
-  middle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // height: 75,
-    // backgroundColor: '#888',
-  },
-  bottom: {
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 150,
-    // backgroundColor: '#aaa',
-  },
-  headingText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  title: {
-    color: 'white',
-    fontSize: 26,
-    fontWeight: 'normal',
-    textAlign: 'center',
-    fontFamily: 'montserrat-regular',
-  },
-  mainBox: {
-    alignItems: 'center',
-    width: '40%',
-  },
-  h2: {
-    fontSize: 12,
-    fontWeight:'normal',
-    color: '#ffb401',
-    fontFamily: 'montserrat-regular',
-  },
-  h3: {
-    fontSize: 16,
-    fontWeight:'normal',
-    color: '#fff',
-    textAlign: 'center',
-    fontFamily: 'montserrat-regular',
-  },
-  error: {
-    color: 'red',
-    fontSize: 20,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  onair: {
-    // flex: 1
-  },
-  onairButton: {
-    // flex: 1
-  },
-  hamburger: {
-    flex: 1
-  },
-  image: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'contain',
-  },
-  text: {
-    fontSize: 36,
-    textAlign: 'center', 
-  },
-  switch: {
-    // flex: 1,
-    alignItems: 'center',
-    transform: [{ scaleX: .8 }, { scaleY: .8 }]
-  },
-  backgroundImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: width,
-    height: height,
-    // resizeMode: 'cover',
-  },
-});
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,

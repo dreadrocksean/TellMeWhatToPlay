@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { StackNavigator } from 'react-navigation';
 import {
@@ -73,19 +73,21 @@ class ArtistList extends Component {
 
   renderHeaderChildren() {
     return (
-      <View style={styles.headerContainer}>
-        <Image style={styles.icon}
-          source={sortIcon}
-          resizeMode={'cover'}
-        />
-        <Image style={styles.icon}
-          source={findIcon}
-          resizeMode={'cover'}
-        />
+      <Fragment>
+        <View style={styles.icons}>
+          <Image style={styles.icon}
+            source={sortIcon}
+            resizeMode={'cover'}
+          />
+          <Image style={styles.icon}
+            source={findIcon}
+            resizeMode={'cover'}
+          />
+        </View>
         <AppText
           textStyle={[styles.text,]}
         >ARTIST LIST</AppText>
-      </View>
+      </Fragment>
     );
   }
 
@@ -119,20 +121,17 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 60,
   },
-  headerContainer: {
-    // backgroundColor: 'grey',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    flex: 1,
-  },
   icon: {
     width: 30,
     height: 30,
-    marginRight: 10,
+  },
+  icons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 65,
   },
   text: {
-    textAlign: 'right',
+    // textAlign: 'right',
     color: 'white',
     fontSize: 17,
     fontFamily: 'montserrat-regular',

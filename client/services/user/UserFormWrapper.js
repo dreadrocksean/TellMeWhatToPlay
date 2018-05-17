@@ -27,6 +27,7 @@ class UserFormWrapper extends Component {
       hidePassword: true,
       submitType: null,
 		};
+    this.dismissModal = this.dismissModal.bind(this);
 	}
 
   async componentDidUpdate() {
@@ -121,6 +122,12 @@ class UserFormWrapper extends Component {
     }
   }
 
+  dismissModal() {
+    this.setState({
+      showModal: false,
+    });
+  }
+
   render() {
     console.log('render state', this.state);
     const { email, password, fname, lname, zip,
@@ -128,7 +135,9 @@ class UserFormWrapper extends Component {
     } = this.state;
     const fieldValues = { email, password, fname, lname, zip };
 	  return successMessage ?
-      <AppModal>
+      <AppModal
+        dismiss={this.dismissModal}
+      >
           <View style={{width: '45%', flex:1}}>
             <Image style={[styles.image]}
               source={successIcon} />

@@ -1,4 +1,4 @@
-export const listItemStyle = {
+const styles = {
   content: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -66,3 +66,5 @@ export const listItemStyle = {
     // backgroundColor: '#ddd',
   },
 }
+
+export default styles;

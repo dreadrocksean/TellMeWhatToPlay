@@ -9,7 +9,7 @@ const RoundImage = props => {
   const size = {
     width: props.style.size,
     height: props.style.size,
-    borderRadius: props.style.size,
+    borderRadius: props.style.size / 2,
   };
   delete props.style.size;
   return (

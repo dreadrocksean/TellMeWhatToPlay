@@ -21,6 +21,18 @@ const styles = {
     borderColor: 'white',
     borderRadius: 10,
   },
+  closeWrapper: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    width: 34,
+    height: 34,
+  },
+  close: {
+    width: null,
+    height: null,
+    flex: 1,
+  },
 }
 
 export default styles;
