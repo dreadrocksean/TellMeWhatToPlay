@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Dimensions, StyleSheet, View, Image, TextInput, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, View, Image, FlatList, TextInput, TouchableOpacity } from 'react-native';
 
 import styles from './styles';
+import ArtistDropdown from './ArtistDropdown';
 import Modal from '../../components/Modal';
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
@@ -22,11 +23,17 @@ class AddSong extends Component {
     this.state = {
       title: '',
       artist: '',
+      songs: [],
+      titleComplete: '',
+      mbid: '',
+      edit_title: '',
+      edit_artist: '',
       errorMessage: null,
     };
     this.hide = this.hide.bind(this);
     this.addSong = this.addSong.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.onDropdownPress = this.onDropdownPress.bind(this);
   }
 
   hide() {
@@ -52,13 +59,11 @@ class AddSong extends Component {
     const artist = (key === 'artist') ? field[key] : this.state.edit_artist;
     try {
       const data = await fetchLastFMSong(title, artist);
-      const songs = data.results.trackmatches.track.map(song => ({title:song.name, artist:song.artist, mbid:song.mbid}));
+      const songs = data.results.trackmatches.track.map((song, i) => ({title:song.name, artist:song.artist, mbid:song.mbid, key:i}));
       this.setState({
+        songs,
+        title,
         titleComplete: (songs[0] || {}).title,
-        artistComplete: (songs[0] || {}).artist,
-        title: (songs[0] || {}).title,
-        artist: (songs[0] || {}).artist,
-        mbid: (songs[0] || {}).mbid,
         edit_title: title,
         edit_artist: artist,
       });
@@ -70,9 +75,8 @@ class AddSong extends Component {
 
   reset() {
     this.setState({
-      // add: true,
+      songs: [],
       titleComplete: '',
-      artistComplete: '',
       edit_title: '',
       edit_artist: '',
       title: '',
@@ -117,11 +121,22 @@ class AddSong extends Component {
     }
   }
 
+  onDropdownPress(song) {
+    this.setState({
+      songs: [],
+      title: song.title,
+      titleComplete: '',
+      artist: song.artist,
+      mbid: song.mbid,
+
+    });
+  }
+
   render() {
     const {
+      songs,
       errorMessage,
       titleComplete,
-      artistComplete,
       title,
       artist,
       edit_title,
@@ -148,21 +163,17 @@ class AddSong extends Component {
               style={styles.input}
               placeholder='Title'
               onChangeText={title => this.handleChange({title})}
-              value={edit_title}
+              value={title}
             />
           </View>
           <View style={styles.inputContainer}>
             <AppTextInput
-              style={styles.autocomplete}
-              placeholder={artistComplete || ''}
-              editable={false}
-            />
-            <AppTextInput
               style={styles.input}
-              placeholder={ artistComplete ? '' : 'Artist' }
+              placeholder={ 'Artist' }
               onChangeText={artist => this.handleChange({artist})}
-              value={edit_artist}
+              value={artist}
             />
+            <ArtistDropdown data={songs} onPress={this.onDropdownPress} />
           </View>
           <TouchableOpacity style={styles.imageWrapper}
             onPress={this.addSong}>
