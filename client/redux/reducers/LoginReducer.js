@@ -29,7 +29,7 @@ const loginReducer = (state = initialState, action) => {
       return { ...state, authorized: false, errorMessage: action.payload.errorMessage };
 
     case AT.GuestTypeFan:
-      return { ...state, userType: UserType.FAN, artist: null };
+      return { ...state, userType: UserType.FAN };
 
     case AT.GuestTypeArtist:
       return { ...state, userType: UserType.ARTIST };

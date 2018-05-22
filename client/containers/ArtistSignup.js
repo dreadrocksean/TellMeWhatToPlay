@@ -17,6 +17,11 @@ class ArtistSignup extends Component {
     this.navigateTo();
   }
 
+  // componentDidMount() {
+  //   console.log('ArtistSignup componentDidMount');
+  //   this.navigateTo();
+  // }
+
   navigateTo() {
     const { user, artist } = this.props;
     let routeName;

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 const SongSchema = new Schema({
-	artist_id: {
+	user_artist_id: {
 		type: Schema.Types.ObjectId,
 		ref: 'Artist',
 		required: true,
@@ -10,7 +10,7 @@ const SongSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	author: {
+	artist: {
 		type: String,
 		required: false,
 	},

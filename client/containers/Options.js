@@ -51,12 +51,17 @@ class Options extends Component {
 
   async componentDidMount() {
     // console.log('Options componentDidMount', this.props.navigation);
-    await Font.loadAsync({
-      'montserrat-bold': require('../assets/fonts/montserrat/Montserrat-Bold.otf'),
-      'montserrat-black': require('../assets/fonts/montserrat/Montserrat-Black.ttf'),
-      'montserrat-regular': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-      'montserrat-thin': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
-    });
+    try {
+      await Font.loadAsync({
+        'montserrat-bold': require('../assets/fonts/montserrat/Montserrat-Bold.otf'),
+        'montserrat-black': require('../assets/fonts/montserrat/Montserrat-Black.ttf'),
+        'montserrat-regular': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+        'montserrat-thin': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
+      });
+      console.log('Fonts loaded successfully');
+    } catch(err) {
+      console.log('Error loading fonts', err);
+    }
     this.setState({fontLoaded: true});
   }
 
@@ -80,7 +85,7 @@ class Options extends Component {
     try {
       // console.log('checkLocalUserStorage user', this.props);
       const user = await loadStorage('user');
-    // console.log('Options user', user);
+    // console.log('Options checkLocalUserStorage user', user);
       if (!this.props.user && user) {
         this.props.loginUser(user);
         this.getArtist(user._id);
@@ -121,7 +126,7 @@ class Options extends Component {
 
   onClick(userType) {
     const routeName = this.getRouteName(userType);
-    // console.log('onClick', routeName);
+    console.log('onClick', routeName);
     this.props.navigation.navigate(routeName, {name: routeName});
   }
 

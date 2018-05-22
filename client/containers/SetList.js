@@ -17,6 +17,7 @@ import FanSignup from '../containers/FanSignup';
 import SongForm from './SongForm';
 import AddSong from './AddSong';
 import RoundImage from '../components/RoundImage';
+import DeleteModal from '../components/DeleteModal';
 import AppText from '../components/AppText';
 import AppTextInput from '../components/AppTextInput';
 import SongItem from '../components/SongItem';
@@ -52,7 +53,7 @@ class Setlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: null, author: null, edit_title: null, edit_author: null,
+      title: null, song_artist: null, edit_title: null, edit_artist: null,
       loading: false, update: null, add: false, songs: [],
       titleComplete: '', artistComplete: '', mbid: '',
       artist: props.navigation.state.params.artist,
@@ -62,9 +63,15 @@ class Setlist extends Component {
       showModal: false,
       email: '',
       password: '',
+      showDeleteModal: false,
+      songDeleteId: null,
     };
     updateHeader(this.props);
     this.setShowModal = this.setShowModal.bind(this);
+    this.updateSongList = this.updateSongList.bind(this);
+    this.changeSongVisibility = this.changeSongVisibility.bind(this);
+    this.onDeleteSong = this.onDeleteSong.bind(this);
+    this.onDeleteConfirm = this.onDeleteConfirm.bind(this);
   }
 
   sendMessage() {
@@ -163,7 +170,6 @@ class Setlist extends Component {
 
   async updateSongList() {
     // this.setState({ loading: true });
-    console.log('updateSongList');
     try {
       const data = await this.props.fetchArtistSongs(this.state.artist._id);
       let songs = data.songs;
@@ -176,91 +182,28 @@ class Setlist extends Component {
           return 0;
         });
       }
-      // console.log('songs', songs);
-      // songs = songs.filter(song => song.visible);
-      this.setState({ songs, loading: false, update: false, add: false, title: '', author: '' });
+      this.setState({ songs, loading: false, update: false, add: false, title: '', song_artist: '' });
     } catch (err) {
       console.log('ERROR: ', err);
       this.setState({ loading: false, update: false, add: false });
     }
   }
 
-  async fetchLastFMSongList(field) {
-    const key = Object.keys(field)[0];
-    if (key === 'title' && !field[key]) {
-      this.openAddForm();
-      return;
-    }
-    const title = (key === 'title') ? field[key] : this.state.edit_title;
-    const artist = (key === 'artist') ? field[key] : this.state.edit_author;
-    try {
-      const data = await this.props.fetchLastFMSong(title, artist);
-      const songs = data.results.trackmatches.track.map(song => ({title:song.name, artist:song.artist, mbid:song.mbid}));
-    console.log('fetchLastFMSongList', songs);
-      this.setState({
-        titleComplete: (songs[0] || {}).title,
-        artistComplete: (songs[0] || {}).artist,
-        title: (songs[0] || {}).title,
-        author: (songs[0] || {}).artist,
-        mbid: (songs[0] || {}).mbid,
-        edit_title: title,
-        edit_author: artist,
-      });
-    } catch (err) {
-      console.error('ERROR: ', err);
-      this.openAddForm();
-    }
-  }
-
-  async addSong() {
-    const {title, author, mbid, artist} = this.state;
-    if (!title || !author) {
-      this.setState({add: false});
-      return;
-    }
-    try {
-      const newSong = await this.props.createSong({
-        title: title.trim(),
-        author: author.trim(),
-        artist_id: artist._id, mbid
-      });
-      console.log('Success!: ', newSong);
-      this.updateSongList();
-    } catch (err) {
-      console.error('ERROR creating song', err);
-      this.setState({add: false})
-    }
-  }
-
-  async updateSongItem(songId) {
-    const {edit_title, edit_author} = this.state;
-    try {
-      const updatedSong = await this.props.updateSong({ _id: songId, title: edit_title, author: edit_author });
-      console.log('Updated Success!: ', updatedSong);
-      this.setState({update: null})
-      this.updateSongList();
-      this.setState({edit_title: '', edit_author: ''});
-    } catch (err) {
-      console.error('ERROR updating song', err);
-      this.setState({update: null})
-    }
-  }
-
   showEditForm(i, songId) {
-    const {title, author} = this.state.songs.find( el => {
+    const {title, artist} = this.state.songs.find( el => {
       return el._id === songId;
     });
-    this.setState({edit_title: title, edit_author: author, update: i});
+    this.setState({edit_title: title, edit_artist: artist, update: i});
   }
 
   async showLyrics(i, songId) {
     const { navigate } = this.props.navigation;
-    const {title, author} = this.state.songs.find( el => {
+    const {title, artist} = this.state.songs.find( el => {
       return el._id === songId;
     });
 
     try {
-      const data = await this.props.fetchLyrics(title, author);
+      const data = await this.props.fetchLyrics(title, artist);
       const lyrics = data.result.track.text;
       navigate('Lyrics', { name: 'Lyrics', lyrics })
     } catch (err) {
@@ -268,16 +211,7 @@ class Setlist extends Component {
     }
   }
 
-  deleteSong(songId) {
-    try {
-      this.props.deleteSong(songId);
-      this.updateSongList();
-    } catch (err) {
-      console.error('ERROR deleting song', err);
-    }
-  }
-
-  async showSong(songId, visible) {
+  async changeSongVisibility(songId, visible) {
     try {
       await this.props.updateSong({ _id: songId, visible });
       this.updateSongList();
@@ -309,10 +243,6 @@ class Setlist extends Component {
     }
   }
 
-  handleChange(field) {
-    this.fetchLastFMSongList(field);
-  }
-
   handleEditChange(field) {
     const key = Object.keys(field)[0];
     this.setState({['edit_'+key]: field[key]});
@@ -324,9 +254,9 @@ class Setlist extends Component {
       titleComplete: '',
       artistComplete: '',
       edit_title: '',
-      edit_author: '',
+      edit_artist: '',
       title: '',
-      author: '',
+      song_artist: '',
     });
   }
 
@@ -372,18 +302,38 @@ class Setlist extends Component {
   }
 
   setShowModal(show) {
-    console.log('setShowModal', show);
     this.setState({showModal: show, add: show});
+  }
+
+  deleteSong(songId) {
+    try {
+      this.props.deleteSong(songId);
+      this.updateSongList();
+    } catch (err) {
+      console.error('ERROR deleting song', err);
+    }
+  }
+
+  onDeleteSong(id) {
+    this.setState({
+      showDeleteModal: true,
+      songDeleteId: id,
+    })
+  }
+
+  onDeleteConfirm(confirm) {
+    if (confirm) {
+      this.props.deleteSong(this.state.songDeleteId);
+      this.updateSongList();
+    }
+    this.setState({showDeleteModal: false});
   }
 
   render() {
     const { authorized } = this.props;
 
     const {
-      title, author, edit_title, edit_author,
-      loading, update, add, songs,
-      titleComplete, artistComplete, mbid,
-      artist, likes, isArtist, showModal
+      loading, add, songs, likes, isArtist, showModal, artist
     } = this.state;
 
     if (!isArtist && !artist.live) {
@@ -418,8 +368,8 @@ class Setlist extends Component {
                 artistLiveStatus={artist.live}
                 showEditForm={() => this.showEditForm(i, song._id)}
                 showLyrics={() => this.showLyrics(i, song._id)}
-                deleteSong={this.deleteSong.bind(this)}
-                showSong={this.showSong.bind(this)}
+                onDeleteSong={this.onDeleteSong.bind(this)}
+                changeSongVisibility={this.changeSongVisibility}
               />
             );
           })}
@@ -428,10 +378,16 @@ class Setlist extends Component {
         <AddSong
           showModal={isArtist && add}
           setShowModal={this.setShowModal.bind(this)}
-          onSubmit={this.addSong.bind(this)}
+          userArtistId={(this.props.artist || {})._id}
+          complete={this.updateSongList}
         />
         <FanSignup
           showModal={this.state.showModal}
+          setShowModal={this.setShowModal}
+        />
+        <DeleteModal
+          confirm={this.onDeleteConfirm}
+          showModal={this.state.showDeleteModal}
           setShowModal={this.setShowModal}
         />
       </DefaultContainer>

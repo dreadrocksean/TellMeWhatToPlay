@@ -11,17 +11,19 @@ const Modal = props => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.window}>
+      <View style={[styles.window, props.styles]}>
         {props.children}
-        <TouchableOpacity
-          style={styles.closeWrapper}
-          onPress = {props.dismiss}
-        >
-          <Image
-            source={closeIcon}
-            style={styles.close}
-          />
-        </TouchableOpacity>
+        {!props.hideCloseButton && (
+          <TouchableOpacity
+            style={styles.closeWrapper}
+            onPress = {props.dismiss}
+          >
+            <Image
+              source={closeIcon}
+              style={styles.close}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

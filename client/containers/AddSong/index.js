@@ -10,34 +10,38 @@ import AppTextInput from '../../components/AppTextInput';
 import FormError from '../../components/FormError';
 import addSongButton from '../../images/buttons/add_song_btn2.png';
 
-import { loginUser } from '../../redux/actions/ActionCreator';
-import { fetchUser, fetchLastFMSong } from '../../services/api';
+import { fetchUser, fetchLastFMSong, createSong } from '../../services/api';
 import { saveStorage } from '../../services/LocalStorage';
 
 const { width, height } = Dimensions.get('window');
+
+const resetState = {
+  title: '',
+  artist: '',
+  songs: [],
+  titleComplete: '',
+  mbid: '',
+  edit_title: '',
+  edit_artist: '',
+  errorMessage: null,
+};
 
 class AddSong extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      title: '',
-      artist: '',
-      songs: [],
-      titleComplete: '',
-      mbid: '',
-      edit_title: '',
-      edit_artist: '',
-      errorMessage: null,
-    };
+    this.state = resetState;
     this.hide = this.hide.bind(this);
     this.addSong = this.addSong.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.onDropdownPress = this.onDropdownPress.bind(this);
   }
 
+  reset() {
+    this.setState(resetState);
+  }
+
   hide() {
-    console.log('hide');
     this.props.setShowModal(false);
   }
 
@@ -46,10 +50,10 @@ class AddSong extends Component {
       [field]: value,
       errorMessage: null,
     });
-    this.fetchLastFMSongList(field);
+    this.fetchSongSuggestionList(field);
   }
 
-  async fetchLastFMSongList(field) {
+  async fetchSongSuggestionList(field) {
     const key = Object.keys(field)[0];
     if (key === 'title' && !field[key]) {
       this.reset();
@@ -73,51 +77,39 @@ class AddSong extends Component {
     }
   }
 
-  reset() {
-    this.setState({
-      songs: [],
-      titleComplete: '',
-      edit_title: '',
-      edit_artist: '',
-      title: '',
-      artist: '',
-    });
+  async updateSongItem(songId) {
+    const {edit_title, edit_artist} = this.state;
+    try {
+      const updatedSong = await this.props.updateSong({ _id: songId, title: edit_title, artist: edit_artist });
+      console.log('Updated Success!: ', updatedSong);
+      this.setState({update: null})
+      this.updateSongList();
+      this.setState({edit_title: '', edit_artist: ''});
+    } catch (err) {
+      console.error('ERROR updating song', err);
+      this.setState({update: null})
+    }
   }
 
   async addSong() {
     const {title, artist, mbid} = this.state;
     if (!title || !artist) {
-      this.setState({add: false});
+      this.setState({errorMessage: 'Fields cannot be empty'});
       return;
     }
     try {
-      const newSong = await this.props.createSong({
+      const newSong = await createSong({
         title: title.trim(),
         artist: artist.trim(),
-        artist_id: artist._id, mbid
+        user_artist_id: this.props.userArtistId,
+        mbid
       });
-      console.log('Success!: ', newSong);
-      this.updateSongList();
+      this.props.complete();
+      this.reset();
+      this.hide();
     } catch (err) {
       console.error('ERROR creating song', err);
-      this.setState({add: false})
-    }
-  }
-
-  async addSong() {
-    const { title, artist } = this.state;
-    try {
-      const response = await fetchLastFMSong({ title, artist });
-      console.log('Setlist addSong', response);
-      const song = response.song;
-      if (song) {
-        this.props.setShowModal(false);
-      } else {
-        this.setState({errorMessage: 'Song not found'})
-      }
-    } catch(err) {
-      console.log('Error: song not found.', err);
-      this.setState({errorMessage: err.message})
+      this.setState({errorMessage: `ERROR creating song: ${err}`});
     }
   }
 
@@ -186,8 +178,4 @@ class AddSong extends Component {
 
 }
 
-const mapDispatchToProps = dispatch => ({
-  loginUser: payload => dispatch(loginUser(payload)),
-});
-
-export default connect(null, mapDispatchToProps)(AddSong);
+export default AddSong;

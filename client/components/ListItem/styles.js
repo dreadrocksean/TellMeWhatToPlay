@@ -31,7 +31,7 @@ const styles = {
   },
   itemDisabled: {
     backgroundColor: '#e1e1e1',
-    shadowColor: 'grey',
+    shadowColor: '#bbb',
   },
   button: {
     position: 'absolute',

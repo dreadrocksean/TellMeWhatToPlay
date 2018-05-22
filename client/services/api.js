@@ -67,7 +67,7 @@ export const deleteSong = id => (
 );
 
 export const createSong = req => {
-	// console.log('req', req);
+	console.log('createSong req', req);
 	return fetch(`http://${getAPIUrl}/api/songs`, {
 		method: 'POST',
 		headers: {

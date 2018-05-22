@@ -40,14 +40,23 @@ class ArtistAdmin extends Component {
     };
   };
 
-  state = {
-    user: null,
-    onAir: false,
-    showModal: true,
-    edit_email: '',
-    edit_password: '',
-    location: null,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: null,
+      onAir: false,
+      showModal: true,
+      edit_email: '',
+      edit_password: '',
+      location: null,
+    };
+    this.editAdmin = this.editAdmin.bind(this);
+  }
+
+  editAdmin() {
+    this.props.navigation.navigate('ArtistSignup', {name: 'ArtistSignup'});
+  }
 
   componentDidUpdate(prevProps, prevState) {
     // console.log('componentDidUpdate', prevProps, this.props);
@@ -61,8 +70,6 @@ class ArtistAdmin extends Component {
   async componentDidMount() {
     updateHeader(this.props);
     // this._getLocationAsync();
-
-    // Image.getSize(myUri, (width, height) => {this.setState({width, height})});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -154,10 +161,12 @@ class ArtistAdmin extends Component {
   renderHeaderChildren() {
     return (
       <Fragment>
-        <Image style={styles.icon}
-          source={editIcon}
-          resizeMode={'cover'}
-        />
+        <TouchableOpacity onPress={this.editAdmin}>
+          <Image style={styles.icon}
+            source={editIcon}
+            resizeMode={'cover'}
+          />
+        </TouchableOpacity>
         <Text style={styles.headingText}>ARTIST</Text>
       </Fragment>
     );

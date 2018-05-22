@@ -1,9 +1,9 @@
 import Song from './model';
 
 export const createSong = async (req, res) => {
-	const { title, author, mbid, artist_id } = req.body;
+	const { title, artist, mbid, user_artist_id } = req.body;
 	console.log('req.body', req.body);
-	const newSong = new Song({ title, author, mbid, artist_id });
+	const newSong = new Song({ title, artist, mbid, user_artist_id });
 	console.log(newSong);
 
 	try {
@@ -22,11 +22,9 @@ export const fetchSongs = async (req, res) => {
 };
 
 export const fetchArtistSongs = async (req, res) => {
-	console.log('fetchArtistSongs', req.params);
-	const { artist_id } = req.params;
-	console.log('artist_id', artist_id);
+	const { user_artist_id } = req.params;
 	try {
-		return res.status(200).json({ songs: await Song.find({artist_id}) });
+		return res.status(200).json({ songs: await Song.find({user_artist_id}) });
 	} catch (e) {
 		return res.status(e.status).json({ error: true, message: 'Error getting artist songs: ' + e.message });
 	}

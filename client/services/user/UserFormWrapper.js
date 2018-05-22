@@ -168,11 +168,6 @@ const styles = StyleSheet.create({
   modalContent: {
     alignItems: 'center',
     justifyContent: 'space-around',
-    // width: '80%',
-    // backgroundColor: '#281955',
-    // borderWidth: 2,
-    // borderColor: 'white',
-    // borderRadius: 10,
   },
   image: {
     flex: 1,
