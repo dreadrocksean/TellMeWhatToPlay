@@ -14,9 +14,16 @@ export const styles = StyleSheet.create({
     width: 45,
     height: 45,
   },
+  buttonWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    // height: 50,
+  },
   button: {
-    // flex: 1,
-    // width: null,
+    flex: 1,
+    width: null,
+    height: null,
     resizeMode: 'contain',
   },
   container: {
@@ -28,22 +35,32 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   top: {
-    justifyContent: 'space-around',
+    flex: 5,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: '45%',
+    // marginBottom: 10,
     // backgroundColor: '#666',
   },
   middle: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     // height: 75,
     // backgroundColor: '#888',
   },
   bottom: {
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 150,
+    flex: 3,
+    paddingHorizontal: 20,
+    // height: 150,
     // backgroundColor: '#aaa',
+  },
+  bottomInner: {
+    flex:1,
+    // alignSelf:'stretch',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // backgroundColor: '#955'
   },
   headingText: {
     color: 'white',

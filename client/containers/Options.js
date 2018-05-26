@@ -126,7 +126,7 @@ class Options extends Component {
 
   onClick(userType) {
     const routeName = this.getRouteName(userType);
-    console.log('onClick', routeName);
+    // console.log('onClick', routeName);
     this.props.navigation.navigate(routeName, {name: routeName});
   }
 

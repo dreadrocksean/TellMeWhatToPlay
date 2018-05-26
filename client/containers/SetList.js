@@ -281,11 +281,10 @@ class Setlist extends Component {
     this.props.navigation.navigate('Options');
   }
 
-  renderHeaderChildren() {
-    const { name, genre } = this.state.artist;
-    const headerPreface = this.state.isArtist ? 'MANAGE ' : '';
-    return (
-      <React.Fragment>
+  renderHeaderLeft() {
+    const { imageURL, name, genre } = this.props.artist;
+    if (this.state.isArtist) {
+      return (
         <TouchableOpacity
           onPress={this.openAddForm.bind(this)}
         >
@@ -294,9 +293,43 @@ class Setlist extends Component {
             style={{size: 40, borderColor: 'transparent'}}
           />
         </TouchableOpacity>
-        <AppText
-          textStyle={[styles.text, {fontSize: 16, color: 'white'}]}
-        >{headerPreface}SETLIST</AppText>
+      );
+    }
+    return (
+      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center',}}>
+        <RoundImage
+          source={{uri: imageURL}}
+          style={{
+            size: 55,
+            borderColor: '#ffd72b',
+            borderWidth: 2,
+            marginRight: 10,
+          }}
+        />
+        <View style={{justifyContent: 'center'}} >
+          <AppText
+            textStyle={[styles.text, {fontSize: 18, textAlign: 'left', color: 'white'}]}
+          >SETLIST</AppText>
+          <AppText
+            textStyle={[styles.text, {fontSize: 14, textAlign: 'left', color: '#2bfbff'}]}
+          >{name}</AppText>
+          <AppText
+            textStyle={[styles.text, {fontSize: 10, textAlign: 'left', color: '#ff1668'}]}
+          >{genre}</AppText>
+        </View>
+      </View>
+    );
+  }
+
+  renderHeaderChildren() {
+    return (
+      <React.Fragment>
+        {this.renderHeaderLeft()}
+        {this.state.isArtist && (
+          <AppText
+            textStyle={[styles.text, {fontSize: 16, color: 'white'}]}
+          >MANAGE SETLIST</AppText>
+        )}
       </React.Fragment>
     );
   }

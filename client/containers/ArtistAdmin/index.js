@@ -15,6 +15,7 @@ import listItemAvatar from '../../images/test_avatar.png';
 import { styles } from './styles';
 
 import DefaultContainer from '../DefaultContainer';
+import AppImage from '../../components/AppImage';
 import AppText from '../../components/AppText';
 import RoundImage from '../../components/RoundImage';
 import { updateHeader } from '../../utils/UpdateHeader';
@@ -30,6 +31,7 @@ class ArtistAdmin extends Component {
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
+    console.log('ArtistAdmin params', params);
     const headerStyle = Object.assign({},
       params.bg ? {backgroundColor: params.bg} : null
     );
@@ -50,8 +52,16 @@ class ArtistAdmin extends Component {
       edit_email: '',
       edit_password: '',
       location: null,
+      avatarHeight: 0,
     };
     this.editAdmin = this.editAdmin.bind(this);
+    this.onLayout = this.onLayout.bind(this);
+    // console.log('manageSetlistButton', manageSetlistButton);
+  }
+
+  onLayout(e) {
+    const { height } = e.nativeEvent.layout;
+    this.setState({avatarHeight: height});
   }
 
   editAdmin() {
@@ -155,7 +165,7 @@ class ArtistAdmin extends Component {
   renderOnAirImage() {
     const { artist } = this.props;
     const source = (artist || {}).live ? onAirButton : offAirButton;
-    return <Image style={[styles.button, { height: 50 }]} source={source} />
+    return <AppImage source={source} />
   }
 
   renderHeaderChildren() {
@@ -173,7 +183,7 @@ class ArtistAdmin extends Component {
   }
 
   render() {
-    const { user, onAir, showModal, errorMessage } = this.state;
+    const { user, onAir, showModal, errorMessage, avatarHeight } = this.state;
     const { authorized, artist, navigation } = this.props;
     return artist && (
       <DefaultContainer
@@ -182,17 +192,23 @@ class ArtistAdmin extends Component {
         <View style={styles.container}>
           {errorMessage && <AppText textStyle={styles.error}>{errorMessage}</AppText>}
           <View style={styles.top}>
-            <RoundImage
-              source={{uri: artist.imageURL}}
+            <View onLayout={this.onLayout}
               style={{
-                size: 150,
-                borderColor: '#ffd72b',
-                borderWidth: 4,
+                flex: 6,
               }}
-            />
-            <AppText textStyle={styles.title}>{artist.name}</AppText>
-            <View>
-              <TouchableOpacity
+            >
+              <RoundImage
+                source={{uri: artist.imageURL}}
+                style={{
+                  size: avatarHeight,
+                  borderColor: '#ffd72b',
+                  borderWidth: 4,
+                }}
+              />
+            </View>
+            <AppText style={{flex: 2}} textStyle={styles.title}>{artist.name}</AppText>
+            <View style={{flex: 3}}>
+              <TouchableOpacity style={styles.buttonWrapper}
                 onPress={this.toggleOnAir.bind(this)}
               >
                 { this.renderOnAirImage() }
@@ -210,20 +226,18 @@ class ArtistAdmin extends Component {
             </View>
           </View>
           <View style={styles.bottom}>
-            <TouchableOpacity
-              onPress={this.navigate.bind(this, 'SetList')}
-            >
-              <Image
-                style={[styles.button, { height: 68 }]}
-                source={manageSetlistButton} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.logout.bind(this)}
-            >
-              <Image
-                style={[styles.button, { height: 55 }]}
-                source={logoutButton} />
-            </TouchableOpacity>
+            <View style={styles.bottomInner}>
+              <TouchableOpacity style={styles.buttonWrapper}
+                onPress={this.navigate.bind(this, 'SetList')}
+              >
+                <AppImage source={manageSetlistButton} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonWrapper}
+                onPress={this.logout.bind(this)}
+              >
+                <AppImage source={logoutButton} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </DefaultContainer>

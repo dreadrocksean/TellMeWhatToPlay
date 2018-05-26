@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Dimensions, StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import { FileSystem } from 'expo';
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
 import ArtistForm from './ArtistForm';
@@ -56,8 +57,9 @@ class ArtistFormWrapper extends Component {
       genre: artist.genre,
       roles,
 			errorMessage: '',
-      photo: artist.photo,
+      photo: artist.imageURL,
 		};
+    console.log('ArtistFormWrapper this.state.photo', this.state.photo);
     // this.upload();
 	}
 
@@ -134,7 +136,8 @@ class ArtistFormWrapper extends Component {
 
   onChoosePhoto(photoName) {
     console.log('onChoosePhoto', photoName);
-    this.setState({ photo: photoName });
+    const photo = `${FileSystem.documentDirectory}photos/${photoName}`;
+    this.setState({ photo });
   }
 
   showCam() {
@@ -144,8 +147,8 @@ class ArtistFormWrapper extends Component {
 
   render() {
     // console.log('ArtistFormWrapper render state', this.props);
-    const { name, genre, roles, types, photo,
-      successMessage, errorMessage, } = this.state;
+    const { name, genre, roles, types,
+      successMessage, errorMessage, photo} = this.state;
     return (
       <View>
         <ArtistForm

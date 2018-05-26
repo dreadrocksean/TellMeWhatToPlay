@@ -3,7 +3,8 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 60,
     paddingTop: 0,
     alignItems: 'center',
   },

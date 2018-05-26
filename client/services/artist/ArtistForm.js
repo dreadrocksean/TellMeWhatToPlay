@@ -30,14 +30,14 @@ const ArtistForm = ({
 }) => {
 
   const roleKeys = Object.keys(roles);
+  
+    console.log('ArtistForm photo', photo);
 
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <ImageUpload style={styles.imageUpload}
-          source={{
-            uri: `${FileSystem.documentDirectory}photos/${photo}`,
-          }}
+          source={{ uri: photo }}
           onPress={onPressCam}
         />
         <AppTextInput

@@ -6,6 +6,7 @@ export default StyleSheet.create({
   container: {
     marginTop: 15,
     backgroundColor: 'transparent',
+    paddingBottom: 60,
   },
   form: {
     padding: 10,
