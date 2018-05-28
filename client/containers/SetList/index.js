@@ -7,27 +7,28 @@ import Modal from 'react-native-modal';
 import { HubConnection } from '@aspnet/signalr';
 import signalr from 'react-native-signalr';
 
-import listItemAvatar from '../images/test_avatar.png';
-import addIcon from '../images/icons/add_song_icon.png';
+import { styles } from './styles';
+import listItemAvatar from '../../images/test_avatar.png';
+import addIcon from '../../images/icons/add_song_icon.png';
 
-import { UserType } from '../redux/reducers/LoginReducer';
+import { UserType } from '../../redux/reducers/LoginReducer';
 
-import DefaultContainer from './DefaultContainer';
-import FanSignup from '../containers/FanSignup';
-import SongForm from './SongForm';
-import AddSong from './AddSong';
-import RoundImage from '../components/RoundImage';
-import DeleteModal from '../components/DeleteModal';
-import AppText from '../components/AppText';
-import AppTextInput from '../components/AppTextInput';
-import SongItem from '../components/SongItem';
-import { updateHeader } from '../utils/UpdateHeader';
+import DefaultContainer from '../DefaultContainer';
+import FanSignup from '../../containers/FanSignup';
+import SongForm from '../SongForm';
+import AddSong from '../AddSong';
+import RoundImage from '../../components/RoundImage';
+import DeleteModal from '../../components/DeleteModal';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
+import SongItem from '../../components/SongItem';
+import { updateHeader } from '../../utils/UpdateHeader';
 
-import { loginUser } from '../redux/actions/ActionCreator';
+import { loginUser } from '../../redux/actions/ActionCreator';
 import { fetchArtistSongs, createSong, updateSong, deleteSong, voteSong, createUser, fetchUser,
-  fetchLastFMSong, fetchLyrics} from '../services/api';
-import { saveStorage } from '../services/LocalStorage';
-import UserFormWrapper from '../services/user/UserFormWrapper';
+  fetchLastFMSong, fetchLyrics} from '../../services/api';
+import { saveStorage } from '../../services/LocalStorage';
+import UserFormWrapper from '../../services/user/UserFormWrapper';
 
 
 const { width, height } = Dimensions.get('window');
@@ -282,7 +283,8 @@ class Setlist extends Component {
   }
 
   renderHeaderLeft() {
-    const { imageURL, name, genre } = this.props.artist;
+    const artist = this.props.artist || this.props.navigation.state.params.artist;
+    const { imageURL, name, genre } = artist;
     if (this.state.isArtist) {
       return (
         <TouchableOpacity
@@ -435,52 +437,4 @@ const mapStateToProps = state => ({
 });
 export default connect(mapStateToProps)(Setlist);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // marginTop: 20,
-    // backgroundColor: '#ddd',
-    alignItems: 'stretch',
-    // justifyContent: 'center',
-    padding: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  close: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    height: 25,
-    width: 25,
-  },
-  scroll: {
-    flex: 1,
-    marginTop: 10,
-  },
-  text: {
-    fontSize: 36,
-    // textAlign: 'left', 
-    color: 'white',
-    fontFamily: 'montserrat-regular',
-  },
-  artistInfo: {
-    height: 70,
-    justifyContent: 'center',
-    marginLeft: 10,
-    // backgroundColor: 'rgba(220,220,255,0.9)',
-  },
-  artistInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 10,
-  },
-  image: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'contain',
-  }
-});
+

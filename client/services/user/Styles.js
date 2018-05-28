@@ -8,6 +8,12 @@ export default StyleSheet.create({
     backgroundColor: 'transparent',
     paddingBottom: 60,
   },
+  buttonWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    // height: 50,
+  },
   form: {
     padding: 10,
   },

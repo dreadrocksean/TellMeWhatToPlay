@@ -4,10 +4,10 @@ import * as UserController from './controller';
 
 const routes = new Router();
 
-routes.post('/users', UserController.createUser);
-routes.get('/users', UserController.fetchUsers);
-routes.post('/user/:email', UserController.fetchUser);
-routes.put('/user/:id', UserController.updateUser);
-routes.delete('/user/:id', UserController.deleteUser);
+routes.post('/whatplay/users', UserController.createUser);
+routes.get('/whatplay/users', UserController.fetchUsers);
+routes.post('/whatplay/user/:email', UserController.fetchUser);
+routes.put('/whatplay/user/:id', UserController.updateUser);
+routes.delete('/whatplay/user/:id', UserController.deleteUser);
 
 export default routes;

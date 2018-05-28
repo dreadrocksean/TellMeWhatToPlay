@@ -7,7 +7,6 @@ const { width, height } = Dimensions.get('window');
 
 const RoundImage = props => {
   if (!props.style.size) {return null;}
-  console.log('RoundImage why am I here?', props.style.size);
   const size = {
     width: props.style.size,
     height: props.style.size,

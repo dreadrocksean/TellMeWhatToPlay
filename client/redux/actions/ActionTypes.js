@@ -12,6 +12,7 @@ const NavigateToLogoutScreen = 'NAVIGATE_TO_LOGOUT_SCREEN';
 const OnAir = 'ON_AIR';
 const OffAir = 'OFF_AIR';
 const addArtistPhoto = 'ADD_ARTIST_PHOTO';
+const artistEdit = 'ARTIST_EDIT';
 
 export {
   IncrementVotes,
@@ -27,4 +28,5 @@ export {
   OnAir,
   OffAir,
   addArtistPhoto,
+  artistEdit,
 };

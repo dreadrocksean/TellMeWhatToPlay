@@ -12,15 +12,18 @@ const apiSeeds = {
 };
 
 const getAPIUrl = (() => {
+	const protocol = 'http://';
+	const azureAPI = 'roadiethreeeightapi.azurewebsites.net/api';
 	const localIPs = [
 		// '172.20.10.3', // (hotspot)
 		// '192.168.1.238', // (Grinders)
 		// '192.168.0.65', // (Grinders)
+		'192.168.1.77', // (Eric)
 		'192.168.1.250',
 		'10.128.1.56',
 	];
-	// return 'https://roadiethreeeightapi.azurewebsites.net';
-	return `${localIPs[0]}:4000`;
+	// return `${protocol}${azureAPI}`;
+	return `${protocol}${localIPs[0]}:4000/api`;
 })()
 
 const handleErrors = response => {
@@ -33,14 +36,14 @@ const handleErrors = response => {
 export const fetchSongs = () => {
 	console.log('fetchSongs');
 	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
-	return fetch(`http://${getAPIUrl}/api/songs`)
+	return fetch(`${getAPIUrl}/songs`)
 		.then(res => res.json())
 		.catch(err => console.error('Network Error'))
 };
 
 export const fetchArtistSongs = artistId => {
 	console.log('test', artistId);
-	return fetch(`http://${getAPIUrl}/api/songs/artist/${artistId}`)
+	return fetch(`${getAPIUrl}/songs/artist/${artistId}`)
 		.then(res => res.json())
 		.catch(err => console.error('Network Error'))
 };
@@ -59,7 +62,7 @@ export const fetchLyrics = (title, artist) => {
 };
 
 export const deleteSong = id => (
-	fetch(`http://${getAPIUrl}/api/song/`+id, {
+	fetch(`${getAPIUrl}/song/`+id, {
 		method: 'DELETE',
 	})
 		.then(res => res.json())
@@ -68,7 +71,7 @@ export const deleteSong = id => (
 
 export const createSong = req => {
 	console.log('createSong req', req);
-	return fetch(`http://${getAPIUrl}/api/songs`, {
+	return fetch(`${getAPIUrl}/songs`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -83,7 +86,7 @@ export const createSong = req => {
 export const updateSong = req => {
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${getAPIUrl}/api/song/${id}`, {
+	return fetch(`${getAPIUrl}/song/${id}`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
@@ -100,7 +103,7 @@ export const voteSong = req => {
 	const { _id, sentiment } = req;
 	delete req._id;
 	console.log('body', JSON.stringify(req));
-	return fetch(`http://${getAPIUrl}/api/vote/song/${_id}`, {
+	return fetch(`${getAPIUrl}/vote/song/${_id}`, {
 		method: 'PATCH',
 		headers: {
 			Accept: 'application/json',
@@ -115,7 +118,7 @@ export const voteSong = req => {
 export const createArtist = req => {
 	// console.log(req);
 	// return;
-	return fetch(`http://${getAPIUrl}/api/artist`, {
+	return fetch(`${getAPIUrl}/artist`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -131,8 +134,8 @@ export const createArtist = req => {
 };
 
 export const fetchArtists = () => (
-	// fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
-	fetch(`http://${getAPIUrl}/api/artists/`)
+	// fetch('bookaroadieapi.azurewebsites.net/Jobs')
+	fetch(`${getAPIUrl}/artists/`)
 		.then(res => res.json())
 		.catch(err => console.error('Network Error'))
 );
@@ -140,7 +143,7 @@ export const fetchArtists = () => (
 export const fetchArtist = req => {
 	const { artistId } = req;
 	console.log('req artistId', artistId);
-	return fetch(`http://${getAPIUrl}/api/artist/${artistId}`)
+	return fetch(`${getAPIUrl}/artist/${artistId}`)
 		.then(res => {
 			// console.log('fetchArtist response', res);
 			return res.json()
@@ -151,7 +154,7 @@ export const fetchArtist = req => {
 export const fetchUserArtist = req => {
 	const { userId } = req;
 	console.log('req artistuserId', userId);
-	return fetch(`http://${getAPIUrl}/api/artist/user/${userId}`)
+	return fetch(`${getAPIUrl}/artist/user/${userId}`)
 		.then(res => {
 			// console.log('fetchUserArtist response', res);
 			return res.json()
@@ -163,7 +166,7 @@ export const updateArtist = req => {
 	console.log('api updateArtist', req);
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${getAPIUrl}/api/artist/${id}`, {
+	return fetch(`${getAPIUrl}/artist/${id}`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
@@ -176,7 +179,7 @@ export const updateArtist = req => {
 };
 
 export const deleteArtist = id => (
-	fetch(`http://${getAPIUrl}/api/artist/`+id, {
+	fetch(`${getAPIUrl}/artist/`+id, {
 		method: 'DELETE',
 	})
 		.then(res => res.json())
@@ -184,7 +187,8 @@ export const deleteArtist = id => (
 );
 
 export const createUser = req => {
-	return fetch(`http://${getAPIUrl}/api/users`, {
+	// console.log('createUser', req, `${getAPIUrl}/whatplay/users`);
+	return fetch(`${getAPIUrl}/whatplay/users`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -197,7 +201,7 @@ export const createUser = req => {
 };
 
 export const fetchUsers = () => (
-	fetch(`http://${getAPIUrl}/api/users`)
+	fetch(`${getAPIUrl}/whatplay/users`)
 		.then(handleErrors)
 		.then(res => res.json())
 		.catch(err => console.error('Network Error'))
@@ -209,7 +213,7 @@ export const fetchUser = req => {
 		throw Error('Both fields are required');
 	}
 	delete req.email;
-	return fetch(`http://${getAPIUrl}/api/user/${email}`, {
+	return fetch(`${getAPIUrl}/whatplay/user/${email}`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -225,7 +229,7 @@ export const fetchUser = req => {
 export const updateUser = req => {
 	const id = req._id;
 	delete req._id;
-	return fetch(`http://${localIPs[0]}/api/user/${id}`, {
+	return fetch(`${localIPs[0]}/whatplay/user/${id}`, {
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { createUser, fetchUser, createArtist, fetchUserArtist } from '../api';
-import { loginUser, loginArtist } from '../../redux/actions/ActionCreator';
+import { loginUser, loginArtist, logout } from '../../redux/actions/ActionCreator';
 import { saveStorage } from '../LocalStorage';
 import UserForm from './UserForm';
 import AppModal from '../../components/Modal';
@@ -64,6 +64,10 @@ class UserFormWrapper extends Component {
       }
       if (type === 'SignUp') {
         userResponse = await createUser(credentials);
+        if (!userResponse) {
+          throw 'Problem creating user account.'
+        }
+        console.log('userResponse', userResponse);
         this.setState({
           successMessage: 'Your Account Was Successfully Created',
           errorMessage: null,
@@ -71,6 +75,9 @@ class UserFormWrapper extends Component {
         });
       } else if (type === 'LogIn') {
         userResponse = await fetchUser(credentials);
+        if (!userResponse) {
+          throw 'Problem logging in user.'
+        }
         this.setState({
           successMessage: 'You Were Successfully Logged In',
           errorMessage: null,
@@ -129,7 +136,7 @@ class UserFormWrapper extends Component {
   }
 
   render() {
-    console.log('render state', this.state);
+    // console.log('render state', this.state);
     const { email, password, fname, lname, zip,
       successMessage, errorMessage,
     } = this.state;
@@ -179,7 +186,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => ({
   loginUser: payload => dispatch(loginUser(payload)),
-  loginArtist: payload => dispatch(loginArtist(payload))
+  loginArtist: payload => dispatch(loginArtist(payload)),
+  logout: payload => dispatch(logout(payload)),
 });
 
 const mapStateToProps = state => {

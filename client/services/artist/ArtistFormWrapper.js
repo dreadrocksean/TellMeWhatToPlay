@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Dimensions, StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import { FileSystem } from 'expo';
+import { FileSystem, ImagePicker, Constants, Camera, Permissions } from 'expo';
+
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
 import ArtistForm from './ArtistForm';
 import { loginArtist } from '../../redux/actions/ActionCreator';
 
 import { createArtist, updateArtist } from '../api';
-import upload from '../../utils/upload';
+import CloudinaryUpload from '../../utils/upload';
 // import UploadImage from 'http://widget.cloudinary.com/global/all.js';
 
 const { width, height } = Dimensions.get('window');
@@ -59,7 +60,7 @@ class ArtistFormWrapper extends Component {
 			errorMessage: '',
       photo: artist.imageURL,
 		};
-    console.log('ArtistFormWrapper this.state.photo', this.state.photo);
+    // console.log('ArtistFormWrapper this.state.photo', this.state.photo);
     // this.upload();
 	}
 
@@ -101,12 +102,13 @@ class ArtistFormWrapper extends Component {
   }
 
   uploadImage(uri, cb) {
-    upload(uri, url => cb(url));
+    CloudinaryUpload(uri, url => cb(url));
   }
 
   async onSubmit() {
     const type = this.getType();
     const roles = this.getRoles();
+    const edit = this.props.artistEdit;
     const {
       name,
       genre,
@@ -114,7 +116,8 @@ class ArtistFormWrapper extends Component {
     } = this.state;
     const imageURL = await this.uploadImage(photo);
 
-    // console.log('imageURL', imageURL);
+    console.log('ArtistFormWrapper imageURL', imageURL);
+    console.log('ArtistFormWrapper photo', photo);
     const artistData = {
       userId: this.props.user._id,
       name,
@@ -124,6 +127,25 @@ class ArtistFormWrapper extends Component {
       imageURL,
     }
     // console.log('artist data', artistData); return;
+    if (edit) {
+      this.edit(artistData);
+    } else {
+      this.create(artistData);
+    }
+  }
+
+  async edit(artistData) {
+    try {
+      const response = await updateArtist(artistData);
+      this.props.loginArtist(response.artist);
+      this.setState({successMessage: `Successfully created ${this.state.name}!`});
+    } catch(err) {
+      console.log('error:', err);
+      this.setState({errorMessage: `Problem creating ${this.state.name}`});
+    }
+  }
+
+  async create(artistData) {
     try {
       const response = await createArtist(artistData);
       this.props.loginArtist(response.artist);
@@ -135,18 +157,37 @@ class ArtistFormWrapper extends Component {
   }
 
   onChoosePhoto(photoName) {
-    console.log('onChoosePhoto', photoName);
+    // console.log('onChoosePhoto', photoName);
     const photo = `${FileSystem.documentDirectory}photos/${photoName}`;
     this.setState({ photo });
   }
 
   showCam() {
+    return this.pickImage();
     // console.log('showCam props', this.props);
     this.props.navigation.navigate('CameraScreen', {onChoosePhoto: this.onChoosePhoto.bind(this)});
   }
 
+  async pickImage() {
+    const results = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (results.status !== 'granted') {
+      console.log('Camera permissions not granted');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true
+    });
+
+    if (!result.cancelled) {
+      this.setState({ photo: result.uri });
+    }
+  }
+
   render() {
-    // console.log('ArtistFormWrapper render state', this.props);
+    // console.log('ArtistFormWrapper render props', this.props);
     const { name, genre, roles, types,
       successMessage, errorMessage, photo} = this.state;
     return (
@@ -165,6 +206,7 @@ class ArtistFormWrapper extends Component {
           getType={this.getType.bind(this)}
           onPressCam={this.showCam.bind(this)}
           photo={photo}
+          edit={this.props.artistEdit}
         />
       </View>
     );
@@ -189,11 +231,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  // console.log('state', state);
+  console.log('ArtistFormWrapper mapStateToProps', state);
   return {
-  user: state.login.user,
-  artist: state.login.artist,
-  artistProfile: state.artist,
+    user: state.login.user,
+    artist: state.login.artist,
+    artistEdit: state.artist.artistEdit,
 }};
 
 const mapDispatchToProps = dispatch => ({

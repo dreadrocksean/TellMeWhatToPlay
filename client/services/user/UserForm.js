@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, TextInput, Text, Image, TouchableOpacity, View 
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './Styles';
+import AppImage from '../../components/AppImage';
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
 import signupButton from '../../images/buttons/signup_btn.png';
@@ -13,7 +14,7 @@ const UserForm = (props) => {
   const {hasAccount, onHasAccountChange, handleChange, fieldValues,
     onSubmit, errorMessage, togglePassword, hidePassword
   } = props;
-  console.log('UserForm fieldValues', fieldValues);
+  // console.log('UserForm fieldValues', fieldValues);
   const { email, password, fname, lname, zip } = props.fieldValues;
   const fields = [
     {
@@ -61,7 +62,7 @@ const UserForm = (props) => {
             ))
           }
           <View>
-            <TouchableOpacity
+            <TouchableOpacity style={styles.buttonWrapper}
               onPress={ () => (
                 onSubmit(hasAccount ? 'LogIn' : 'SignUp')
               )}>

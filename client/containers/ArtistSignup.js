@@ -53,12 +53,4 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapStateToProps = state => {
-  // console.log('mapStateToProps state', state);
-  return {
-    user: state.login.user,
-    artist: state.login.artist,
-  }
-}
-
-export default connect(mapStateToProps)(ArtistSignup);
+export default ArtistSignup;

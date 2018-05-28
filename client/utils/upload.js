@@ -8,19 +8,22 @@ export default uri => {
   const cloud = 'grubuddy';
   const hash_string = 'timestamp=' + timestamp + api_secret;
   const signature = CryptoJS.SHA1(hash_string).toString();
-  const upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload';
-  const file = `${FileSystem.documentDirectory}photos/${uri}`;
+  const apiUrl = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload';
+  // const file = `${FileSystem.documentDirectory}photos/${uri}`;
+  const file = uri;
+  console.log('upload file', file);
 
   const formdata = new FormData();
-  formdata.append('file', {uri: file, type: 'image/png', name: 'upload.png'});
+  formdata.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
   formdata.append('timestamp', timestamp);
   formdata.append('api_key', api_key);
   formdata.append('signature', signature);
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', upload_url);
+    xhr.open('POST', apiUrl);
     xhr.onload = () => {
+      console.log('onload responseText', this.responseText);
       if (this.status >= 200 && this.status < 300) {
         resolve(xhr.response);
       } else {
@@ -39,3 +42,22 @@ export default uri => {
     xhr.send(formdata);
   });
 };
+
+
+
+      // let base64Img = `data:image/jpg;base64,${result.base64}`;
+      // let data = {
+      //   "file": base64Img,
+      //   // "upload_preset": "<your_upload_preset>",
+      // }
+
+      // fetch(apiUrl, {
+      //   body: JSON.stringify(data),
+      //   headers: {
+      //     'content-type': 'application/json'
+      //   },
+      //   method: 'POST',
+      // }).then(r=>{
+      //   let data = r._bodyText
+      //   console.log(JSON.parse(data).secure_url)
+      // }).catch(err=>console.log(err))

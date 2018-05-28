@@ -6,7 +6,7 @@ import {
 import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
 import { Button as RNButton, Icon } from 'react-native-elements';
 
-import { onAir, offAir, loginArtist, logout } from '../../redux/actions/ActionCreator';
+import { loginArtist, logout, artistEdit } from '../../redux/actions/ActionCreator';
 import { updateArtist } from '../../services/api';
 // import { Provider, Subscribe, Container } from 'unstated';
 
@@ -31,7 +31,7 @@ class ArtistAdmin extends Component {
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
-    console.log('ArtistAdmin params', params);
+    // console.log('ArtistAdmin params', params);
     const headerStyle = Object.assign({},
       params.bg ? {backgroundColor: params.bg} : null
     );
@@ -65,6 +65,7 @@ class ArtistAdmin extends Component {
   }
 
   editAdmin() {
+    this.props.dispatch(artistEdit(true));
     this.props.navigation.navigate('ArtistSignup', {name: 'ArtistSignup'});
   }
 
@@ -249,6 +250,10 @@ const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.login.artist,
   showModal: state.login.showModal,
+});
+
+const mapDispatchToProps = dispatch => ({
+  artistEdit:  payload => dispatch(artistEdit(payload))
 });
 
 export default connect(mapStateToProps)(ArtistAdmin);

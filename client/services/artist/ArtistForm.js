@@ -13,6 +13,7 @@ import RadioButton from '../../components/RadioButton/';
 import ImageUpload from '../../components/ImageUpload/';
 import Separator from '../../components/Separator/';
 import createProfile from '../../images/buttons/create_profile_btn.png';
+import editProfile from '../../images/buttons/edit_profile_btn.png';
 
 const ArtistForm = ({
   roles,
@@ -27,11 +28,11 @@ const ArtistForm = ({
   errorMessage,
   onPressCam,
   photo,
+  edit,
 }) => {
 
   const roleKeys = Object.keys(roles);
-  
-    console.log('ArtistForm photo', photo);
+  const submitButton = edit ? editProfile : createProfile;
 
   return (
     <KeyboardAwareScrollView>
@@ -80,7 +81,7 @@ const ArtistForm = ({
         <TouchableOpacity
           style={styles.button}
           onPress={ onSubmit }>
-          <Image source={createProfile} style={styles.image} />
+          <Image source={submitButton} style={styles.image} />
         </TouchableOpacity>
         <AppText textStyle={styles.error}>{errorMessage}</AppText>
       </View>

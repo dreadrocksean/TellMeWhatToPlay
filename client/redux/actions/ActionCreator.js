@@ -61,6 +61,11 @@ const addArtistPhoto = imageURL => ({
   payload: imageURL,
 });
 
+const artistEdit = edit => ({
+  type: AT.artistEdit,
+  payload: edit,
+});
+
 export {
   incrementVotes,
   decrementVotes,
@@ -76,4 +81,5 @@ export {
   onAir,
   offAir,
   addArtistPhoto,
+  artistEdit,
 };
