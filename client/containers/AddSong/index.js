@@ -1,104 +1,94 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Dimensions, StyleSheet, View, Image, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Image,
+  FlatList,
+  TextInput,
+  TouchableOpacity
+} from "react-native";
 
-import styles from './styles';
-import ArtistDropdown from './ArtistDropdown';
-import Modal from '../../components/Modal';
-import AppText from '../../components/AppText';
-import AppTextInput from '../../components/AppTextInput';
-import FormError from '../../components/FormError';
-import addSongButton from '../../images/buttons/add_song_btn2.png';
+import styles from "./styles";
+import ArtistDropdown from "./ArtistDropdown";
+import Modal from "../../components/Modal";
+import AppText from "../../components/AppText";
+import AppTextInput from "../../components/AppTextInput";
+import FormError from "../../components/FormError";
+import addSongButton from "../../images/buttons/add_song_btn2.png";
 
-import { fetchUser, fetchLastFMSong, createSong } from '../../services/api';
-import { saveStorage } from '../../services/LocalStorage';
+import { fetchUser, fetchLastFMSong, createSong } from "../../services/api";
+import { saveStorage } from "../../services/LocalStorage";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const resetState = {
-  title: '',
-  artist: '',
+  title: "",
+  artist: "",
   songs: [],
-  titleComplete: '',
-  mbid: '',
-  edit_title: '',
-  edit_artist: '',
-  errorMessage: null,
+  titleComplete: "",
+  mbid: "",
+  edit_title: "",
+  edit_artist: "",
+  errorMessage: null
 };
 
 class AddSong extends Component {
-
   constructor(props) {
     super(props);
     this.state = resetState;
-    this.hide = this.hide.bind(this);
-    this.addSong = this.addSong.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.onDropdownPress = this.onDropdownPress.bind(this);
   }
 
-  reset() {
-    this.setState(resetState);
-  }
+  reset = () => this.setState(resetState);
 
-  hide() {
-    this.props.setShowModal(false);
-  }
+  hide = () => this.props.setShowModal(false);
 
-  handleChange(field, value) {
+  handleChange = (field, value) => {
     this.setState({
       [field]: value,
-      errorMessage: null,
+      errorMessage: null
     });
     this.fetchSongSuggestionList(field);
-  }
+  };
 
-  async fetchSongSuggestionList(field) {
+  fetchSongSuggestionList = async field => {
     const key = Object.keys(field)[0];
-    if (key === 'title' && !field[key]) {
+    if (key === "title" && !field[key]) {
       this.reset();
       return;
     }
-    const title = (key === 'title') ? field[key] : this.state.edit_title;
-    const artist = (key === 'artist') ? field[key] : this.state.edit_artist;
+    const title = key === "title" ? field[key] : this.state.edit_title;
+    const artist = key === "artist" ? field[key] : this.state.edit_artist;
     try {
       const data = await fetchLastFMSong(title, artist);
-      const songs = data.results.trackmatches.track.map((song, i) => ({title:song.name, artist:song.artist, mbid:song.mbid, key:i}));
+      const songs = data.results.trackmatches.track.map((song, i) => ({
+        title: song.name,
+        artist: song.artist,
+        mbid: song.mbid,
+        key: i
+      }));
       this.setState({
         songs,
         title,
         titleComplete: (songs[0] || {}).title,
         edit_title: title,
-        edit_artist: artist,
+        edit_artist: artist
       });
     } catch (err) {
-      console.error('ERROR: ', err);
+      console.error("ERROR: ", err);
       this.reset();
     }
-  }
+  };
 
-  async updateSongItem(songId) {
-    const {edit_title, edit_artist} = this.state;
-    try {
-      const updatedSong = await this.props.updateSong({ _id: songId, title: edit_title, artist: edit_artist });
-      console.log('Updated Success!: ', updatedSong);
-      this.setState({update: null})
-      this.updateSongList();
-      this.setState({edit_title: '', edit_artist: ''});
-    } catch (err) {
-      console.error('ERROR updating song', err);
-      this.setState({update: null})
-    }
-  }
-
-  async addSong() {
-    const {title, artist, mbid} = this.state;
+  addSong = async () => {
+    const { title, artist, mbid } = this.state;
     if (!title || !artist) {
-      this.setState({errorMessage: 'Fields cannot be empty'});
+      this.setState({ errorMessage: "Fields cannot be empty" });
       return;
     }
     try {
-      const newSong = await createSong({
+      const newSong = await createDoc("song", {
         title: title.trim(),
         artist: artist.trim(),
         user_artist_id: this.props.userArtistId,
@@ -108,21 +98,20 @@ class AddSong extends Component {
       this.reset();
       this.hide();
     } catch (err) {
-      console.error('ERROR creating song', err);
-      this.setState({errorMessage: `ERROR creating song: ${err}`});
+      console.error("ERROR creating song", err);
+      this.setState({ errorMessage: `ERROR creating song: ${err}` });
     }
-  }
+  };
 
-  onDropdownPress(song) {
+  onDropdownPress = song => {
     this.setState({
       songs: [],
       title: song.title,
-      titleComplete: '',
+      titleComplete: "",
       artist: song.artist,
-      mbid: song.mbid,
-
+      mbid: song.mbid
     });
-  }
+  };
 
   render() {
     const {
@@ -132,50 +121,46 @@ class AddSong extends Component {
       title,
       artist,
       edit_title,
-      edit_artist,
+      edit_artist
     } = this.state;
 
-    return this.props.showModal ?
-      (
-        <Modal dismiss={this.hide} >
-          <AppText
-            style={{flex:1}}
-            textStyle={{fontFamily: 'montserrat-regular'}}
-          >
-            ADD NEW SONG
-          </AppText>
-          {errorMessage && <FormError>{errorMessage}</FormError>}
-          <View style={styles.inputContainer}>
-            <AppTextInput
-              style={styles.autocomplete}
-              placeholder={titleComplete || ''}
-              editable={false}
-            />
-            <AppTextInput
-              style={styles.input}
-              placeholder='Title'
-              onChangeText={title => this.handleChange({title})}
-              value={title}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <AppTextInput
-              style={styles.input}
-              placeholder={ 'Artist' }
-              onChangeText={artist => this.handleChange({artist})}
-              value={artist}
-            />
-            <ArtistDropdown data={songs} onPress={this.onDropdownPress} />
-          </View>
-          <TouchableOpacity style={styles.imageWrapper}
-            onPress={this.addSong}>
-            <Image style={styles.image} source={addSongButton} />
-          </TouchableOpacity>
-        </Modal>
-      )
-      : null;
-  };
-
+    return this.props.showModal ? (
+      <Modal dismiss={this.hide}>
+        <AppText
+          style={{ flex: 1 }}
+          textStyle={{ fontFamily: "montserrat-regular" }}
+        >
+          ADD NEW SONG
+        </AppText>
+        {errorMessage && <FormError>{errorMessage}</FormError>}
+        <View style={styles.inputContainer}>
+          <AppTextInput
+            style={styles.autocomplete}
+            placeholder={titleComplete || ""}
+            editable={false}
+          />
+          <AppTextInput
+            style={styles.input}
+            placeholder="Title"
+            onChangeText={title => this.handleChange({ title })}
+            value={title}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <AppTextInput
+            style={styles.input}
+            placeholder={"Artist"}
+            onChangeText={artist => this.handleChange({ artist })}
+            value={artist}
+          />
+          <ArtistDropdown data={songs} onPress={this.onDropdownPress} />
+        </View>
+        <TouchableOpacity style={styles.imageWrapper} onPress={this.addSong}>
+          <Image style={styles.image} source={addSongButton} />
+        </TouchableOpacity>
+      </Modal>
+    ) : null;
+  }
 }
 
 export default AddSong;

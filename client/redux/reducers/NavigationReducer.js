@@ -1,28 +1,71 @@
-import { NavigationActions } from 'react-navigation';
-import * as AT from '../actions/ActionTypes';
+import { NavigationActions } from "react-navigation";
+import * as AT from "../actions/ActionTypes";
 
-const ActionForLoggedOut = AppNavigator.router.getActionForPathAndParams('login');
-const ActionForLoggedInUser = AppNavigator.router.getActionForPathAndParams('screen1');
-const ActionForLoggedInArtist = AppNavigator.router.getActionForPathAndParams('screen1');
-const ActionForGuestArtist = AppNavigator.router.getActionForPathAndParams('screen1');
-const ActionForGuestFan = AppNavigator.router.getActionForPathAndParams('screen1');
+const ActionForLoggedOut = AppNavigator.router.getActionForPathAndParams(
+  "login"
+);
+const ActionForLoggedInUser = AppNavigator.router.getActionForPathAndParams(
+  "screen1"
+);
+const ActionForLoggedInArtist = AppNavigator.router.getActionForPathAndParams(
+  "screen1"
+);
+const ActionForGuestArtist = AppNavigator.router.getActionForPathAndParams(
+  "screen1"
+);
+const ActionForGuestFan = AppNavigator.router.getActionForPathAndParams(
+  "screen1"
+);
 
-const stateForLoggedOut = AppNavigator.router.getStateForAction(ActionForLoggedOut);
-const stateForLoggedInUser = AppNavigator.router.getStateForAction(ActionForLoggedInUser);
-const stateForLoggedInArtist = AppNavigator.router.getStateForAction(ActionForLoggedInArtist);
-const stateForGuestUser = AppNavigator.router.getStateForAction(ActionForGuestUser);
-const stateForGuestArtist = AppNavigator.router.getStateForAction(ActionForGuestArtist);
+// const ActionForLoggedOut = NavigationActions.reset({ index: 0,
+//   actions: [NavigationActions.navigate({ routeName: 'login' })]
+// });
+// const ActionForLoggedInUser = NavigationActions.reset({ index: 0,
+//   actions: [NavigationActions.navigate({ routeName: 'screen1' })]
+// });
+// const ActionForLoggedInArtist = NavigationActions.reset({ index: 0,
+//   actions: [NavigationActions.navigate({ routeName: 'screen1' })]
+// });
+// const ActionForGuestArtist = NavigationActions.reset({ index: 0,
+//   actions: [NavigationActions.navigate({ routeName: 'screen1' })]
+// });
+// const ActionForGuestFan = NavigationActions.reset({ index: 0,
+//   actions: [NavigationActions.navigate({ routeName: 'screen1' })]
+// });
+
+const stateForLoggedOut = AppNavigator.router.getStateForAction(
+  ActionForLoggedOut
+);
+const stateForLoggedInUser = AppNavigator.router.getStateForAction(
+  ActionForLoggedInUser
+);
+const stateForLoggedInArtist = AppNavigator.router.getStateForAction(
+  ActionForLoggedInArtist
+);
+const stateForGuestUser = AppNavigator.router.getStateForAction(
+  ActionForGuestUser
+);
+const stateForGuestArtist = AppNavigator.router.getStateForAction(
+  ActionForGuestArtist
+);
 
 const initialState = {
-	stateForLoggedOut, stateForLoggedInUser, stateForLoggedInArtist, stateForGuestFan, stateForGuestArtist,
+  stateForLoggedOut,
+  stateForLoggedInUser,
+  stateForLoggedInArtist,
+  stateForGuestFan,
+  stateForGuestArtist
 };
 
 const navigationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case '@@redux/INIT':
+    case "@@redux/INIT":
       return {
         ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(ActionForLoggedIn, stateForLoggedOut)
+        stateForLoggedIn: AppNavigator.router.getStateForAction(
+          ActionForLoggedIn,
+          stateForLoggedOut
+        )
       };
 
     // case AT.GuestTypeArtist:
@@ -63,7 +106,10 @@ const navigationReducer = (state = initialState, action) => {
     default:
       return {
         ...state,
-        stateForLoggedIn: AppNavigator.router.getStateForAction(action,state.stateForLoggedIn)
+        stateForLoggedIn: AppNavigator.router.getStateForAction(
+          action,
+          state.stateForLoggedIn
+        )
       };
   }
 };

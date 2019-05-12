@@ -1,42 +1,54 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
 import {
-  StyleSheet, Text, View, AsyncStorage, Image, Switch, TouchableOpacity, TouchableHighlight,
-} from 'react-native';
-import { Constants, Camera, Location, FileSystem, Permissions } from 'expo';
-import { Button as RNButton, Icon } from 'react-native-elements';
+  StyleSheet,
+  Text,
+  View,
+  AsyncStorage,
+  Image,
+  Switch,
+  TouchableOpacity,
+  TouchableHighlight
+} from "react-native";
+import { Constants, Camera, Location, FileSystem, Permissions } from "expo";
+import { Button as RNButton, Icon } from "react-native-elements";
 
-import { onAir, offAir, loginArtist, logout } from '../../redux/actions/ActionCreator';
-import { updateArtist } from '../../services/api';
+import {
+  onAir,
+  offAir,
+  loginArtist,
+  logout
+} from "../../redux/actions/ActionCreator";
+import { updateArtist } from "../../services/api";
 // import { Provider, Subscribe, Container } from 'unstated';
 
-import listItemAvatar from '../../images/test_avatar.png';
+import listItemAvatar from "../../images/test_avatar.png";
 
-import { styles } from './styles';
+import { styles } from "./styles";
 
-import DefaultContainer from '../DefaultContainer';
-import AppText from '../../components/AppText';
-import RoundImage from '../../components/RoundImage';
-import { updateHeader } from '../../utils/UpdateHeader';
-import { scale, verticalScale, moderateScale } from '../../utils/Scales';
+import DefaultContainer from "../DefaultContainer";
+import AppText from "../../components/AppText";
+import RoundImage from "../../components/RoundImage";
+import { updateHeader } from "../../utils/UpdateHeader";
+import { scale, verticalScale, moderateScale } from "../../utils/Scales";
 
-import onAirButton from '../../images/buttons/onair_btn.png';
-import offAirButton from '../../images/buttons/offair_btn.png';
-import editIcon from '../../images/icons/edit_btn.png';
-import manageSetlistButton from '../../images/buttons/manage_btn.png';
-import logoutButton from '../../images/buttons/logout_btn.png';
+import onAirButton from "../../images/buttons/onair_btn.png";
+import offAirButton from "../../images/buttons/offair_btn.png";
+import editIcon from "../../images/icons/edit_btn.png";
+import manageSetlistButton from "../../images/buttons/manage_btn.png";
+import logoutButton from "../../images/buttons/logout_btn.png";
 
 class ArtistAdmin extends Component {
-
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
-    const headerStyle = Object.assign({},
-      params.bg ? {backgroundColor: params.bg} : null
+    const headerStyle = Object.assign(
+      {},
+      params.bg ? { backgroundColor: params.bg } : null
     );
     return {
-      title: `${params.title || params.screen || 'Artist Admin'}`,
-      headerTitleStyle : {textAlign: 'center',alignSelf:'center'},
-      headerStyle,
+      title: `${params.title || params.screen || "Artist Admin"}`,
+      headerTitleStyle: { textAlign: "center", alignSelf: "center" },
+      headerStyle
     };
   };
 
@@ -47,15 +59,15 @@ class ArtistAdmin extends Component {
       user: null,
       onAir: false,
       showModal: true,
-      edit_email: '',
-      edit_password: '',
-      location: null,
+      edit_email: "",
+      edit_password: "",
+      location: null
     };
     this.editAdmin = this.editAdmin.bind(this);
   }
 
   editAdmin() {
-    this.props.navigation.navigate('ArtistSignup', {name: 'ArtistSignup'});
+    this.props.navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -75,9 +87,11 @@ class ArtistAdmin extends Component {
   componentWillReceiveProps(nextProps) {
     // Secure against endless cycle
     if (
-      nextProps.artist === this.props.artist
-      && nextProps.authorized === this.props.authorized
-    ) {return;}
+      nextProps.artist === this.props.artist &&
+      nextProps.authorized === this.props.authorized
+    ) {
+      return;
+    }
     updateHeader(nextProps);
   }
 
@@ -95,41 +109,43 @@ class ArtistAdmin extends Component {
       const { latitude, longitude } = geoLocation.coords;
       const location = { latitude, longitude };
       this.setState({ location });
-    } catch(err) {
-      throw Error('Must have a location', err);
+    } catch (err) {
+      throw Error("Must have a location", err);
     }
   }
 
   async _getLocationPermission() {
     try {
       const { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== 'granted') {
-        throw 'Permission to access location was denied';
+      if (status !== "granted") {
+        throw "Permission to access location was denied";
       }
       return true;
-    } catch(err) {
-        this.setState({ errorMessage: err });
-        throw Error(err);
+    } catch (err) {
+      this.setState({ errorMessage: err });
+      throw Error(err);
     }
   }
 
-  navigate(pageName) {
+  navigate = pageName => () => {
     this.props.navigation.navigate(pageName, {
-      name: pageName, artist: this.props.artist
+      name: pageName,
+      artist: this.props.artist
     });
-  }
+  };
 
-  logout() {
+  logout = () => {
     this.props.dispatch(logout());
-    this.navigate('Options');
-  }
+    this.navigate("Options");
+  };
 
-  async toggleOnAir() {
+  toggleOnAir = async () => {
     const { artist } = this.props;
-    if (!artist) { return; }
+    if (!artist) {
+      return;
+    }
     // If switching to on from (currently off)
     if (!artist.live && !this.state.location) {
-
     }
     try {
       const response = await updateArtist({
@@ -139,33 +155,30 @@ class ArtistAdmin extends Component {
       // console.log('toggleOnAir response', response);
       // this.setState({ artist: response.artist });
       this.props.dispatch(loginArtist(response.artist));
-    } catch(err) {
-      this.setState({errorMessage: err});
+    } catch (err) {
+      this.setState({ errorMessage: err });
     }
-  }
+  };
 
   handleError(err, msg) {
     this.setState({
       showModal: true,
       authorized: false,
-      errorMessage: msg,
+      errorMessage: msg
     });
   }
 
   renderOnAirImage() {
     const { artist } = this.props;
     const source = (artist || {}).live ? onAirButton : offAirButton;
-    return <Image style={[styles.button, { height: 50 }]} source={source} />
+    return <Image style={[styles.button, { height: 50 }]} source={source} />;
   }
 
   renderHeaderChildren() {
     return (
       <Fragment>
         <TouchableOpacity onPress={this.editAdmin}>
-          <Image style={styles.icon}
-            source={editIcon}
-            resizeMode={'cover'}
-          />
+          <Image style={styles.icon} source={editIcon} resizeMode={"cover"} />
         </TouchableOpacity>
         <Text style={styles.headingText}>ARTIST</Text>
       </Fragment>
@@ -175,58 +188,58 @@ class ArtistAdmin extends Component {
   render() {
     const { user, onAir, showModal, errorMessage } = this.state;
     const { authorized, artist, navigation } = this.props;
-    return artist && (
-      <DefaultContainer
-        headerChildren={this.renderHeaderChildren()}
-      >
-        <View style={styles.container}>
-          {errorMessage && <AppText textStyle={styles.error}>{errorMessage}</AppText>}
-          <View style={styles.top}>
-            <RoundImage
-              source={{uri: artist.imageURL}}
-              style={{
-                size: 150,
-                borderColor: '#ffd72b',
-                borderWidth: 4,
-              }}
-            />
-            <AppText textStyle={styles.title}>{artist.name}</AppText>
-            <View>
-              <TouchableOpacity
-                onPress={this.toggleOnAir.bind(this)}
-              >
-                { this.renderOnAirImage() }
+    return (
+      artist && (
+        <DefaultContainer headerChildren={this.renderHeaderChildren()}>
+          <View style={styles.container}>
+            {errorMessage && (
+              <AppText textStyle={styles.error}>{errorMessage}</AppText>
+            )}
+            <View style={styles.top}>
+              <RoundImage
+                source={{ uri: artist.imageURL }}
+                style={{
+                  size: 150,
+                  borderColor: "#ffd72b",
+                  borderWidth: 4
+                }}
+              />
+              <AppText textStyle={styles.title}>{artist.name}</AppText>
+              <View>
+                <TouchableOpacity onPress={this.toggleOnAir}>
+                  {this.renderOnAirImage()}
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.middle}>
+              <View style={styles.mainBox}>
+                <AppText textStyle={styles.h2}>Genre</AppText>
+                <AppText textStyle={styles.h3}>{artist.genre}</AppText>
+              </View>
+              <View style={styles.mainBox}>
+                <AppText textStyle={styles.h2}>Roles</AppText>
+                <AppText textStyle={styles.h3}>
+                  {artist.roles.join(" | ")}
+                </AppText>
+              </View>
+            </View>
+            <View style={styles.bottom}>
+              <TouchableOpacity onPress={this.navigate("SetList")}>
+                <Image
+                  style={[styles.button, { height: 68 }]}
+                  source={manageSetlistButton}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.logout}>
+                <Image
+                  style={[styles.button, { height: 55 }]}
+                  source={logoutButton}
+                />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.middle}>
-            <View style={styles.mainBox}>
-              <AppText textStyle={styles.h2}>Genre</AppText>
-              <AppText textStyle={styles.h3}>{artist.genre}</AppText>
-            </View>
-            <View style={styles.mainBox}>
-              <AppText textStyle={styles.h2}>Roles</AppText>
-              <AppText textStyle={styles.h3}>{artist.roles.join(' | ')}</AppText>
-            </View>
-          </View>
-          <View style={styles.bottom}>
-            <TouchableOpacity
-              onPress={this.navigate.bind(this, 'SetList')}
-            >
-              <Image
-                style={[styles.button, { height: 68 }]}
-                source={manageSetlistButton} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.logout.bind(this)}
-            >
-              <Image
-                style={[styles.button, { height: 55 }]}
-                source={logoutButton} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </DefaultContainer>
+        </DefaultContainer>
+      )
     );
   }
 }
@@ -234,7 +247,14 @@ class ArtistAdmin extends Component {
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.login.artist,
-  showModal: state.login.showModal,
+  showModal: state.login.showModal
 });
 
-export default connect(mapStateToProps)(ArtistAdmin);
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ArtistAdmin);

@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-export default class LoginScreen extends React.Component {
+export default class LoginScreen extends Component {
   render() {
     const { navigation } = this.props;
     const { navigate } = navigation;
@@ -9,21 +9,18 @@ export default class LoginScreen extends React.Component {
       <View style={styles.container}>
         <Text>I am Login Screen</Text>
 
-        <Text
-          style={styles.linky}
-          onPress={() => navigate('SignupScreen')} >
+        <Text style={styles.linky} onPress={() => navigate("SignupScreen")}>
           Go to Signup
         </Text>
 
         <Text
           style={styles.linky}
-          onPress={() => navigate('forgottenPasswordScreen')} >
+          onPress={() => navigate("forgottenPasswordScreen")}
+        >
           Go to Forgot Password
         </Text>
 
-        <Text
-          style={styles.linky}
-          onPress={() => navigate('drawerStack')} >
+        <Text style={styles.linky} onPress={() => navigate("drawerStack")}>
           Pretend we logged in
         </Text>
       </View>
@@ -34,12 +31,12 @@ export default class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
   },
   linky: {
-    color: 'blue',
+    color: "blue",
     paddingTop: 10
   }
 });
