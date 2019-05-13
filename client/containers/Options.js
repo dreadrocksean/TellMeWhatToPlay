@@ -22,7 +22,9 @@ import {
   loginArtist,
   logout,
   guestTypeFan,
-  guestTypeArtist
+  guestTypeArtist,
+  onAir,
+  offAir
 } from "../redux/actions/ActionCreator";
 import * as ActionTypes from "../redux/actions/ActionTypes";
 
@@ -124,9 +126,11 @@ class Options extends Component {
           return;
         }
         this.props.loginArtist(storageArtist);
+        this.props[storageArtist.live ? "onAir" : "offAir"]();
         return saveStorage({ artist: storageArtist });
       }
       this.props.loginArtist(artist);
+      this.props[artist.live ? "onAir" : "offAir"]();
       saveStorage({ artist });
     } catch (err) {
       this.setState({ errorMessage: err });
@@ -142,12 +146,17 @@ class Options extends Component {
   }
 
   onClick = userType => async () => {
-    if (this.props.user) {
-      await this.getArtist(this.props.user._id);
+    const { user, artist, navigation } = this.props;
+    if (userType === "ARTIST" && user && !artist) {
+      await this.getArtist(user._id);
+      const routeName = this.getRouteName(userType);
+      console.log("onClick", routeName);
+      navigation.navigate(routeName, { name: routeName });
+    } else {
+      const routeName = this.getRouteName(userType);
+      console.log("onClick", routeName);
+      navigation.navigate(routeName, { name: routeName });
     }
-    const routeName = this.getRouteName(userType);
-    console.log("onClick", routeName);
-    this.props.navigation.navigate(routeName, { name: routeName });
   };
 
   getRouteName(userType) {
@@ -359,7 +368,8 @@ const mapStateToProps = state => {
     userType: state.login.userType,
     artist: state.login.artist,
     user: state.login.user,
-    errorMessage: state.login.errorMessage
+    errorMessage: state.login.errorMessage,
+    live: state.artist.live
   };
 };
 
@@ -370,7 +380,9 @@ const mapDispatchToProps = dispatch => {
     loginUser: user => dispatch(loginUser(user)),
     loginArtist: artist => dispatch(loginArtist(artist)),
     guestTypeFan: () => dispatch(guestTypeFan()),
-    guestTypeArtist: () => dispatch(guestTypeArtist())
+    guestTypeArtist: () => dispatch(guestTypeArtist()),
+    onAir: () => dispatch(onAir()),
+    offAir: () => dispatch(offAir())
   };
 };
 

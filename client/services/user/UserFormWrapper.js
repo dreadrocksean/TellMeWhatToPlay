@@ -56,26 +56,22 @@ class UserFormWrapper extends Component {
     // console.log('onsubmit props', this.props);
     const { email, password, fname, lname, zip } = this.state;
     const credentials = { email, password, fname, lname, zip };
-    let user, artist, errorMessage;
+    let user, artist, errorMessage, successMessage, submitType;
     try {
       if (!credentials.email.trim() || !credentials.password.trim()) {
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
         user = await createDoc("user", credentials);
-        this.setState({
-          successMessage: "Your Account Was Successfully Created",
-          errorMessage: null,
-          submitType: type
-        });
+        successMessage = "Your Account Was Successfully Created";
+        errorMessage = null;
+        submitType = type;
       } else if (type === "LogIn") {
         const response = await getUser(credentials);
         if (response.success) {
-          this.setState({
-            successMessage: "You Were Successfully Logged In",
-            errorMessage: null,
-            submitType: type
-          });
+          successMessage = "You Were Successfully Logged In";
+          errorMessage = null;
+          submitType = type;
         } else {
           throw response.error;
         }
@@ -85,6 +81,11 @@ class UserFormWrapper extends Component {
       await saveStorage({ user });
       // console.log('onSubmit this.props', this.props);
       this.props.loginUser(user);
+      this.setState({
+        successMessage,
+        errorMessage,
+        submitType: type
+      });
     } catch (err) {
       console.log("error:", err);
       this.setState({

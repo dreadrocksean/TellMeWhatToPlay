@@ -45,6 +45,21 @@ class AddSong extends Component {
     this.state = resetState;
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  setState(params) {
+    if (!this._isMounted) {
+      return;
+    }
+    super.setState(params);
+  }
+
   reset = () => this.setState(resetState);
 
   hide = () => this.props.setShowModal(false);

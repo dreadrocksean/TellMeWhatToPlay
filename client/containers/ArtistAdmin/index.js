@@ -61,13 +61,22 @@ class ArtistAdmin extends Component {
       showModal: true,
       edit_email: "",
       edit_password: "",
-      location: null
+      location: null,
+      imageURL: ""
     };
     this.editAdmin = this.editAdmin.bind(this);
   }
 
   editAdmin() {
     this.props.navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
+  }
+
+  async componentDidMount() {
+    updateHeader(this.props);
+    const r = await fetch("https://randomuser.me/api/?inc=picture");
+    const data = await r.json();
+    console.log("imageURL: ", data.results[0].picture.medium);
+    this.props.loginArtist({ imageURL: data.results[0].picture.medium });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -77,11 +86,6 @@ class ArtistAdmin extends Component {
     if (!showModal && !authorized) {
       this.props.navigation.goBack();
     }
-  }
-
-  async componentDidMount() {
-    updateHeader(this.props);
-    // this._getLocationAsync();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -192,6 +196,7 @@ class ArtistAdmin extends Component {
   render() {
     const { user, showModal, errorMessage } = this.state;
     const { authorized, artistUser, admin, navigation } = this.props;
+    if (!(artistUser || {}).imageURL) return null;
     return (
       artistUser && (
         <DefaultContainer headerChildren={this.renderHeaderChildren()}>
@@ -201,7 +206,9 @@ class ArtistAdmin extends Component {
             )}
             <View style={styles.top}>
               <RoundImage
-                source={{ uri: artistUser.imageURL }}
+                source={{
+                  uri: artistUser.imageURL
+                }}
                 style={{
                   size: 150,
                   borderColor: "#ffd72b",
@@ -248,14 +255,20 @@ class ArtistAdmin extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  authorized: state.login.authorized,
-  artistUser: state.login.artist,
-  admin: state.artist,
-  showModal: state.login.showModal
-});
+const mapStateToProps = state => {
+  console.log("mapStateToProps state: ", state);
+  return {
+    authorized: state.login.authorized,
+    artistUser: state.login.artist,
+    admin: state.artist,
+    showModal: state.login.showModal
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
+  loginArtist: data => {
+    dispatch(loginArtist(data));
+  },
   logout: () => dispatch(logout()),
   onAir: () => dispatch(onAir()),
   offAir: () => dispatch(offAir())

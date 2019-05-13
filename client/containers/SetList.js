@@ -57,6 +57,8 @@ class Setlist extends Component {
     fetchLyrics
   };
 
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -85,6 +87,13 @@ class Setlist extends Component {
     updateHeader(this.props);
   }
 
+  setState = params => {
+    if (!this._isMounted) {
+      return;
+    }
+    super.setState(params);
+  };
+
   sendMessage() {
     this.state.hubConnection
       .invoke("sendToAll", this.state.nick, this.state.message)
@@ -94,11 +103,13 @@ class Setlist extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.updateSongList();
     // updateHeader(this.props);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe();
   }
 
