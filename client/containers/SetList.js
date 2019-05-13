@@ -164,34 +164,6 @@ class Setlist extends Component {
           this.openAddForm();
         }
       });
-
-    // try {
-    //   const data = await this.props.fetchArtistSongs(this.state.artist._id);
-    //   let songs = data.songs;
-    //   if (this.state.isArtist) {
-    //     songs = songs.sort((a, b) => {
-    //       if (a.currVotes < b.currVotes) return 1;
-    //       if (a.currVotes > b.currVotes) return -1;
-    //       if (a.createdAt < b.createdAt) return -1;
-    //       if (a.createdAt > b.createdAt) return 1;
-    //       return 0;
-    //     });
-    //   }
-    //   this.setState({
-    //     songs,
-    //     loading: false,
-    //     update: false,
-    //     add: false,
-    //     title: "",
-    //     song_artist: ""
-    //   });
-    //   if (!songs.length) {
-    //     this.openAddForm();
-    //   }
-    // } catch (err) {
-    //   console.log("ERROR: ", err);
-    //   this.setState({ loading: false, update: false, add: false });
-    // }
   };
 
   showEditForm = (i, songId) => () => {

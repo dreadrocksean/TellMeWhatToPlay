@@ -68,8 +68,8 @@ export const updateDoc = async (type, { _id, ...rest }) => {
       console.error(`Error updating ${type}: `, err);
       return Promise.resolve({ success: false, error: err });
     });
-  console.log("Document successfully updated: ");
-  return Promise.resolve({ success: true });
+  console.log(`${type} successfully updated: `, rest);
+  return Promise.resolve({ success: true, data: { _id, ...rest } });
 };
 
 export const getDocs = async (type, req) => {

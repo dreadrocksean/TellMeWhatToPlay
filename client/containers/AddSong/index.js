@@ -18,7 +18,12 @@ import AppTextInput from "../../components/AppTextInput";
 import FormError from "../../components/FormError";
 import addSongButton from "../../images/buttons/add_song_btn2.png";
 
-import { fetchUser, fetchLastFMSong, createSong } from "../../services/api";
+import {
+  fetchUser,
+  fetchLastFMSong,
+  createSong,
+  createDoc
+} from "../../services/api";
 import { saveStorage } from "../../services/LocalStorage";
 
 const { width, height } = Dimensions.get("window");

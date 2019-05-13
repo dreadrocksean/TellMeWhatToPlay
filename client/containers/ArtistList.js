@@ -69,7 +69,10 @@ class ArtistList extends Component {
   async updateArtistList() {
     // this.setState({ loading: true });
     this.unsubscribe = db.collection("artists").onSnapshot(querySnapshot => {
-      const artists = querySnapshot.docs.map(doc => doc.data());
+      const artists = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        _id: doc.id
+      }));
       this.setState({
         artists,
         loading: false,

@@ -19,7 +19,7 @@ import {
   loginArtist,
   logout
 } from "../../redux/actions/ActionCreator";
-import { updateArtist } from "../../services/api";
+import { updateArtist, updateDoc } from "../../services/api";
 // import { Provider, Subscribe, Container } from 'unstated';
 
 import listItemAvatar from "../../images/test_avatar.png";
@@ -87,7 +87,7 @@ class ArtistAdmin extends Component {
   componentWillReceiveProps(nextProps) {
     // Secure against endless cycle
     if (
-      nextProps.artist === this.props.artist &&
+      nextProps.artistUser === this.props.artistUser &&
       nextProps.authorized === this.props.authorized
     ) {
       return;
@@ -97,7 +97,7 @@ class ArtistAdmin extends Component {
 
   async componentDidUnMount() {
     const response = await updateArtist({
-      _id: artist._id,
+      _id: this.props.artistUser._id,
       live: false
     });
   }
@@ -130,34 +130,38 @@ class ArtistAdmin extends Component {
   navigate = pageName => () => {
     this.props.navigation.navigate(pageName, {
       name: pageName,
-      artist: this.props.artist
+      artist: this.props.artistUser
     });
   };
 
   logout = () => {
-    this.props.dispatch(logout());
-    this.navigate("Options");
+    this.props.logout();
+    this.navigate("Options")();
   };
 
   toggleOnAir = async () => {
-    const { artist } = this.props;
-    if (!artist) {
+    const { artistUser, admin } = this.props;
+    if (!artistUser) {
       return;
     }
     // If switching to on from (currently off)
-    if (!artist.live && !this.state.location) {
+    if (!admin.live && !this.state.location) {
     }
-    try {
-      const response = await updateArtist({
-        _id: artist._id,
-        live: !artist.live
-      });
-      // console.log('toggleOnAir response', response);
-      // this.setState({ artist: response.artist });
-      this.props.dispatch(loginArtist(response.artist));
-    } catch (err) {
-      this.setState({ errorMessage: err });
+    const response = await updateDoc("artist", {
+      _id: artistUser._id,
+      live: !admin.live
+    });
+    if (response.error) {
+      console.log("Error: ", response.error);
     }
+    const newArtist = { ...artistUser, ...admin, ...response.data };
+    // this.props.dispatch(loginArtist(response.data));
+    if (newArtist.live) {
+      this.props.onAir();
+    } else {
+      this.props.offAir();
+    }
+    this.setState({ errorMessage: response.error });
   };
 
   handleError(err, msg) {
@@ -169,8 +173,8 @@ class ArtistAdmin extends Component {
   }
 
   renderOnAirImage() {
-    const { artist } = this.props;
-    const source = (artist || {}).live ? onAirButton : offAirButton;
+    const { admin } = this.props;
+    const source = (admin || {}).live ? onAirButton : offAirButton;
     return <Image style={[styles.button, { height: 50 }]} source={source} />;
   }
 
@@ -186,10 +190,10 @@ class ArtistAdmin extends Component {
   }
 
   render() {
-    const { user, onAir, showModal, errorMessage } = this.state;
-    const { authorized, artist, navigation } = this.props;
+    const { user, showModal, errorMessage } = this.state;
+    const { authorized, artistUser, admin, navigation } = this.props;
     return (
-      artist && (
+      artistUser && (
         <DefaultContainer headerChildren={this.renderHeaderChildren()}>
           <View style={styles.container}>
             {errorMessage && (
@@ -197,14 +201,14 @@ class ArtistAdmin extends Component {
             )}
             <View style={styles.top}>
               <RoundImage
-                source={{ uri: artist.imageURL }}
+                source={{ uri: artistUser.imageURL }}
                 style={{
                   size: 150,
                   borderColor: "#ffd72b",
                   borderWidth: 4
                 }}
               />
-              <AppText textStyle={styles.title}>{artist.name}</AppText>
+              <AppText textStyle={styles.title}>{artistUser.name}</AppText>
               <View>
                 <TouchableOpacity onPress={this.toggleOnAir}>
                   {this.renderOnAirImage()}
@@ -214,12 +218,12 @@ class ArtistAdmin extends Component {
             <View style={styles.middle}>
               <View style={styles.mainBox}>
                 <AppText textStyle={styles.h2}>Genre</AppText>
-                <AppText textStyle={styles.h3}>{artist.genre}</AppText>
+                <AppText textStyle={styles.h3}>{artistUser.genre}</AppText>
               </View>
               <View style={styles.mainBox}>
                 <AppText textStyle={styles.h2}>Roles</AppText>
                 <AppText textStyle={styles.h3}>
-                  {artist.roles.join(" | ")}
+                  {artistUser.roles.join(" | ")}
                 </AppText>
               </View>
             </View>
@@ -246,12 +250,15 @@ class ArtistAdmin extends Component {
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
-  artist: state.login.artist,
+  artistUser: state.login.artist,
+  admin: state.artist,
   showModal: state.login.showModal
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout())
+  logout: () => dispatch(logout()),
+  onAir: () => dispatch(onAir()),
+  offAir: () => dispatch(offAir())
 });
 
 export default connect(
