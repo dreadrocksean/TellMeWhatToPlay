@@ -42,7 +42,8 @@ class SongItem extends Component {
   onDeleteSong = () => this.props.onDeleteSong(this.props.song._id);
 
   renderArtistSongItem = () => {
-    const { _id, title, artist, currVotes } = this.props.song;
+    const { _id, title, artist } = this.props.song;
+    const currVotes = this.props.song.currVotes || 0;
     const { muted } = this.state;
     const titleColor = muted ? "#4d4d4d" : "#3c2385";
 
@@ -75,7 +76,8 @@ class SongItem extends Component {
 
   renderFanSongItem = () => {
     const { vote, liked, showLyrics, song } = this.props;
-    const { _id, title, artist, currVotes } = song;
+    const { _id, title, artist } = song;
+    const currVotes = song.currVotes || 0;
 
     return (
       <Fragment>
@@ -100,7 +102,7 @@ class SongItem extends Component {
             <Score votes={currVotes} />
           </View>
           <ListItemIcon
-            onPress={() => vote(_id, !liked)}
+            onPress={vote(_id, currVotes, !liked)}
             icon={voteUpIcon}
             styles={styles.voteIcon}
             tint={liked}

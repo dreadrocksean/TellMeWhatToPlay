@@ -201,22 +201,23 @@ class Setlist extends Component {
     }
   };
 
-  vote = async (songId, sentiment) => {
+  vote = (_id, currVotes, sentiment) => async () => {
     const { authorized, artist, navigation } = this.props;
     const { isArtist, showModal } = this.state;
     const { navigate } = navigation;
+    const newCurrVotes = currVotes + (sentiment ? 1 : -1);
     console.log("vote status", isArtist, authorized, showModal);
     if (!isArtist && !authorized) {
       this.setState({ showModal: true });
       return;
     }
-    // console.log('vote song', songId, sentiment);
+    // console.log('vote song', _id, sentiment);
     try {
-      await updateDoc("song", { _id: songId, sentiment });
+      await updateDoc("song", { _id, currVotes: newCurrVotes });
       if (sentiment) {
-        this.setState({ likes: [...this.state.likes, songId] });
+        this.setState({ likes: [...this.state.likes, _id] });
       } else {
-        this.setState({ likes: this.state.likes.filter(i => i !== songId) });
+        this.setState({ likes: this.state.likes.filter(i => i !== _id) });
       }
       // await this.updateSongList();
     } catch (err) {

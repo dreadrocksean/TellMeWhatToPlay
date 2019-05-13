@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, YellowBox } from "react-native";
 import { Provider } from "react-redux";
 
 import createStore from "./redux/";
@@ -7,6 +7,14 @@ import ReduxNavigation from "./navigation/ReduxNavigation";
 
 // create our store
 const store = createStore();
+
+YellowBox.ignoreWarnings(["Setting a timer"]);
+const _console = { ...console };
+console.warn = message => {
+  if (message.indexOf("Setting a timer") <= -1) {
+    _console.warn(message);
+  }
+};
 
 export default class App extends React.Component {
   render() {

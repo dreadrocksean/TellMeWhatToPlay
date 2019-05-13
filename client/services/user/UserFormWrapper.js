@@ -69,17 +69,19 @@ class UserFormWrapper extends Component {
           submitType: type
         });
       } else if (type === "LogIn") {
-        user = await getUser(credentials);
-        this.setState({
-          successMessage: "You Were Successfully Logged In",
-          errorMessage: null,
-          submitType: type
-        });
+        const response = await getUser(credentials);
+        if (response.success) {
+          this.setState({
+            successMessage: "You Were Successfully Logged In",
+            errorMessage: null,
+            submitType: type
+          });
+        } else {
+          throw response.error;
+        }
+        user = response.data;
       }
 
-      if (!user) {
-        throw "User does not exist";
-      }
       await saveStorage({ user });
       // console.log('onSubmit this.props', this.props);
       this.props.loginUser(user);

@@ -97,12 +97,14 @@ export const getUser = async req => {
     // .select()
     .get()
     .catch(err => {
-      console.error(`Error getting user: `, err);
-      return Promise.reject({ error: err });
+      console.error(`Error getting ${type}: `, err);
+      return Promise.resolve({ success: false, error: err });
     });
-  console.log(`User found!`);
-  const user = ref.docs[0].data();
-  return { ...user, _id: ref.docs[0].id };
+  const doc = ref.docs[0];
+  const data = doc ? { ...doc.data(), _id: doc.id } : null;
+  const message = data ? "Found successfully" : "Not found";
+  console.log(message);
+  return Promise.resolve({ success: !!data, data, message });
   // return getDataFromRef(ref);
 };
 
