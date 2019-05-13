@@ -32,19 +32,7 @@ import SongItem from "../components/SongItem";
 import { updateHeader } from "../utils/UpdateHeader";
 
 import { loginUser } from "../redux/actions/ActionCreator";
-import {
-  fetchArtistSongs,
-  createSong,
-  updateSong,
-  updateDoc,
-  deleteSong,
-  deleteDoc,
-  voteSong,
-  createUser,
-  fetchUser,
-  fetchLastFMSong,
-  fetchLyrics
-} from "../services/api";
+import { updateDoc, deleteDoc, fetchLyrics } from "../services/api";
 import { saveStorage } from "../services/LocalStorage";
 import UserFormWrapper from "../services/user/UserFormWrapper";
 
@@ -66,12 +54,6 @@ class Setlist extends Component {
   };
 
   static defaultProps = {
-    fetchArtistSongs,
-    createSong,
-    updateSong,
-    deleteSong,
-    voteSong,
-    fetchLastFMSong,
     fetchLyrics
   };
 
@@ -281,13 +263,6 @@ class Setlist extends Component {
 
   setShowModal = show => this.setState({ showModal: show, add: show });
 
-  deleteSong = async songId => {
-    const response = await deleteDoc("song", songId);
-    if (response.error) {
-      console.error("ERROR deleting song", response.error);
-    }
-  };
-
   onDeleteSong = id => {
     this.setState({
       showDeleteModal: true,
@@ -297,8 +272,8 @@ class Setlist extends Component {
 
   onDeleteConfirm = confirm => {
     if (confirm) {
-      this.props.deleteSong(this.state.songDeleteId);
-      this.updateSongList();
+      deleteDoc("song", this.state.songDeleteId);
+      // this.updateSongList();
     }
     this.setState({ showDeleteModal: false });
   };
