@@ -16,7 +16,7 @@ import { Button as RNButton, Icon } from "react-native-elements";
 // import { Provider } from 'unstated';
 
 import { saveStorage, loadStorage } from "../services/LocalStorage";
-import { fetchUserArtist } from "../services/api";
+import { getDocs } from "../services/api";
 import {
   loginUser,
   loginArtist,
@@ -115,7 +115,8 @@ class Options extends Component {
   async getArtist(userId) {
     try {
       // console.log('getArtist userId', userId);
-      const { artist } = await fetchUserArtist({ userId });
+      const response = await getDocs("artist", { userId });
+      const artist = response.data;
       // console.log('getArtist', artist);
       if (!artist) {
         const storageArtist = await loadStorage("artist");
@@ -132,15 +133,18 @@ class Options extends Component {
     }
   }
 
-  // async checkLocalArtistStorage() {
-  //   try {
-  //     await loadStorage("artist");
-  //   } catch (err) {
-  //     this.setState({ errorMessage: err });
-  //   }
-  // }
+  async checkLocalArtistStorage() {
+    try {
+      await loadStorage("artist");
+    } catch (err) {
+      this.setState({ errorMessage: err });
+    }
+  }
 
-  onClick = userType => () => {
+  onClick = userType => async () => {
+    if (this.props.user) {
+      await this.getArtist(this.props.user._id);
+    }
     const routeName = this.getRouteName(userType);
     console.log("onClick", routeName);
     this.props.navigation.navigate(routeName, { name: routeName });

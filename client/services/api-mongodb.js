@@ -276,7 +276,6 @@ export const fetchUserArtist = req => {
   console.log("req artistuserId", userId);
   return fetch(`http://${getAPIUrl}/api/artist/user/${userId}`)
     .then(res => {
-      // console.log('fetchUserArtist response', res);
       return res.json();
     })
     .catch(err => console.error("Network Error"));

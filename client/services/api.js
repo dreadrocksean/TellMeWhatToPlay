@@ -68,6 +68,16 @@ export const getDocs = async (type, req) => {
   return Promise.resolve({ success: !!data, data, message });
 };
 
+export const fetchUserArtist = req => {
+  const { userId } = req;
+  console.log("req artistuserId", userId);
+  return fetch(`http://${getAPIUrl}/api/artist/user/${userId}`)
+    .then(res => {
+      return res.json();
+    })
+    .catch(err => console.error("Network Error"));
+};
+
 export const updateDoc = async (type, { _id, ...rest }) => {
   console.log("updateDoc payload: ", _id, rest);
   const ref = await db
