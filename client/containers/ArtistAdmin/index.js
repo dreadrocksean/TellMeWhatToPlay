@@ -75,8 +75,7 @@ class ArtistAdmin extends Component {
     updateHeader(this.props);
     const r = await fetch("https://randomuser.me/api/?inc=picture");
     const data = await r.json();
-    console.log("imageURL: ", data.results[0].picture.medium);
-    this.props.loginArtist({ imageURL: data.results[0].picture.medium });
+    this.props.loginArtist({ imageURL: data.results[0].picture.large });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -101,8 +100,8 @@ class ArtistAdmin extends Component {
 
   async componentDidUnMount() {
     const response = await updateArtist({
-      _id: this.props.artistUser._id,
-      live: false
+      _id: this.props.artistUser._id
+      // live: false
     });
   }
 
@@ -259,7 +258,7 @@ const mapStateToProps = state => {
   console.log("mapStateToProps state: ", state);
   return {
     authorized: state.login.authorized,
-    artistUser: state.login.artist,
+    artistUser: state.artist,
     admin: state.artist,
     showModal: state.login.showModal
   };

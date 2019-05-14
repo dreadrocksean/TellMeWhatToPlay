@@ -9,7 +9,7 @@ import {
   AsyncStorage,
   Image
 } from "react-native";
-import { Font } from "expo";
+import { Font, Asset, AppLoading } from "expo";
 import Modal from "react-native-modal";
 import { connect } from "react-redux";
 import { Button as RNButton, Icon } from "react-native-elements";
@@ -56,13 +56,17 @@ class Options extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { showModal: false, photos: [], fontLoaded: false };
+    this.state = {
+      showModal: false,
+      photos: [],
+      fontLoaded: false,
+      isLoadingComplete: false
+    };
     this.checkLocalUserStorage();
     // this.checkLocalArtistStorage();
   }
 
-  async componentDidMount() {
-    // console.log('Options componentDidMount', this.props.navigation);
+  async componentWillMount() {
     try {
       await Font.loadAsync({
         "montserrat-bold": require("../assets/fonts/montserrat/Montserrat-Bold.otf"),
@@ -71,10 +75,13 @@ class Options extends Component {
         "montserrat-thin": require("../assets/fonts/montserrat/Montserrat-Thin.ttf")
       });
       console.log("Fonts loaded successfully");
+      this.setState({ fontLoaded: true });
     } catch (err) {
       console.log("Error loading fonts", err);
     }
-    this.setState({ fontLoaded: true });
+  }
+
+  async componentDidMount() {
     updateHeader(this.props);
   }
 
@@ -216,6 +223,46 @@ class Options extends Component {
     this.setState({ radioButton: !this.state.radioButton });
   }
 
+  _loadResourcesAsync = async () => {
+    return Promise.all([
+      Asset.loadAsync([
+        require("../images/bg.png"),
+        require("../images/logo.png"),
+        require("../images/buttons/artist_btn.png"),
+        require("../images/buttons/fan_btn.png"),
+        require("../images/buttons/signup_btn.png"),
+        require("../images/buttons/login_btn.png"),
+        require("../images/buttons/continue_btn.png"),
+        require("../images/buttons/manage_btn.png"),
+        require("../images/buttons/logout_btn.png"),
+        require("../images/buttons/offair_btn.png"),
+        require("../images/buttons/onair_btn.png"),
+        require("../images/buttons/trash_btn.png"),
+        require("../images/buttons/mute_btn.png"),
+        require("../images/buttons/unmute_btn.png"),
+        require("../images/icons/success_icon.png"),
+        require("../images/icons/add_song_icon.png"),
+        require("../images/icons/close_icon.png"),
+        require("../images/icons/edit_btn.png"),
+        require("../images/icons/artist_thumb.png"),
+        require("../images/icons/lyrics_btn1.png")
+      ])
+      // Font.loadAsync({
+      //   // This is the font that we are using for our tab bar
+      //   ...Icon.Ionicons.font,
+      //   // We include SpaceMono because we use it in HomeScreen.js. Feel free
+      //   // to remove this if you are not using it in your app
+      //   'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+      // }),
+    ]);
+  };
+
+  _handleLoadingError = error => {
+    console.warn(error);
+  };
+
+  _handleFinishLoading = () => this.setState({ isLoadingComplete: true });
+
   render() {
     if (!this.state.fontLoaded) {
       return null;
@@ -224,6 +271,15 @@ class Options extends Component {
     const { showModal } = this.state;
     const { authorized, artist, navigation, userType } = this.props;
     const isArtist = userType === "ARTIST";
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+      return (
+        <AppLoading
+          startAsync={this._loadResourcesAsync}
+          onError={this._handleLoadingError}
+          onFinish={this._handleFinishLoading}
+        />
+      );
+    }
     return (
       <DefaultContainer>
         <View style={styles.container}>
