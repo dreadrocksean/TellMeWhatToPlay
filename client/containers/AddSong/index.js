@@ -65,12 +65,12 @@ class AddSong extends Component {
 
   hide = () => this.props.setShowModal(false);
 
-  handleChange = (field, value) => {
+  handleChange = field => value => {
     this.setState({
       [field]: value,
       errorMessage: null
     });
-    this.fetchSongSuggestionList(field);
+    this.fetchSongSuggestionList({ [field]: value });
   };
 
   fetchSongSuggestionList = async field => {
@@ -83,18 +83,25 @@ class AddSong extends Component {
     const artist = key === "artist" ? field[key] : this.state.edit_artist;
     try {
       const data = await fetchLastFMSong(title, artist);
-      const songs = data.results.trackmatches.track.map((song, i) => ({
+      const track = data.results ? data.results.trackmatches.track : [];
+      const songs = track.map((song, i) => ({
         title: song.name,
         artist: song.artist,
         mbid: song.mbid,
         key: i
       }));
+      if (!songs.length) {
+        return;
+      }
+      const bestChoice = songs[0] || {};
       this.setState({
         songs,
         title,
-        titleComplete: (songs[0] || {}).title,
+        titleComplete: bestChoice.title,
+        artistComplete: bestChoice.artist,
         edit_title: title,
-        edit_artist: artist
+        edit_artist: artist,
+        artist: bestChoice.artist
       });
     } catch (err) {
       console.error("ERROR: ", err);
@@ -103,14 +110,14 @@ class AddSong extends Component {
   };
 
   addSong = async () => {
-    const { title, artist, mbid } = this.state;
-    if (!title || !artist) {
+    const { title, artist, titleComplete, artistComplete, mbid } = this.state;
+    if (!titleComplete || !artistComplete) {
       this.setState({ errorMessage: "Fields cannot be empty" });
       return;
     }
     const data = {
-      title: title.trim(),
-      artist: artist.trim(),
+      title: titleComplete.trim(),
+      artist: artistComplete.trim(),
       mbid
     };
     const response = await createDoc("song", data);
@@ -144,6 +151,7 @@ class AddSong extends Component {
       songs,
       errorMessage,
       titleComplete,
+      artistComplete,
       title,
       artist,
       edit_title,
@@ -168,15 +176,20 @@ class AddSong extends Component {
           <AppTextInput
             style={styles.input}
             placeholder="Title"
-            onChangeText={title => this.handleChange({ title })}
+            onChangeText={this.handleChange("title")}
             value={title}
           />
         </View>
         <View style={styles.inputContainer}>
           <AppTextInput
+            style={styles.autocomplete}
+            placeholder={artistComplete || ""}
+            editable={false}
+          />
+          <AppTextInput
             style={styles.input}
             placeholder={"Artist"}
-            onChangeText={artist => this.handleChange({ artist })}
+            onChangeText={this.handleChange("artist")}
             value={artist}
           />
           <ArtistDropdown data={songs} onPress={this.onDropdownPress} />

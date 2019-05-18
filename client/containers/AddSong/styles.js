@@ -1,77 +1,77 @@
 const styles = {
   imageWrapper: {
     flex: 1,
-    width: '100%',
+    width: "100%"
   },
   image: {
     width: null,
     height: null,
     flex: 1,
-    resizeMode: 'contain',
+    resizeMode: "contain"
   },
   dropdown: {
-    backgroundColor: '#f3f3f3',
-    position: 'absolute',
+    backgroundColor: "#f3f3f3",
+    position: "absolute",
     left: 0,
-    top: 0,
-    width: '100%',
-    height: 260,
+    top: 60,
+    width: "100%",
+    height: 200,
     borderRadius: 15,
     paddingHorizontal: 15,
     paddingVertical: 5,
-    borderColor: '#dddddd',
-    borderWidth: 2,
+    borderColor: "#dddddd",
+    borderWidth: 2
   },
   listHeading: {},
   listHeadingText: {
-    textAlign: 'left',
-    color: '#c4c4c4',
-    fontSize: 11,
+    textAlign: "left",
+    color: "#c4c4c4",
+    fontSize: 11
   },
   listItem: {
-    borderColor: '#dddddd',
+    borderColor: "#dddddd",
     borderBottomWidth: 1,
     paddingVertical: 12,
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   listItemText: {
-    color: '#9e9e9e',
+    color: "#9e9e9e",
     fontSize: 15,
-    textAlign: 'left',
+    textAlign: "left"
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     zIndex: 1
   },
   autocomplete: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
-    width: '100%',
+    width: "100%",
     fontSize: 20,
     padding: 5,
     height: 60,
-    borderColor: '#7a42f4',
+    borderColor: "#7a42f4",
     borderWidth: 1
   },
   input: {
     fontSize: 20,
     padding: 5,
     height: 60,
-    borderColor: '#7a42f4',
+    borderColor: "#7a42f4",
     borderWidth: 1,
-    color: 'white',
+    color: "white"
   },
   submitButton: {
     flex: 1,
-    backgroundColor: '#7a42f4',
+    backgroundColor: "#7a42f4",
     padding: 10,
     height: 40,
-    zIndex: 0,
+    zIndex: 0
   },
-  submitButtonText:{
-    color: 'white'
+  submitButtonText: {
+    color: "white"
   }
-}
+};
 
 export default styles;
