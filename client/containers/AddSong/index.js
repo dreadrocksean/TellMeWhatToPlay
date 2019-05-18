@@ -22,7 +22,8 @@ import {
   fetchUser,
   fetchLastFMSong,
   createSong,
-  createDoc
+  createDoc,
+  updateDoc
 } from "../../services/api";
 import { saveStorage } from "../../services/LocalStorage";
 
@@ -107,20 +108,25 @@ class AddSong extends Component {
       this.setState({ errorMessage: "Fields cannot be empty" });
       return;
     }
-    try {
-      const newSong = await createDoc("song", {
-        title: title.trim(),
-        artist: artist.trim(),
-        user_artist_id: this.props.userArtistId,
-        mbid
+    const data = {
+      title: title.trim(),
+      artist: artist.trim(),
+      mbid
+    };
+    const response = await createDoc("song", data);
+    if (response.success) {
+      const song = response.data;
+      await updateDoc("artist", {
+        _id: this.props.userArtistId,
+        songs: [
+          ...this.props.setlist,
+          { _id: song._id, votes: 0, currVotes: 0, visible: false }
+        ]
       });
-      this.props.complete();
-      this.reset();
-      this.hide();
-    } catch (err) {
-      console.error("ERROR creating song", err);
-      this.setState({ errorMessage: `ERROR creating song: ${err}` });
     }
+    this.props.complete();
+    this.reset();
+    this.hide();
   };
 
   onDropdownPress = song => {

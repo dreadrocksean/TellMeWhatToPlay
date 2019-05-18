@@ -129,32 +129,43 @@ class Setlist extends Component {
   updateSongList = async () => {
     this.setState({ loading: true });
     this.unsubscribe = db
-      .collection("songs")
-      .where("user_artist_id", "==", this.state.artist._id)
-      .onSnapshot(querySnapshot => {
-        let songs = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          _id: doc.id
-        }));
-        if (this.state.isArtist) {
-          songs = songs.sort((a, b) => {
-            if (a.currVotes < b.currVotes) return 1;
-            if (a.currVotes > b.currVotes) return -1;
-            if (a.createdAt < b.createdAt) return -1;
-            if (a.createdAt > b.createdAt) return 1;
-            return 0;
+      .doc(`artists/${this.state.artist._id}`)
+      .onSnapshot(async doc => {
+        if (!doc.data()) return;
+        const artistSongs = (doc.data() || {}).songs || [];
+        try {
+          let songs = await Promise.all(
+            artistSongs.map(async v => {
+              const docRef = db.doc(`songs/${v._id}`);
+              const snap = await docRef.get();
+              return { ...snap.data(), ...v };
+            })
+          );
+          console.log("songs: ", songs);
+
+          if (this.state.isArtist) {
+            songs = songs.sort((a, b) => {
+              if (a.currVotes < b.currVotes) return 1;
+              if (a.currVotes > b.currVotes) return -1;
+              if (a.createdAt < b.createdAt) return -1;
+              if (a.createdAt > b.createdAt) return 1;
+              return 0;
+            });
+          }
+          this.setState({
+            songs,
+            artistSongs,
+            loading: false,
+            update: false,
+            add: false,
+            title: "",
+            song_artist: ""
           });
-        }
-        this.setState({
-          songs,
-          loading: false,
-          update: false,
-          add: false,
-          title: "",
-          song_artist: ""
-        });
-        if (!songs.length) {
-          this.openAddForm();
+          if (!songs.length) {
+            this.openAddForm();
+          }
+        } catch (err) {
+          console.log("Error: ", err);
         }
       });
   };
@@ -346,6 +357,7 @@ class Setlist extends Component {
           setShowModal={this.setShowModal}
           userArtistId={(this.props.artist || {})._id}
           complete={this.updateSongList}
+          setlist={this.state.artistSongs}
         />
         <FanSignup
           showModal={this.state.showModal}

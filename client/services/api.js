@@ -32,40 +32,42 @@ const getAPIUrl = (() => {
 })();
 
 export const getDataFromRef = async ref => {
-  const snap = await ref
-    .get()
-    .catch(err => Promise.resolve({ success: false, error: err }));
-  const data = snap.data();
-  return Promise.resolve({ success: true, data: { ...data, _id: ref.id } });
+  try {
+    const snap = await ref.get();
+    const data = snap.data();
+    return Promise.resolve({ success: true, data: { ...data, _id: ref.id } });
+  } catch (err) {
+    Promise.resolve({ success: false, error: err });
+  }
 };
 
 export const createDoc = async (type, req) => {
-  const ref = await db
-    .collection(`${type}s`)
-    .add(req)
-    .catch(err => {
-      console.error(`Error adding ${type}: `, err);
-      return Promise.resolve({ success: false, error: err });
-    });
-  console.log("Document written with ID: ", ref.id);
-  return getDataFromRef(ref);
+  try {
+    const ref = await db.collection(`${type}s`).add(req);
+    console.log("Document written with ID: ", ref.id);
+    return getDataFromRef(ref);
+  } catch (err) {
+    console.error(`Error adding ${type}: `, err);
+    return Promise.resolve({ success: false, error: err });
+  }
 };
 
 export const getDocs = async (type, req) => {
   const keys = Object.keys(req);
-  const ref = await db
-    .collection(`${type}s`)
-    .where(keys[0], "==", req[keys[0]])
-    .get()
-    .catch(err => {
-      console.error(`Error getting ${type}: `, err);
-      return Promise.resolve({ success: false, error: err });
-    });
-  console.log(`${type} found!`);
-  const doc = ref.docs[0];
-  const data = doc ? { ...doc.data(), _id: doc.id } : null;
-  const message = data ? "Found successfully" : "Not found";
-  return Promise.resolve({ success: !!data, data, message });
+  try {
+    const ref = await db
+      .collection(`${type}s`)
+      .where(keys[0], "==", req[keys[0]])
+      .get();
+    console.log(`${type} found!`);
+    const doc = ref.docs[0];
+    const data = doc ? { ...doc.data(), _id: doc.id } : null;
+    const message = data ? "Found successfully" : "Not found";
+    return Promise.resolve({ success: !!data, data, message });
+  } catch (err) {
+    console.error(`Error getting ${type}: `, err);
+    return Promise.resolve({ success: false, error: err });
+  }
 };
 
 export const fetchUserArtist = req => {
@@ -80,45 +82,49 @@ export const fetchUserArtist = req => {
 
 export const updateDoc = async (type, { _id, ...rest }) => {
   console.log("updateDoc payload: ", _id, rest);
-  const ref = await db
-    .collection(`${type}s`)
-    .doc(_id)
-    .update(rest)
-    .catch(err => {
-      console.error(`Error updating ${type}: `, err);
-      return Promise.resolve({ success: false, error: err });
-    });
-  console.log(`${type} successfully updated: `, rest);
-  return Promise.resolve({ success: true, data: { _id, ...rest } });
+
+  try {
+    const ref = await db
+      .collection(`${type}s`)
+      .doc(_id)
+      .update(rest);
+    console.log(`${type} successfully updated: `, rest);
+    return Promise.resolve({ success: true, data: { _id, ...rest } });
+  } catch (err) {
+    console.error(`Error updating ${type}: `, err);
+    return Promise.resolve({ success: false, error: err });
+  }
 };
 
 export const deleteDoc = async (type, id) => {
-  await db
-    .collection(`${type}s`)
-    .doc(id)
-    .delete()
-    .catch(err => {
-      console.error(`Error deleting ${type}: `, err);
-      return Promise.resolve({ error: err, success: false });
-    });
-  return Promise.resolve({ success: true });
+  try {
+    await db
+      .collection(`${type}s`)
+      .doc(id)
+      .delete();
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    console.error(`Error deleting ${type}: `, err);
+    return Promise.resolve({ error: err, success: false });
+  }
 };
 
 export const getUser = async req => {
-  const ref = await db
-    .collection("users")
-    .where("email", "==", req.email)
-    .where("password", "==", req.password)
-    .get()
-    .catch(err => {
-      console.error(`Error getting ${type}: `, err);
-      return Promise.resolve({ success: false, error: err });
-    });
-  const doc = ref.docs[0];
-  const data = doc ? { ...doc.data(), _id: doc.id } : null;
-  const message = data ? "Found successfully" : "Not found";
-  console.log(message);
-  return Promise.resolve({ success: !!data, data, message });
+  try {
+    const ref = await db
+      .collection("users")
+      .where("email", "==", req.email)
+      .where("password", "==", req.password)
+      .get();
+    const doc = ref.docs[0];
+    const data = doc ? { ...doc.data(), _id: doc.id } : null;
+    const message = data ? "Found successfully" : "Not found";
+    console.log(message);
+    return Promise.resolve({ success: !!data, data, message });
+  } catch (err) {
+    console.error(`Error getting ${type}: `, err);
+    return Promise.resolve({ success: false, error: err });
+  }
 };
 
 export const fetchLastFMSong = (title, artist) => {
