@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import ArtistForm from "./ArtistForm";
 import { loginArtist, logout } from "../../redux/actions/ActionCreator";
 
-import { createArtist, updateArtist, getDataFromRef } from "../api";
+import { createDoc, updateDoc, getDataFromRef } from "../api";
 import upload from "../../utils/upload";
 // import UploadImage from 'http://widget.cloudinary.com/global/all.js';
 
@@ -123,7 +123,8 @@ class ArtistFormWrapper extends Component {
     };
     // console.log('artist data', artistData); return;
     try {
-      const artist = await createArtist(artistData);
+      const response = await createDoc("artist", artistData);
+      const artist = response.data;
       this.props.loginArtist(artist);
       this.setState({
         successMessage: `Successfully created ${this.state.name}!`

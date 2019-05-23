@@ -13,7 +13,7 @@ const styles = {
     backgroundColor: "#f3f3f3",
     position: "absolute",
     left: 0,
-    top: 60,
+    top: 65,
     width: "100%",
     height: 200,
     borderRadius: 15,
@@ -23,6 +23,7 @@ const styles = {
     borderWidth: 2
   },
   listHeading: {},
+  listFooter: {},
   listHeadingText: {
     textAlign: "left",
     color: "#c4c4c4",
@@ -49,12 +50,14 @@ const styles = {
     top: 0,
     width: "100%",
     fontSize: 20,
+    fontFamily: "montserrat-regular",
     padding: 5,
     height: 60,
     borderColor: "#7a42f4",
     borderWidth: 1
   },
   input: {
+    fontFamily: "montserrat-regular",
     fontSize: 20,
     padding: 5,
     height: 60,

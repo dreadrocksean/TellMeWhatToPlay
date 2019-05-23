@@ -18,12 +18,13 @@ class UserSignup extends Component {
 
   navigateTo = () => {
     const { user, artist } = this.props;
+    const artistExists = artist && Object.keys(artist).length > 0;
     let routeName;
     // console.log('navigateTo', user, artist);
 
     if (!user) {
       routeName = "FanSignup";
-    } else if (user && !artist) {
+    } else if (user && !artistExists) {
       routeName = "ArtistSignup";
     } else if (user && artist) {
       routeName = "ArtistAdmin";

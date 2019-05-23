@@ -1,36 +1,34 @@
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React from "react";
+import { View, FlatList } from "react-native";
 
-import styles from './styles';
-import ArtistDropdownItem from './ArtistDropdownItem';
-import AppText from '../../components/AppText';
+import styles from "./styles";
+import ArtistDropdownItem from "./ArtistDropdownItem";
+import AppText from "../../components/AppText";
 
-const ArtistDropdown = ({ data, onPress }) => {
-
-  if (!data.length) {return null;}
+const ArtistDropdown = ({ data, onPress, action }) => {
+  if (!data.length) {
+    return null;
+  }
 
   const onPressItem = item => {
     onPress(item);
   };
 
-  const renderArtistItem = ({item}) => {
-    return <ArtistDropdownItem
-      item={item}
-      onPressItem={onPressItem}
-    />
+  const renderArtistItem = ({ item }) => {
+    return <ArtistDropdownItem item={item} onPressItem={onPressItem} />;
   };
 
   return (
     <View style={styles.dropdown}>
-      <AppText style={styles.listHeading} textStyle={styles.listHeadingText}
-      >SUGGESTED ARTISTS</AppText>
+      <AppText textStyle={styles.listHeadingText}>SUGGESTED ARTISTS</AppText>
       <FlatList
         data={data}
         renderItem={renderArtistItem}
+        keyExtractor={(item, index) => item.key.toString()}
       />
+      {action}
     </View>
   );
-
 };
 
 export default ArtistDropdown;

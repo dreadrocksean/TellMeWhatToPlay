@@ -17,6 +17,7 @@ import firebase from "../utils/Firestore.js";
 
 import listItemAvatar from "../images/test_avatar.png";
 import addIcon from "../images/icons/add_song_icon.png";
+import findIcon from "../images/icons/find_btn.png";
 
 import { UserType } from "../redux/reducers/LoginReducer";
 
@@ -69,6 +70,7 @@ class Setlist extends Component {
       loading: false,
       update: null,
       add: false,
+      allSongs: [],
       songs: [],
       titleComplete: "",
       artistComplete: "",
@@ -82,7 +84,8 @@ class Setlist extends Component {
       email: "",
       password: "",
       showDeleteModal: false,
-      songDeleteId: null
+      songDeleteId: null,
+      showSearch: false
     };
     updateHeader(this.props);
   }
@@ -153,6 +156,7 @@ class Setlist extends Component {
             });
           }
           this.setState({
+            allSongs: songs,
             songs,
             artistSongs,
             loading: false,
@@ -195,14 +199,22 @@ class Setlist extends Component {
     }
   };
 
+  cleanSong = song => {
+    delete song.artist;
+    delete song.title;
+    delete song.mbid;
+    return song;
+  };
+
   changeSongVisibility = async (_id, visible) => {
-    const response = await updateDoc("song", {
-      _id,
-      visible
+    const { songs, artist } = this.state;
+    const newSongs = songs.map(song => {
+      song = this.cleanSong(song);
+      if (song._id !== _id) return song;
+      song.visible = visible;
+      return song;
     });
-    if (response.error) {
-      console.log("Error: ", response.error);
-    }
+    updateDoc("artist", { _id: artist._id, songs: newSongs });
   };
 
   vote = (_id, currVotes, sentiment) => async () => {
@@ -215,17 +227,18 @@ class Setlist extends Component {
       this.setState({ showModal: true });
       return;
     }
-    // console.log('vote song', _id, sentiment);
-    try {
-      await updateDoc("song", { _id, currVotes: newCurrVotes });
-      if (sentiment) {
-        this.setState({ likes: [...this.state.likes, _id] });
-      } else {
-        this.setState({ likes: this.state.likes.filter(i => i !== _id) });
-      }
-      // await this.updateSongList();
-    } catch (err) {
-      console.error("ERROR voting song", err);
+
+    const newSongs = this.state.songs.map(song => {
+      song = this.cleanSong(song);
+      if (song._id !== _id) return song;
+      song.currVotes = newCurrVotes;
+      return song;
+    });
+    updateDoc("artist", { _id: this.state.artist._id, songs: newSongs });
+    if (sentiment) {
+      this.setState({ likes: [...this.state.likes, _id] });
+    } else {
+      this.setState({ likes: this.state.likes.filter(i => i !== _id) });
     }
   };
 
@@ -270,9 +283,9 @@ class Setlist extends Component {
     const headerPreface = this.state.isArtist ? "MANAGE " : "";
     return (
       <React.Fragment>
-        <TouchableOpacity onPress={this.openAddForm}>
+        <TouchableOpacity onPress={this.toggleSearch}>
           <RoundImage
-            source={addIcon}
+            source={findIcon}
             style={{ size: 40, borderColor: "transparent" }}
           />
         </TouchableOpacity>
@@ -294,10 +307,30 @@ class Setlist extends Component {
 
   onDeleteConfirm = confirm => {
     if (confirm) {
-      deleteDoc("song", this.state.songDeleteId);
-      // this.updateSongList();
+      const {
+        songs,
+        songDeleteId,
+        artist: { _id }
+      } = this.state;
+      const newSongs = songs.filter(song => song._id !== songDeleteId);
+      updateDoc("artist", { _id, songs: newSongs });
     }
     this.setState({ showDeleteModal: false });
+  };
+
+  toggleSearch = () => {
+    this.setState({ showSearch: !this.state.showSearch });
+  };
+
+  search = text => {
+    const filtered =
+      this.state.allSongs.filter(
+        v => v.title.toLowerCase().indexOf(text.toLowerCase()) > -1
+      ) || !text;
+
+    this.setState({
+      songs: filtered.length ? filtered : this.state.allSongs
+    });
   };
 
   render() {
@@ -310,7 +343,8 @@ class Setlist extends Component {
       likes,
       isArtist,
       showModal,
-      artist
+      artist,
+      showSearch
     } = this.state;
 
     if (!isArtist && !artist.live) {
@@ -329,6 +363,13 @@ class Setlist extends Component {
         navigation={this.props.navigation}
         headerChildren={this.renderHeaderChildren()}
       >
+        {showSearch && (
+          <AppTextInput
+            placeholder="Start typing"
+            onChangeText={this.search}
+            value=""
+          />
+        )}
         <ScrollView style={styles.scroll} pagingEnabled={true}>
           {songs.map((song, i) => {
             // console.log('map artist.live', artist.live);

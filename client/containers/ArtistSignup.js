@@ -13,7 +13,7 @@ class ArtistSignup extends Component {
 
   componentDidUpdate() {
     console.log("ArtistSignup componentDidUpdate");
-    this.navigateTo();
+    // this.navigateTo();
   }
 
   navigateTo() {

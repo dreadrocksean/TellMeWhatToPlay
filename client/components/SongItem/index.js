@@ -42,7 +42,8 @@ class SongItem extends Component {
   onDeleteSong = () => this.props.onDeleteSong(this.props.song._id);
 
   renderArtistSongItem = () => {
-    const { _id, title, artist } = this.props.song;
+    const { showLyrics, song } = this.props;
+    const { _id, title, artist } = song;
     const currVotes = this.props.song.currVotes || 0;
     const { muted } = this.state;
     const titleColor = muted ? "#4d4d4d" : "#3c2385";
@@ -50,7 +51,8 @@ class SongItem extends Component {
     return (
       <Fragment>
         <View style={styles.leftInfo}>
-          <Score icon={artistThumb} votes={currVotes} disabled={muted} />
+          <Score short={true} votes={currVotes} disabled={muted} />
+          <ListItemIcon onPress={showLyrics} icon={lyricsIcon} />
           <View style={styles.info}>
             <AppText
               textStyle={[styles.text, { color: titleColor, fontSize: 16 }]}

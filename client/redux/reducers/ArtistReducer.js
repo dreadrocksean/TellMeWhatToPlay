@@ -1,6 +1,6 @@
 import * as AT from "../actions/ActionTypes";
 
-const initialState = { live: false };
+const initialState = { live: false, imageURL: "" };
 
 const artistReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -12,7 +12,7 @@ const artistReducer = (state = initialState, action) => {
       return { ...state, live: false };
     case AT.addArtistPhoto:
       console.log("addArtistPhoto", action);
-      return { ...state, image: action.payload };
+      return { ...state, imageURL: action.payload };
 
     default:
       return state;

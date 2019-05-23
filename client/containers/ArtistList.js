@@ -6,6 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   Image,
+  TouchableOpacity,
   Text,
   View,
   ScrollView,
@@ -18,6 +19,7 @@ import * as Animatable from "react-native-animatable";
 
 import DefaultContainer from "./DefaultContainer";
 import AppText from "../components/AppText";
+import AppTextInput from "../components/AppTextInput";
 import ArtistItem from "../components/ArtistItem";
 import { updateHeader } from "../utils/UpdateHeader";
 
@@ -52,6 +54,7 @@ class ArtistList extends Component {
       loading: false,
       update: null,
       add: false,
+      allArtists: [],
       artists: [],
       nameComplete: ""
     };
@@ -74,41 +77,50 @@ class ArtistList extends Component {
         _id: doc.id
       }));
       this.setState({
+        allArtists: artists,
         artists,
         loading: false,
         update: false,
         add: false,
-        name: ""
+        name: "",
+        showSearch: false
       });
     });
-
-    // try {
-    //   const data = await this.props.fetchArtists();
-    //   const artists = data.artists;
-    //
-    //   this.setState({ artists, loading: false, update: false, add: false, name: '' });
-    // } catch (err) {
-    //   console.log('ERROR: ', err);
-    //   this.setState({ loading: false, update: false, add: false });
-    // }
   }
 
-  showSetList(artist) {
+  toggleSearch = () => {
+    this.setState({ showSearch: !this.state.showSearch });
+  };
+
+  search = text => {
+    const filtered =
+      this.state.allArtists.filter(
+        v => v.name.toLowerCase().indexOf(text.toLowerCase()) > -1
+      ) || !text;
+
+    this.setState({
+      artists: filtered.length ? filtered : this.state.allArtists
+    });
+  };
+
+  showSetList = artist => () => {
     // console.log('showSetList artist', artist);
     const { navigate } = this.props.navigation;
     navigate("SetList", { name: "SetList", artist });
-  }
+  };
 
-  home() {
-    this.props.navigation.navigate("Options");
-  }
+  home = () => this.props.navigation.navigate("Options");
 
   renderHeaderChildren() {
     return (
       <Fragment>
         <View style={styles.icons}>
-          <Image style={styles.icon} source={sortIcon} resizeMode={"cover"} />
-          <Image style={styles.icon} source={findIcon} resizeMode={"cover"} />
+          <TouchableOpacity>
+            <Image style={styles.icon} source={sortIcon} resizeMode={"cover"} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.toggleSearch}>
+            <Image style={styles.icon} source={findIcon} resizeMode={"cover"} />
+          </TouchableOpacity>
         </View>
         <AppText textStyle={[styles.text]}>ARTIST LIST</AppText>
       </Fragment>
@@ -116,19 +128,27 @@ class ArtistList extends Component {
   }
 
   render() {
+    const { showSearch } = this.state;
     return (
       <DefaultContainer
         loading={this.state.loading}
         headerChildren={this.renderHeaderChildren()}
         navigation={this.props.navigation}
       >
+        {showSearch && (
+          <AppTextInput
+            placeholder="Start typing"
+            onChangeText={this.search}
+            value=""
+          />
+        )}
         <ScrollView style={styles.scroll} pagingEnabled={true}>
           {this.state.artists.map((artist, i) => {
             return (
               <ArtistItem
                 key={i}
                 artist={artist}
-                showSetList={this.showSetList.bind(this, artist)}
+                showSetList={this.showSetList(artist)}
               />
             );
           })}

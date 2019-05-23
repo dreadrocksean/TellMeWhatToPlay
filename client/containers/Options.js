@@ -177,12 +177,13 @@ class Options extends Component {
       guestTypeArtist,
       guestTypeFan
     } = this.props;
+    const artistAuth = artist && Object.keys(artist).length > 0;
     switch (userType) {
       case "ARTIST": {
         guestTypeArtist();
         if (!authorized) {
           return "UserSignup";
-        } else if (!artist) {
+        } else if (!artistAuth) {
           return "ArtistSignup";
         }
         return "ArtistAdmin";

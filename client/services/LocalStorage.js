@@ -6,7 +6,7 @@ export const saveStorage = async models => {
     return;
   }
   const setStorage = async obj => {
-    // console.log('setStorage', obj);
+    console.log("setStorage", obj);
     return await AsyncStorage.setItem(Object.keys(obj)[0], JSON.stringify(obj));
   };
   if (Array.isArray(models)) {

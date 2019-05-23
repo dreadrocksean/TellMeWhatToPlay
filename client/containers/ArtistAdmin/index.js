@@ -64,12 +64,10 @@ class ArtistAdmin extends Component {
       location: null,
       imageURL: ""
     };
-    this.editAdmin = this.editAdmin.bind(this);
   }
 
-  editAdmin() {
+  editAdmin = () =>
     this.props.navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
-  }
 
   async componentDidMount() {
     updateHeader(this.props);
@@ -90,7 +88,7 @@ class ArtistAdmin extends Component {
   componentWillReceiveProps(nextProps) {
     // Secure against endless cycle
     if (
-      nextProps.artistUser === this.props.artistUser &&
+      nextProps.artist === this.props.artist &&
       nextProps.authorized === this.props.authorized
     ) {
       return;
@@ -100,7 +98,7 @@ class ArtistAdmin extends Component {
 
   async componentDidUnMount() {
     const response = await updateArtist({
-      _id: this.props.artistUser._id
+      _id: this.props.artist._id
       // live: false
     });
   }
@@ -133,7 +131,7 @@ class ArtistAdmin extends Component {
   navigate = pageName => () => {
     this.props.navigation.navigate(pageName, {
       name: pageName,
-      artist: this.props.artistUser
+      artist: this.props.artist
     });
   };
 
@@ -143,21 +141,21 @@ class ArtistAdmin extends Component {
   };
 
   toggleOnAir = async () => {
-    const { artistUser, admin } = this.props;
-    if (!artistUser) {
+    const { artist } = this.props;
+    if (!artist) {
       return;
     }
     // If switching to on from (currently off)
-    if (!admin.live && !this.state.location) {
+    if (!artist.live && !this.state.location) {
     }
     const response = await updateDoc("artist", {
-      _id: artistUser._id,
-      live: !admin.live
+      _id: artist._id,
+      live: !artist.live
     });
     if (response.error) {
       console.log("Error: ", response.error);
     }
-    const newArtist = { ...artistUser, ...admin, ...response.data };
+    const newArtist = { ...artist, ...response.data };
     // this.props.dispatch(loginArtist(response.data));
     if (newArtist.live) {
       this.props.onAir();
@@ -176,8 +174,8 @@ class ArtistAdmin extends Component {
   }
 
   renderOnAirImage() {
-    const { admin } = this.props;
-    const source = (admin || {}).live ? onAirButton : offAirButton;
+    const { artist } = this.props;
+    const source = (artist || {}).live ? onAirButton : offAirButton;
     return <Image style={[styles.button, { height: 50 }]} source={source} />;
   }
 
@@ -194,10 +192,10 @@ class ArtistAdmin extends Component {
 
   render() {
     const { user, showModal, errorMessage } = this.state;
-    const { authorized, artistUser, admin, navigation } = this.props;
-    if (!(artistUser || {}).imageURL) return null;
+    const { authorized, artist, navigation } = this.props;
+    if (!(artist || {}).imageURL) return null;
     return (
-      artistUser && (
+      artist && (
         <DefaultContainer headerChildren={this.renderHeaderChildren()}>
           <View style={styles.container}>
             {errorMessage && (
@@ -206,7 +204,7 @@ class ArtistAdmin extends Component {
             <View style={styles.top}>
               <RoundImage
                 source={{
-                  uri: artistUser.imageURL
+                  uri: artist.imageURL
                 }}
                 style={{
                   size: 150,
@@ -214,7 +212,7 @@ class ArtistAdmin extends Component {
                   borderWidth: 4
                 }}
               />
-              <AppText textStyle={styles.title}>{artistUser.name}</AppText>
+              <AppText textStyle={styles.title}>{artist.name}</AppText>
               <View>
                 <TouchableOpacity onPress={this.toggleOnAir}>
                   {this.renderOnAirImage()}
@@ -224,12 +222,12 @@ class ArtistAdmin extends Component {
             <View style={styles.middle}>
               <View style={styles.mainBox}>
                 <AppText textStyle={styles.h2}>Genre</AppText>
-                <AppText textStyle={styles.h3}>{artistUser.genre}</AppText>
+                <AppText textStyle={styles.h3}>{artist.genre}</AppText>
               </View>
               <View style={styles.mainBox}>
                 <AppText textStyle={styles.h2}>Roles</AppText>
                 <AppText textStyle={styles.h3}>
-                  {artistUser.roles.join(" | ")}
+                  {artist.roles.join(" | ")}
                 </AppText>
               </View>
             </View>
@@ -258,8 +256,7 @@ const mapStateToProps = state => {
   console.log("mapStateToProps state: ", state);
   return {
     authorized: state.login.authorized,
-    artistUser: state.artist,
-    admin: state.artist,
+    artist: state.artist,
     showModal: state.login.showModal
   };
 };

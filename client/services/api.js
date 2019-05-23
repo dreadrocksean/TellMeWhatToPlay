@@ -120,7 +120,12 @@ export const getUser = async req => {
     const data = doc ? { ...doc.data(), _id: doc.id } : null;
     const message = data ? "Found successfully" : "Not found";
     console.log(message);
-    return Promise.resolve({ success: !!data, data, message });
+    return Promise.resolve({
+      success: !!data,
+      data,
+      message,
+      error: "User not found"
+    });
   } catch (err) {
     console.error(`Error getting ${type}: `, err);
     return Promise.resolve({ success: false, error: err });

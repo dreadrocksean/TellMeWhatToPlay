@@ -10,7 +10,11 @@ import {
   createArtist,
   fetchUserArtist
 } from "../api";
-import { loginUser, loginArtist } from "../../redux/actions/ActionCreator";
+import {
+  loginUser,
+  loginArtist,
+  logout
+} from "../../redux/actions/ActionCreator";
 import { saveStorage } from "../LocalStorage";
 import UserForm from "./UserForm";
 import AppModal from "../../components/Modal";
@@ -62,7 +66,8 @@ class UserFormWrapper extends Component {
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
-        user = await createDoc("user", credentials);
+        const response = await createDoc("user", credentials);
+        user = response.data;
         successMessage = "Your Account Was Successfully Created";
         errorMessage = null;
         submitType = type;
@@ -173,7 +178,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => ({
   loginUser: payload => dispatch(loginUser(payload)),
-  loginArtist: payload => dispatch(loginArtist(payload))
+  loginArtist: payload => dispatch(loginArtist(payload)),
+  logout: payload => dispatch(logout())
 });
 
 const mapStateToProps = state => {

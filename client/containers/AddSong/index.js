@@ -31,9 +31,11 @@ const { width, height } = Dimensions.get("window");
 
 const resetState = {
   title: "",
+  formattedTitle: { invisible: "", visible: "" },
   artist: "",
   songs: [],
   titleComplete: "",
+  artistComplete: "",
   mbid: "",
   edit_title: "",
   edit_artist: "",
@@ -41,10 +43,7 @@ const resetState = {
 };
 
 class AddSong extends Component {
-  constructor(props) {
-    super(props);
-    this.state = resetState;
-  }
+  state = { ...resetState };
 
   componentDidMount() {
     this._isMounted = true;
@@ -58,14 +57,34 @@ class AddSong extends Component {
     if (!this._isMounted) {
       return;
     }
-    super.setState(params);
+    const { titleComplete, title = this.state.formattedTitle.visible } = params;
+    // const { title } = this.state;
+    const formattedTitle = this.state.formattedTitle;
+    const pos = (titleComplete || "")
+      .toLowerCase()
+      .indexOf(title.toLowerCase());
+    if (pos > -1 && titleComplete) {
+      const l = title.length;
+      formattedTitle.invisible = titleComplete.substr(0, pos);
+      formattedTitle.visible = titleComplete.substr(pos, l);
+    } else {
+      formattedTitle.invisible = "";
+      formattedTitle.visible = title;
+    }
+    super.setState({ ...params, formattedTitle });
   }
 
   reset = () => this.setState(resetState);
 
-  hide = () => this.props.setShowModal(false);
+  hide = () => {
+    this.reset();
+    this.props.setShowModal(false);
+  };
 
   handleChange = field => value => {
+    if (field === "title" && !value.trim) {
+      this.reset();
+    }
     this.setState({
       [field]: value,
       errorMessage: null
@@ -138,13 +157,25 @@ class AddSong extends Component {
 
   onDropdownPress = song => {
     this.setState({
-      songs: [],
-      title: song.title,
-      titleComplete: "",
-      artist: song.artist,
+      // songs: [],
+      // title: song.title,
+      titleComplete: song.title,
+      artistComplete: song.artist,
+      artist: "",
       mbid: song.mbid
     });
   };
+
+  action = () => (
+    <TouchableOpacity style={styles.imageWrapper} onPress={this.addSong}>
+      <Image style={styles.image} source={addSongButton} />
+    </TouchableOpacity>
+  );
+  Test = () => (
+    <TouchableOpacity style={{ width: 200, height: 50 }} onPress={this.addSong}>
+      <Image style={styles.image} source={addSongButton} />
+    </TouchableOpacity>
+  );
 
   render() {
     const {
@@ -153,10 +184,13 @@ class AddSong extends Component {
       titleComplete,
       artistComplete,
       title,
+      formattedTitle,
       artist,
       edit_title,
       edit_artist
     } = this.state;
+
+    const action = this.action();
 
     return this.props.showModal ? (
       <Modal dismiss={this.hide}>
@@ -177,26 +211,28 @@ class AddSong extends Component {
             style={styles.input}
             placeholder="Title"
             onChangeText={this.handleChange("title")}
-            value={title}
+            formattedValue={formattedTitle}
           />
         </View>
         <View style={styles.inputContainer}>
           <AppTextInput
             style={styles.autocomplete}
-            placeholder={artistComplete || ""}
+            placeholder={artistComplete || "Artist"}
             editable={false}
           />
           <AppTextInput
             style={styles.input}
-            placeholder={"Artist"}
             onChangeText={this.handleChange("artist")}
+            placeholder={""}
             value={artist}
           />
-          <ArtistDropdown data={songs} onPress={this.onDropdownPress} />
+          <ArtistDropdown
+            data={songs}
+            action={this.Test()}
+            onPress={this.onDropdownPress}
+          />
         </View>
-        <TouchableOpacity style={styles.imageWrapper} onPress={this.addSong}>
-          <Image style={styles.image} source={addSongButton} />
-        </TouchableOpacity>
+        {action}
       </Modal>
     ) : null;
   }
