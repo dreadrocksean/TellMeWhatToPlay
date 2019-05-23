@@ -283,6 +283,12 @@ class Setlist extends Component {
     const headerPreface = this.state.isArtist ? "MANAGE " : "";
     return (
       <React.Fragment>
+        <TouchableOpacity onPress={this.openAddForm}>
+          <RoundImage
+            source={addIcon}
+            style={{ size: 40, borderColor: "transparent" }}
+          />
+        </TouchableOpacity>
         <TouchableOpacity onPress={this.toggleSearch}>
           <RoundImage
             source={findIcon}

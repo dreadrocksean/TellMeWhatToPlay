@@ -35,10 +35,18 @@ class ArtistFormWrapper extends Component {
     };
   };
 
-  constructor(props) {
-    super(props);
+  state = {};
 
-    const artist = props.artist || {};
+  componentDidMount() {
+    this.updateProfile();
+  }
+
+  componentWillUnmount() {
+    this.props.logout();
+  }
+
+  updateProfile = () => {
+    const { artist = {} } = this.props;
     const hasRole = key => (artist.roles || []).indexOf(key) > -1;
     const roles = {
       vocals: hasRole("vocals"),
@@ -55,7 +63,7 @@ class ArtistFormWrapper extends Component {
       solo: artist.type === "solo"
       // duo: false,
     };
-    this.state = {
+    this.setState({
       types,
       name: artist.name,
       artistNameComplete: "",
@@ -64,9 +72,8 @@ class ArtistFormWrapper extends Component {
       roles,
       errorMessage: "",
       photo: artist.photo
-    };
-    // this.upload();
-  }
+    });
+  };
 
   resetErrorMessage = () => this.setState({ errorMessage: "" });
 
@@ -121,18 +128,18 @@ class ArtistFormWrapper extends Component {
       type,
       imageURL
     };
-    // console.log('artist data', artistData); return;
-    try {
-      const response = await createDoc("artist", artistData);
-      const artist = response.data;
-      this.props.loginArtist(artist);
-      this.setState({
-        successMessage: `Successfully created ${this.state.name}!`
-      });
-    } catch (err) {
-      console.log("error:", err);
+
+    const response = await createDoc("artist", artistData);
+    if (response.error) {
       this.setState({ errorMessage: `Problem creating ${this.state.name}` });
+      return;
     }
+    const artist = response.data;
+    this.props.loginArtist(artist);
+    this.setState({
+      successMessage: `Successfully created ${this.state.name}!`
+    });
+    this.navigate("ArtistAdmin")();
   };
 
   onChoosePhoto = photoName => {
@@ -155,11 +162,11 @@ class ArtistFormWrapper extends Component {
   };
 
   logout = () => {
-    this.props.logout();
     this.navigate("Options")();
   };
 
   render() {
+    if (!Object.keys(this.state).length) return null;
     // console.log('ArtistFormWrapper render state', this.props);
     const {
       name,
@@ -215,8 +222,7 @@ const mapStateToProps = state => {
   // console.log('state', state);
   return {
     user: state.login.user,
-    artist: state.login.artist,
-    artistProfile: state.artist
+    artist: state.artist
   };
 };
 

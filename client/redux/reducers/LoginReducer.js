@@ -31,7 +31,7 @@ const loginReducer = (state = initialState, action) => {
       return tempState;
     case AT.Logout:
       tempState = { ...state, authorized: false, artist: null, user: null };
-      // await saveStorage({user: tempState.user, artist: tempState.artist});
+      // await saveStorage({ user: tempState.user, artist: tempState.artist });
       return tempState;
     case AT.LoginError:
       return {

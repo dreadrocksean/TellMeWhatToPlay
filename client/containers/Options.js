@@ -425,8 +425,7 @@ const mapStateToProps = state => {
     userType: state.login.userType,
     artist: state.login.artist,
     user: state.login.user,
-    errorMessage: state.login.errorMessage,
-    live: state.artist.live
+    errorMessage: state.login.errorMessage
   };
 };
 

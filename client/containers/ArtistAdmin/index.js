@@ -76,6 +76,10 @@ class ArtistAdmin extends Component {
     this.props.loginArtist({ imageURL: data.results[0].picture.large });
   }
 
+  async componentWillUnmount() {
+    this.props.logout();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     // console.log('componentDidUpdate', prevProps, this.props);
     const { showModal } = this.state;
@@ -136,7 +140,6 @@ class ArtistAdmin extends Component {
   };
 
   logout = () => {
-    this.props.logout();
     this.navigate("Options")();
   };
 
@@ -193,7 +196,7 @@ class ArtistAdmin extends Component {
   render() {
     const { user, showModal, errorMessage } = this.state;
     const { authorized, artist, navigation } = this.props;
-    if (!(artist || {}).imageURL) return null;
+    if (!authorized || !(artist || {}).imageURL) return null;
     return (
       artist && (
         <DefaultContainer headerChildren={this.renderHeaderChildren()}>

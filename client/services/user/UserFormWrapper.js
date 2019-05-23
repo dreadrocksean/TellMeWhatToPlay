@@ -24,32 +24,22 @@ import successIcon from "../../images/icons/success_icon.png";
 import continueButton from "../../images/buttons/continue_btn.png";
 
 class UserFormWrapper extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hasAccount: false,
-      email: "",
-      password: "",
-      fname: "",
-      lname: "",
-      zip: "",
-      successMessage: null,
-      errorMessage: null,
-      hidePassword: true,
-      submitType: null
-    };
-    this.dismissModal = this.dismissModal.bind(this);
-  }
-
-  async componentDidUpdate() {}
+  state = {
+    hasAccount: false,
+    email: "",
+    password: "",
+    fname: "",
+    lname: "",
+    zip: "",
+    successMessage: null,
+    errorMessage: null,
+    hidePassword: true,
+    submitType: null
+  };
 
   resetErrorMessage = () => this.setState({ errorMessage: "" });
 
-  handleChange = field => {
-    // const key = Object.keys(field)[0];
-    // this.setState({[key]: field[key]});
-    this.setState(field);
-  };
+  handleChange = field => this.setState(field);
 
   onHasAccountChange = hasAccount => this.setState({ hasAccount });
 
@@ -115,11 +105,10 @@ class UserFormWrapper extends Component {
     navigateTo();
   };
 
-  dismissModal() {
+  dismissModal = () =>
     this.setState({
       showModal: false
     });
-  }
 
   render() {
     console.log("render state", this.state);
