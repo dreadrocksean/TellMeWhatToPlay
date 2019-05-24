@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  Platform,
   Dimensions,
   StyleSheet,
   TouchableHighlight,
@@ -10,6 +11,7 @@ import {
   Image
 } from "react-native";
 import { Font, Asset, AppLoading } from "expo";
+// import { Constants, Location, Permissions } from "expo";
 import Modal from "react-native-modal";
 import { connect } from "react-redux";
 import { Button as RNButton, Icon } from "react-native-elements";
@@ -60,7 +62,9 @@ class Options extends Component {
       showModal: false,
       photos: [],
       fontLoaded: false,
-      isLoadingComplete: false
+      isLoadingComplete: false,
+      location: null,
+      errorMessage: ""
     };
     this.checkLocalUserStorage();
     // this.checkLocalArtistStorage();
@@ -271,6 +275,7 @@ class Options extends Component {
     // console.log('render');
     const { showModal } = this.state;
     const { authorized, artist, navigation, userType } = this.props;
+
     const isArtist = userType === "ARTIST";
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
@@ -284,30 +289,24 @@ class Options extends Component {
     return (
       <DefaultContainer>
         <View style={styles.container}>
-          {
-            <View style={{ alignItems: "center" }}>
-              <TouchableHighlight onPress={this.onClick("FAN")}>
-                <View>
-                  <Image source={fanButton} resizeMode={"cover"} />
-                </View>
-              </TouchableHighlight>
-              <View style={styles.textSeparator}>
-                <View style={styles.line} />
-                {this.state.fontLoaded && (
-                  <AppText style={[{ flex: 2 }]}>OR</AppText>
-                )}
-                <View style={styles.line} />
+          <View style={{ alignItems: "center" }}>
+            <TouchableHighlight onPress={this.onClick("FAN")}>
+              <View>
+                <Image source={fanButton} resizeMode={"cover"} />
               </View>
-              <TouchableHighlight onPress={this.onClick("ARTIST")}>
-                <View>
-                  <Image source={artistButton} resizeMode={"cover"} />
-                </View>
-              </TouchableHighlight>
-              {this.state.fontLoaded && (
-                <AppText style={[styles.textCustomPos]}>PLEASE SELECT</AppText>
-              )}
+            </TouchableHighlight>
+            <View style={styles.textSeparator}>
+              <View style={styles.line} />
+              <AppText style={[{ flex: 2 }]}>OR</AppText>
+              <View style={styles.line} />
             </View>
-          }
+            <TouchableHighlight onPress={this.onClick("ARTIST")}>
+              <View>
+                <Image source={artistButton} resizeMode={"cover"} />
+              </View>
+            </TouchableHighlight>
+            <AppText style={[styles.textCustomPos]}>PLEASE SELECT</AppText>
+          </View>
         </View>
       </DefaultContainer>
     );

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import {
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -19,7 +20,7 @@ import {
   loginArtist,
   logout
 } from "../../redux/actions/ActionCreator";
-import { updateArtist, updateDoc } from "../../services/api";
+import { updateDoc } from "../../services/api";
 // import { Provider, Subscribe, Container } from 'unstated';
 
 import listItemAvatar from "../../images/test_avatar.png";
@@ -62,12 +63,24 @@ class ArtistAdmin extends Component {
       edit_email: "",
       edit_password: "",
       location: null,
-      imageURL: ""
+      imageURL: "",
+      location: ""
     };
   }
 
   editAdmin = () =>
     this.props.navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
+
+  async componentWillMount() {
+    if (Platform.OS === "android" && !Constants.isDevice) {
+      this.setState({
+        errorMessage:
+          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
 
   async componentDidMount() {
     updateHeader(this.props);
@@ -101,36 +114,35 @@ class ArtistAdmin extends Component {
   }
 
   async componentDidUnMount() {
-    const response = await updateArtist({
+    await updateDoc("artist", {
       _id: this.props.artist._id
-      // live: false
     });
   }
 
-  async _getLocationAsync() {
-    try {
-      const permission = await this._getLocationPermission;
-      const geoLocation = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = geoLocation.coords;
-      const location = { latitude, longitude };
-      this.setState({ location });
-    } catch (err) {
-      throw Error("Must have a location", err);
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      this.setState({
+        errorMessage: "Permission to access location was denied"
+      });
     }
-  }
 
-  async _getLocationPermission() {
-    try {
-      const { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== "granted") {
-        throw "Permission to access location was denied";
+    Location.watchPositionAsync(
+      { distanceInterval: 0.001, enableHighAccuracy: true },
+      async ({ coords = {} }) => {
+        const response = await updateDoc("artist", {
+          location: {
+            lat: coords.latitude,
+            lng: coords.longitude
+          },
+          _id: this.props.artist._id
+        });
+        this.setState({
+          location: { ...response.data.location, err: response.error }
+        });
       }
-      return true;
-    } catch (err) {
-      this.setState({ errorMessage: err });
-      throw Error(err);
-    }
-  }
+    );
+  };
 
   navigate = pageName => () => {
     this.props.navigation.navigate(pageName, {
@@ -194,7 +206,7 @@ class ArtistAdmin extends Component {
   }
 
   render() {
-    const { user, showModal, errorMessage } = this.state;
+    const { user, showModal, errorMessage, location } = this.state;
     const { authorized, artist, navigation } = this.props;
     if (!authorized || !(artist || {}).imageURL) return null;
     return (
@@ -203,6 +215,14 @@ class ArtistAdmin extends Component {
           <View style={styles.container}>
             {errorMessage && (
               <AppText textStyle={styles.error}>{errorMessage}</AppText>
+            )}
+            {location.err ? (
+              <AppText>{location.err}</AppText>
+            ) : (
+              <View>
+                <AppText>{`Lat: ${location.lat}`}</AppText>
+                <AppText>{`Lng: ${location.lng}`}</AppText>
+              </View>
             )}
             <View style={styles.top}>
               <RoundImage

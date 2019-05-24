@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { StackNavigator } from "react-navigation";
 import firebase from "../utils/Firestore.js";
 import {
+  Platform,
   Dimensions,
   StyleSheet,
   Image,
@@ -15,6 +16,7 @@ import {
   Animated,
   PanResponder
 } from "react-native";
+import { Constants, Location, Permissions } from "expo";
 import * as Animatable from "react-native-animatable";
 
 import DefaultContainer from "./DefaultContainer";
@@ -56,20 +58,100 @@ class ArtistList extends Component {
       add: false,
       allArtists: [],
       artists: [],
-      nameComplete: ""
+      nameComplete: "",
+      location: null
     };
     updateHeader(this.props);
+    this.locationRef = null;
+  }
+
+  componentWillMount() {
+    // this.updateArtistList();
   }
 
   componentDidMount() {
+    if (Platform.OS === "android" && !Constants.isDevice) {
+      this.setState({
+        errorMessage:
+          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
+      });
+    } else {
+      this._getLocationAsync();
+    }
     this.updateArtistList();
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+    this.locationRef.remove();
   }
 
-  async updateArtistList() {
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      this.setState({
+        errorMessage: "Permission to access location was denied"
+      });
+    }
+
+    this.locationRef = await Location.watchPositionAsync(
+      { distanceInterval: 0.001, enableHighAccuracy: true },
+      ({ coords = {} }) => {
+        console.log("Latitude: ", coords.latitude);
+        this.setState({
+          location: {
+            lat: coords.latitude,
+            lng: coords.longitude
+          }
+        });
+      }
+    );
+  };
+
+  getDistance = (
+    { lat: lat1, lng: lng1 },
+    { lat: lat2, lng: lng2 },
+    unit = "M"
+  ) => {
+    if (lat1 == lat2 && lng1 == lng2) return 0;
+    const radlat1 = (Math.PI * lat1) / 180;
+    const radlat2 = (Math.PI * lat2) / 180;
+    const theta = lng1 - lng2;
+    const radtheta = (Math.PI * theta) / 180;
+    let dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+
+    if (dist > 1) dist = 1;
+    dist = Math.acos(dist);
+    dist *= 180 / Math.PI;
+    dist *= 60 * 1.1515;
+    if (unit == "K") {
+      dist *= 1.609344;
+    } // Kilometres
+    if (unit == "N") {
+      dist *= 0.8684;
+    } // Nautical
+    return dist;
+  };
+
+  getSortedArtists = () => {
+    const { location } = this.state;
+    if (!location) return [];
+    return this.state.allArtists.sort((a, b) => {
+      const aDist = this.getDistance(location, a.location);
+      const bDist = this.getDistance(location, b.location);
+      if (aDist > bDist) {
+        return 1;
+      }
+      if (aDist < bDist) {
+        return -1;
+      }
+      return 0;
+    });
+  };
+
+  updateArtistList = async () => {
     // this.setState({ loading: true });
     this.unsubscribe = db.collection("artists").onSnapshot(querySnapshot => {
       const artists = querySnapshot.docs.map(doc => ({
@@ -86,7 +168,7 @@ class ArtistList extends Component {
         showSearch: false
       });
     });
-  }
+  };
 
   toggleSearch = () => {
     this.setState({ showSearch: !this.state.showSearch });
@@ -143,7 +225,7 @@ class ArtistList extends Component {
           />
         )}
         <ScrollView style={styles.scroll} pagingEnabled={true}>
-          {this.state.artists.map((artist, i) => {
+          {this.getSortedArtists(this.state.artists).map((artist, i) => {
             return (
               <ArtistItem
                 key={i}
