@@ -95,7 +95,7 @@ class ArtistList extends Component {
     }
 
     this.locationRef = await Location.watchPositionAsync(
-      { distanceInterval: 0.001, enableHighAccuracy: true },
+      { distanceInterval: 1 },
       ({ coords = {} }) => {
         console.log("Latitude: ", coords.latitude);
         this.setState({
@@ -138,17 +138,20 @@ class ArtistList extends Component {
   getSortedArtists = () => {
     const { location } = this.state;
     if (!location) return [];
-    return this.state.allArtists.sort((a, b) => {
-      const aDist = this.getDistance(location, a.location);
-      const bDist = this.getDistance(location, b.location);
-      if (aDist > bDist) {
-        return 1;
-      }
-      if (aDist < bDist) {
-        return -1;
-      }
-      return 0;
-    });
+    return this.state.allArtists
+      .map(v => {
+        v.distance = this.getDistance(location, v.location);
+        return v;
+      })
+      .sort((a, b) => {
+        if (a.distance > b.distance) {
+          return 1;
+        }
+        if (a.distance < b.distance) {
+          return -1;
+        }
+        return 0;
+      });
   };
 
   updateArtistList = async () => {
@@ -225,7 +228,7 @@ class ArtistList extends Component {
           />
         )}
         <ScrollView style={styles.scroll} pagingEnabled={true}>
-          {this.getSortedArtists(this.state.artists).map((artist, i) => {
+          {this.getSortedArtists().map((artist, i) => {
             return (
               <ArtistItem
                 key={i}
