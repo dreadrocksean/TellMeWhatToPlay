@@ -66,7 +66,17 @@ class ArtistAdmin extends Component {
       imageURL: "",
       location: ""
     };
+    this.locationRef = null;
+    this._isMounted = false;
   }
+
+  setState = params => {
+    if (!this._isMounted) {
+      console.log("setState memory leak: ", params);
+      return;
+    }
+    super.setState(params);
+  };
 
   editAdmin = () =>
     this.props.navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
@@ -84,12 +94,15 @@ class ArtistAdmin extends Component {
 
   async componentDidMount() {
     updateHeader(this.props);
+    this._isMounted = true;
     const r = await fetch("https://randomuser.me/api/?inc=picture");
     const data = await r.json();
     this.props.loginArtist({ imageURL: data.results[0].picture.large });
   }
 
   async componentWillUnmount() {
+    this._isMounted = false;
+    this.locationRef.remove();
     this.props.logout();
   }
 
@@ -127,8 +140,8 @@ class ArtistAdmin extends Component {
       });
     }
 
-    Location.watchPositionAsync(
-      { distanceInterval: 0.001, enableHighAccuracy: true },
+    this.locationRef = await Location.watchPositionAsync(
+      { distanceInterval: 10 },
       async ({ coords = {} }) => {
         const response = await updateDoc("artist", {
           location: {

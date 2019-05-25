@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StackNavigator } from "react-navigation";
-import firebase from "../utils/Firestore.js";
+import firebase from "../utils/Firestore";
+import { getDistance } from "../utils/General";
 import {
   Platform,
   Dimensions,
@@ -63,13 +64,11 @@ class ArtistList extends Component {
     };
     updateHeader(this.props);
     this.locationRef = null;
-  }
-
-  componentWillMount() {
-    // this.updateArtistList();
+    this._isMounted = false;
   }
 
   componentDidMount() {
+    this._isMounted = true;
     if (Platform.OS === "android" && !Constants.isDevice) {
       this.setState({
         errorMessage:
@@ -82,9 +81,18 @@ class ArtistList extends Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe();
     this.locationRef.remove();
   }
+
+  setState = params => {
+    if (!this._isMounted) {
+      console.log("setState memory leak: ", params);
+      return;
+    }
+    super.setState(params);
+  };
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -95,7 +103,7 @@ class ArtistList extends Component {
     }
 
     this.locationRef = await Location.watchPositionAsync(
-      { distanceInterval: 1 },
+      { distanceInterval: 10 },
       ({ coords = {} }) => {
         console.log("Latitude: ", coords.latitude);
         this.setState({
@@ -108,39 +116,12 @@ class ArtistList extends Component {
     );
   };
 
-  getDistance = (
-    { lat: lat1, lng: lng1 },
-    { lat: lat2, lng: lng2 },
-    unit = "M"
-  ) => {
-    if (lat1 == lat2 && lng1 == lng2) return 0;
-    const radlat1 = (Math.PI * lat1) / 180;
-    const radlat2 = (Math.PI * lat2) / 180;
-    const theta = lng1 - lng2;
-    const radtheta = (Math.PI * theta) / 180;
-    let dist =
-      Math.sin(radlat1) * Math.sin(radlat2) +
-      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-
-    if (dist > 1) dist = 1;
-    dist = Math.acos(dist);
-    dist *= 180 / Math.PI;
-    dist *= 60 * 1.1515;
-    if (unit == "K") {
-      dist *= 1.609344;
-    } // Kilometres
-    if (unit == "N") {
-      dist *= 0.8684;
-    } // Nautical
-    return dist;
-  };
-
   getSortedArtists = () => {
     const { location } = this.state;
     if (!location) return [];
     return this.state.allArtists
       .map(v => {
-        v.distance = this.getDistance(location, v.location);
+        v.distance = getDistance(location, v.location);
         return v;
       })
       .sort((a, b) => {
