@@ -117,9 +117,9 @@ class ArtistList extends Component {
   };
 
   getSortedArtists = () => {
-    const { location } = this.state;
+    const { location, artists } = this.state;
     if (!location) return [];
-    return this.state.allArtists
+    return artists
       .map(v => {
         v.distance = getDistance(location, v.location);
         return v;
