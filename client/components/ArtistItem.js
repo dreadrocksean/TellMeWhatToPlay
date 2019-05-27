@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Button as RNButton, Icon } from "react-native-elements";
 
+import cloudinaryConfig from "../utils/Cloudinary";
 import ListItem from "../components/ListItem/";
 import AppText from "../components/AppText";
 import listItemStyle from "./ListItem/styles";
@@ -39,7 +40,7 @@ const ArtistItem = props => {
         <View style={styles.avatarContainer}>
           <Image
             style={styles.image}
-            source={{ uri: imageURL }}
+            source={{ uri: imageURL || cloudinaryConfig.userUrl }}
             resizeMode={"cover"}
           />
         </View>

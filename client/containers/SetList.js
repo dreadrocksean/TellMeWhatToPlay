@@ -144,7 +144,6 @@ class Setlist extends Component {
               return { ...snap.data(), ...v };
             })
           );
-          console.log("songs: ", songs);
 
           if (this.state.isArtist) {
             songs = songs.sort((a, b) => {
@@ -222,7 +221,6 @@ class Setlist extends Component {
     const { isArtist, showModal } = this.state;
     const { navigate } = navigation;
     const newCurrVotes = currVotes + (sentiment ? 1 : -1);
-    console.log("vote status", isArtist, authorized, showModal);
     if (!isArtist && !authorized) {
       this.setState({ showModal: true });
       return;

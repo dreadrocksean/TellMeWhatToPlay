@@ -89,7 +89,7 @@ const UserForm = props => {
             <AppText style={styles.label} textStyle={styles.labelText}>
               {hasAccount ? "DON'T" : "ALREADY"} HAVE AN ACCOUNT?
             </AppText>
-            <TouchableOpacity onPress={() => onHasAccountChange(!hasAccount)}>
+            <TouchableOpacity onPress={onHasAccountChange(!hasAccount)}>
               <AppText>{hasAccount ? "SIGNUP" : "LOG IN"}</AppText>
             </TouchableOpacity>
           </View>

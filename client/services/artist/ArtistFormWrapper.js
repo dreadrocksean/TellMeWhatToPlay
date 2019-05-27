@@ -20,7 +20,7 @@ import {
 } from "../../redux/actions/ActionCreator";
 
 import { createDoc, updateDoc, getDataFromRef } from "../api";
-import { upload } from "../../utils/Cloudinary";
+import cloudinaryConfig, { upload } from "../../utils/Cloudinary";
 
 const { width, height } = Dimensions.get("window");
 
@@ -193,7 +193,7 @@ class ArtistFormWrapper extends Component {
           types={types}
           getType={this.getType}
           onPressCam={this.showCam}
-          photo={this.props.artist.imageURL}
+          photo={this.props.artist.imageURL || cloudinaryConfig.userUrl}
         />
         <TouchableOpacity onPress={this.logout}>
           <Text>LOGOUT</Text>

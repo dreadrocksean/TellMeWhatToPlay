@@ -54,7 +54,6 @@ export const createDoc = async (type, req) => {
       console.error(`Error adding ${type}: `, err);
       return Promise.resolve({ success: false, error: err });
     });
-  console.log("Document written with ID: ", ref.id);
   return getDataFromRef(ref);
 };
 
@@ -68,7 +67,6 @@ export const getDocs = async (type, req) => {
       console.error(`Error getting ${type}: `, err);
       return Promise.resolve({ success: false, error: err });
     });
-  console.log(`${type} found!`);
   const doc = ref.docs[0];
   const data = doc ? { ...doc.data(), _id: doc.id } : null;
   const message = data ? "Found successfully" : "Not found";
@@ -76,7 +74,6 @@ export const getDocs = async (type, req) => {
 };
 
 export const updateDoc = async (type, { _id, ...rest }) => {
-  console.log("updateDoc payload: ", _id, rest);
   const ref = await db
     .collection(`${type}s`)
     .doc(_id)
@@ -85,7 +82,6 @@ export const updateDoc = async (type, { _id, ...rest }) => {
       console.error(`Error updating ${type}: `, err);
       return Promise.resolve({ success: false, error: err });
     });
-  console.log(`${type} successfully updated: `, rest);
   return Promise.resolve({ success: true, data: { _id, ...rest } });
 };
 
@@ -114,22 +110,18 @@ export const getUser = async req => {
     });
   const doc = ref.docs[0];
   const data = doc ? { ...doc.data(), _id: doc.id } : null;
-  const message = data ? "Found successfully" : "Not found";
   console.log(message);
   return Promise.resolve({ success: !!data, data, message });
   // return getDataFromRef(ref);
 };
 
 export const fetchSongs = () => {
-  console.log("fetchSongs");
-  // fetch('http://bookaroadieapi.azurewebsites.net/api/Jobs')
   return fetch(`http://${getAPIUrl}/api/songs`)
     .then(res => res.json())
     .catch(err => console.error("Network Error"));
 };
 
 export const fetchArtistSongs = artistId => {
-  console.log("test", artistId);
   return fetch(`http://${getAPIUrl}/api/songs/artist/${artistId}`)
     .then(res => res.json())
     .catch(err => console.error("Network Error"));
@@ -180,7 +172,6 @@ export const createSong = async req => {
       console.error("Error adding Song: ", err);
       return { error: err };
     });
-  console.log("Document written with ID: ", songRef.id);
   return getDataFromRef(songRef);
 
   // console.log("createSong req", req);
@@ -212,10 +203,8 @@ export const updateSong = req => {
 };
 
 export const voteSong = req => {
-  console.log("voteSong req", req);
   const { _id, sentiment } = req;
   delete req._id;
-  console.log("body", JSON.stringify(req));
   return fetch(`http://${getAPIUrl}/api/vote/song/${_id}`, {
     method: "PATCH",
     headers: {
@@ -236,7 +225,6 @@ export const createArtist = async req => {
       console.error("Error adding Artist: ", err);
       return { error: err };
     });
-  console.log("Document written with ID: ", artistRef.id);
   return getDataFromRef(artistRef);
 
   // return fetch(`http://${getAPIUrl}/api/artist`, {

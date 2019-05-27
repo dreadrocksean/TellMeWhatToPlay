@@ -44,7 +44,6 @@ export const getDataFromRef = async ref => {
 export const createDoc = async (type, req) => {
   try {
     const ref = await db.collection(`${type}s`).add(req);
-    console.log("Document written with ID: ", ref.id);
     return getDataFromRef(ref);
   } catch (err) {
     console.error(`Error adding ${type}: `, err);
@@ -59,10 +58,9 @@ export const getDocs = async (type, req) => {
       .collection(`${type}s`)
       .where(keys[0], "==", req[keys[0]])
       .get();
-    console.log(`${type} found!`);
     const doc = ref.docs[0];
     const data = doc ? { ...doc.data(), _id: doc.id } : null;
-    const message = data ? "Found successfully" : "Not found";
+    const message = `${type} successfully found!`;
     return Promise.resolve({ success: !!data, data, message });
   } catch (err) {
     console.error(`Error getting ${type}: `, err);
@@ -72,7 +70,6 @@ export const getDocs = async (type, req) => {
 
 export const fetchUserArtist = req => {
   const { userId } = req;
-  console.log("req artistuserId", userId);
   return fetch(`http://${getAPIUrl}/api/artist/user/${userId}`)
     .then(res => {
       return res.json();
@@ -81,14 +78,11 @@ export const fetchUserArtist = req => {
 };
 
 export const updateDoc = async (type, { _id, ...rest }) => {
-  console.log("updateDoc payload: ", _id, rest);
-
   try {
     const ref = await db
       .collection(`${type}s`)
       .doc(_id)
       .update(rest);
-    console.log(`${type} successfully updated: `, rest);
     return Promise.resolve({ success: true, data: { _id, ...rest } });
   } catch (err) {
     console.error(`Error updating ${type}: `, err);
@@ -119,7 +113,6 @@ export const getUser = async req => {
     const doc = ref.docs[0];
     const data = doc ? { ...doc.data(), _id: doc.id } : null;
     const message = data ? "Found successfully" : "Not found";
-    console.log(message);
     return Promise.resolve({
       success: !!data,
       data,

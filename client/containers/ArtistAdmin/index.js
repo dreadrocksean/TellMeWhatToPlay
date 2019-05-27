@@ -32,6 +32,7 @@ import AppText from "../../components/AppText";
 import RoundImage from "../../components/RoundImage";
 import { updateHeader } from "../../utils/UpdateHeader";
 import { scale, verticalScale, moderateScale } from "../../utils/Scales";
+import cloudinaryConfig from "../../utils/Cloudinary";
 
 import onAirButton from "../../images/buttons/onair_btn.png";
 import offAirButton from "../../images/buttons/offair_btn.png";
@@ -236,7 +237,7 @@ class ArtistAdmin extends Component {
             <View style={styles.top}>
               <RoundImage
                 source={{
-                  uri: artist.imageURL
+                  uri: artist.imageURL || cloudinaryConfig.userUrl
                 }}
                 style={{
                   size: 150,
@@ -284,14 +285,11 @@ class ArtistAdmin extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log("mapStateToProps state: ", state);
-  return {
-    authorized: state.login.authorized,
-    artist: state.artist,
-    showModal: state.login.showModal
-  };
-};
+const mapStateToProps = state => ({
+  authorized: state.login.authorized,
+  artist: state.artist,
+  showModal: state.login.showModal
+});
 
 const mapDispatchToProps = dispatch => ({
   loginArtist: data => {

@@ -11,15 +11,9 @@ class ArtistSignup extends Component {
     headingText: ""
   };
 
-  componentDidUpdate() {
-    console.log("ArtistSignup componentDidUpdate");
-    // this.navigateTo();
-  }
-
   navigateTo() {
     const { user, artist } = this.props;
     let routeName;
-    // console.log('getRouteName', userType, user, artist);
     if (user && !artist) {
       routeName = "ArtistSignup";
       // this.setState({headingText: 'ARTIST PROFILE'})
@@ -34,10 +28,6 @@ class ArtistSignup extends Component {
     this.props.navigation.navigate(routeName, { name: routeName });
   }
 
-  renderHeaderChildren() {
-    return <AppText>{this.state.headingText}</AppText>;
-  }
-
   render() {
     return <ArtistFormWrapper navigation={this.props.navigation} />;
   }
@@ -50,12 +40,9 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  // console.log('mapStateToProps state', state);
-  return {
-    user: state.login.user,
-    artist: state.login.artist
-  };
-};
+const mapStateToProps = state => ({
+  user: state.login.user,
+  artist: state.login.artist
+});
 
 export default connect(mapStateToProps)(ArtistSignup);

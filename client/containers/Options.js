@@ -161,11 +161,9 @@ class Options extends Component {
     if (userType === "ARTIST" && user && !artist) {
       await this.getArtist(user._id);
       const routeName = this.getRouteName(userType);
-      console.log("onClick", routeName);
       navigation.navigate(routeName, { name: routeName });
     } else {
       const routeName = this.getRouteName(userType);
-      console.log("onClick", routeName);
       navigation.navigate(routeName, { name: routeName });
     }
   };

@@ -20,6 +20,8 @@ import {
 import { Constants, Location, Permissions } from "expo";
 import * as Animatable from "react-native-animatable";
 
+import { loadingStatus } from "../redux/actions/ActionCreator";
+
 import DefaultContainer from "./DefaultContainer";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
@@ -95,7 +97,8 @@ class ArtistList extends Component {
   };
 
   _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    this.props.loadingStatus(true);
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       this.setState({
         errorMessage: "Permission to access location was denied"
@@ -105,6 +108,7 @@ class ArtistList extends Component {
     this.locationRef = await Location.watchPositionAsync(
       { distanceInterval: 10 },
       ({ coords = {} }) => {
+        this.props.loadingStatus(false);
         console.log("Latitude: ", coords.latitude);
         this.setState({
           location: {
@@ -136,8 +140,9 @@ class ArtistList extends Component {
   };
 
   updateArtistList = async () => {
-    // this.setState({ loading: true });
+    this.props.loadingStatus(true);
     this.unsubscribe = db.collection("artists").onSnapshot(querySnapshot => {
+      this.props.loadingStatus(false);
       const artists = querySnapshot.docs.map(doc => ({
         ...doc.data(),
         _id: doc.id
@@ -249,4 +254,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   authorized: state.login.authorized
 });
-export default connect(mapStateToProps)(ArtistList);
+
+const mapDispatchToProps = dispatch => ({
+  loadingStatus: status => dispatch(loadingStatus(status))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ArtistList);

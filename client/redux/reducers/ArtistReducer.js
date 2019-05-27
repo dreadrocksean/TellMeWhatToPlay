@@ -11,10 +11,8 @@ const artistReducer = (state = initialState, action) => {
     case AT.OffAir:
       return { ...state, live: false };
     case AT.addArtistPhoto:
-      console.log("addArtistPhoto", action);
       return { ...state, imageURL: action.payload };
     case AT.Logout:
-      // tempState = { ...initialState };
       return null;
 
     default:

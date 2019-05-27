@@ -41,7 +41,7 @@ class UserFormWrapper extends Component {
 
   handleChange = field => this.setState(field);
 
-  onHasAccountChange = hasAccount => this.setState({ hasAccount });
+  onHasAccountChange = hasAccount => () => this.setState({ hasAccount });
 
   togglePassword = () =>
     this.setState({ hidePassword: !this.state.hidePassword });
@@ -74,7 +74,6 @@ class UserFormWrapper extends Component {
       }
 
       await saveStorage({ user });
-      // console.log('onSubmit this.props', this.props);
       this.props.loginUser(user);
       this.setState({
         successMessage,
@@ -93,9 +92,7 @@ class UserFormWrapper extends Component {
   };
 
   continue = async () => {
-    console.log("this.props", this.props);
     const { userType, user, navigateTo } = this.props;
-    console.log("continue", userType, user, navigateTo, this.state.submitType);
     if (userType === "ARTIST" && user && this.state.submitType === "LogIn") {
       const response = await getDocs("artist", { userId: user._id });
       const artist = response.data;
@@ -111,7 +108,6 @@ class UserFormWrapper extends Component {
     });
 
   render() {
-    console.log("render state", this.state);
     const {
       email,
       password,
@@ -171,13 +167,11 @@ const mapDispatchToProps = dispatch => ({
   logout: payload => dispatch(logout())
 });
 
-const mapStateToProps = state => {
-  return {
-    userType: state.login.userType,
-    artist: state.login.artist,
-    user: state.login.user
-  };
-};
+const mapStateToProps = state => ({
+  userType: state.login.userType,
+  artist: state.login.artist,
+  user: state.login.user
+});
 
 export default connect(
   mapStateToProps,

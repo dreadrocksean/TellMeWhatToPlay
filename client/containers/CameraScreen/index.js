@@ -2,12 +2,6 @@ import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Camera, Permissions, ImagePicker } from "expo";
 import { connect } from "react-redux";
-// import {
-//   Image as CImage,
-//   Video,
-//   Transformation,
-//   CloudinaryContext
-// } from "cloudinary-react";
 import cloudinary from "cloudinary-core";
 
 import { loginArtist } from "../../redux/actions/ActionCreator";
@@ -26,6 +20,7 @@ class CameraScreen extends Component {
     captures: [],
     capturing: null,
     hasCameraPermission: null,
+    hasCameraRollPermission: null,
     cameraType: Camera.Constants.Type.back,
     flashMode: Camera.Constants.FlashMode.off
   };
@@ -55,12 +50,12 @@ class CameraScreen extends Component {
   };
 
   async componentDidMount() {
-    const camera = await Permissions.askAsync(Permissions.CAMERA);
-    const audio = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    const hasCameraPermission =
-      camera.status === "granted" && audio.status === "granted";
+    const cam = await Permissions.askAsync(Permissions.CAMERA);
+    const hasCameraPermission = cam.status === "granted";
+    const roll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const hasCameraRollPermission = roll.status === "granted";
 
-    this.setState({ hasCameraPermission });
+    this.setState({ hasCameraPermission, hasCameraRollPermission });
   }
 
   navigate = (pageName, params) => () => {
@@ -72,6 +67,7 @@ class CameraScreen extends Component {
 
   onGalleryChoice = data => async () => {
     this.props.navigation.state.params.onChoosePhoto(data);
+    // this.navigate("ArtistSignup", { imageData: data })();
     this.navigate("ArtistFormWrapper", { imageData: data })();
   };
 
@@ -85,12 +81,14 @@ class CameraScreen extends Component {
       return;
     }
     this.props.navigation.state.params.onChoosePhoto(result.base64);
+    // this.navigate("ArtistSignup", { imageData: result.base64 })();
     this.navigate("ArtistFormWrapper", { imageData: result.base64 })();
   };
 
   render() {
     const {
       hasCameraPermission,
+      hasCameraRollPermission,
       flashMode,
       cameraType,
       capturing,
@@ -102,12 +100,12 @@ class CameraScreen extends Component {
     } else if (hasCameraPermission === false) {
       return <Text>Access to camera has been denied.</Text>;
     }
-    // const SampleImg = () => (
-    //   <Image
-    //     style={{ width: 80, height: 80 }}
-    //     source={{ uri: cl.url("sample", { width: 100, crop: "fit" }) }}
-    //   />
-    // );
+
+    if (hasCameraRollPermission === null) {
+      return <View />;
+    } else if (hasCameraRollPermission === false) {
+      return <Text>Access to camera roll has been denied.</Text>;
+    }
 
     return (
       <React.Fragment>

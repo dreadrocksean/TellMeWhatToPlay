@@ -4,7 +4,9 @@ const cloudinaryConfig = {
   apiSecret: "5RWaH6yI8oExTJ1Kf3CaWgVF_Is",
   databaseURL: "https://res.cloudinary.com/grubuddy",
   APIURL: "https://api.cloudinary.com/v1_1/grubuddy/image/upload",
-  uploadPreset: "pkb1dqog"
+  uploadPreset: "pkb1dqog",
+  userUrl:
+    "https://res.cloudinary.com/grubuddy/image/upload/v1558967695/TMWTP/user.png"
 };
 
 export const upload = async dataUri => {
