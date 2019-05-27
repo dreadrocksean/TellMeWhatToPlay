@@ -39,14 +39,7 @@ class ArtistSignup extends Component {
   }
 
   render() {
-    return (
-      <DefaultContainer
-        style={styles.body}
-        headerChildren={this.renderHeaderChildren()}
-      >
-        <ArtistFormWrapper navigation={this.props.navigation} />
-      </DefaultContainer>
-    );
+    return <ArtistFormWrapper navigation={this.props.navigation} />;
   }
 }
 

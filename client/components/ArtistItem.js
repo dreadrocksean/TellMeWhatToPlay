@@ -25,7 +25,8 @@ const ArtistItem = props => {
     genre = "Alternative Hiphop",
     instruments = ["Singer Songwriter"],
     live,
-    distance
+    distance,
+    imageURL
   } = props.artist;
 
   const feet = Math.round(distance * 5280);
@@ -38,7 +39,7 @@ const ArtistItem = props => {
         <View style={styles.avatarContainer}>
           <Image
             style={styles.image}
-            source={listItemAvatar}
+            source={{ uri: imageURL }}
             resizeMode={"cover"}
           />
         </View>

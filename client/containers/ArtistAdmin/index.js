@@ -95,9 +95,9 @@ class ArtistAdmin extends Component {
   async componentDidMount() {
     updateHeader(this.props);
     this._isMounted = true;
-    const r = await fetch("https://randomuser.me/api/?inc=picture");
-    const data = await r.json();
-    this.props.loginArtist({ imageURL: data.results[0].picture.large });
+    // const r = await fetch("https://randomuser.me/api/?inc=picture");
+    // const data = await r.json();
+    // this.props.loginArtist({ imageURL: data.results[0].picture.large });
   }
 
   async componentWillUnmount() {
@@ -221,21 +221,17 @@ class ArtistAdmin extends Component {
   render() {
     const { user, showModal, errorMessage, location } = this.state;
     const { authorized, artist, navigation } = this.props;
-    if (!authorized || !(artist || {}).imageURL) return null;
+    if (!authorized || !artist) return null;
     return (
       artist && (
-        <DefaultContainer headerChildren={this.renderHeaderChildren()}>
+        <DefaultContainer
+          loading={this.state.loading}
+          headerChildren={this.renderHeaderChildren()}
+          navigation={this.props.navigation}
+        >
           <View style={styles.container}>
             {errorMessage && (
               <AppText textStyle={styles.error}>{errorMessage}</AppText>
-            )}
-            {location.err ? (
-              <AppText>{location.err}</AppText>
-            ) : (
-              <View>
-                <AppText>{`Lat: ${location.lat}`}</AppText>
-                <AppText>{`Lng: ${location.lng}`}</AppText>
-              </View>
             )}
             <View style={styles.top}>
               <RoundImage

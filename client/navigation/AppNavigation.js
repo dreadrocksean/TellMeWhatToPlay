@@ -15,6 +15,7 @@ import ArtistAdmin from "../containers/ArtistAdmin";
 import ArtistList from "../containers/ArtistList";
 import SetList from "../containers/SetList";
 import UserFormWrapper from "../services/user/UserFormWrapper";
+import ArtistFormWrapper from "../services/artist/ArtistFormWrapper";
 import Lyrics from "../containers/Lyrics";
 
 const AppRouteConfigs = {
@@ -27,6 +28,7 @@ const AppRouteConfigs = {
   FanSignup: { screen: FanSignup },
   LoginScreen: { screen: LoginScreen },
   UserFormWrapper: { screen: UserFormWrapper },
+  ArtistFormWrapper: { screen: ArtistFormWrapper },
   CameraScreen: { screen: CameraScreen },
   ArtistAdmin: { screen: ArtistAdmin }
 };

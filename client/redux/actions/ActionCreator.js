@@ -1,4 +1,4 @@
-import * as AT from './ActionTypes';
+import * as AT from "./ActionTypes";
 
 const incrementVotes = () => ({
   type: AT.IncrementVotes
@@ -18,22 +18,33 @@ const guestTypeArtist = () => ({
 
 const loginUser = user => ({
   type: AT.LoginUser,
-  payload: user,
+  payload: user
 });
 
 const loginArtist = artist => {
   return {
-  type: AT.LoginArtist,
-  payload: artist,
-}};
+    type: AT.LoginArtist,
+    payload: artist
+  };
+};
 
 const logout = () => ({
   type: AT.Logout
 });
 
+const loadingStatus = status => ({
+  type: AT.Loading,
+  payload: { loading: status }
+});
+
+const addMessage = msg => ({
+  type: AT.Message,
+  payload: { message: msg }
+});
+
 const loginError = payload => ({
   type: AT.LoginError,
-  errorMessage: payload.errorMessage,
+  errorMessage: payload.errorMessage
 });
 
 const register = () => ({
@@ -58,7 +69,7 @@ const offAir = () => ({
 
 const addArtistPhoto = imageURL => ({
   type: AT.addArtistPhoto,
-  payload: imageURL,
+  payload: imageURL
 });
 
 export {
@@ -76,4 +87,6 @@ export {
   onAir,
   offAir,
   addArtistPhoto,
+  loadingStatus,
+  addMessage
 };

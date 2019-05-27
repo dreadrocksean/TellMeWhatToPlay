@@ -1,22 +1,25 @@
-import React, { Component } from 'react';
-import { StyleSheet, ViewPropTypes, Text, View, Image, TouchableOpacity } from 'react-native';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  ViewPropTypes,
+  Text,
+  View,
+  Image,
+  TouchableOpacity
+} from "react-native";
+import PropTypes from "prop-types";
 
-import styles from './styles.js';
-import AppText from '../../components/AppText';
-import IconGrey from '../../images/icons/cam_icon_grey.png';
-import IconWhite from '../../images/icons/cam_icon_white.png';
+import styles from "./styles.js";
+import AppText from "../../components/AppText";
+import IconGrey from "../../images/icons/cam_icon_grey.png";
+import IconWhite from "../../images/icons/cam_icon_white.png";
 
 const ImageUpload = ({ label, style, onPress, source }) => {
-
   const Icon = source ? IconWhite : IconGrey;
-  const textColor = {color: source ? '#f3f3f3' : '#bbbbbb'};
-  console.log('ImageUpload source', source);
+  const textColor = { color: source ? "#f3f3f3" : "#bbbbbb" };
   return (
-    <TouchableOpacity style={[style, styles.container]}
-      onPress={onPress}
-    >
-      <View style={styles.bg} >
+    <TouchableOpacity style={[style, styles.container]} onPress={onPress}>
+      <View style={styles.bg}>
         <Image style={styles.image} source={source} />
         {source && <View style={styles.imageOverlay} />}
       </View>
@@ -32,8 +35,8 @@ ImageUpload.propTypes = {
   styles: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
-    ViewPropTypes.style,
-  ]),
+    ViewPropTypes.style
+  ])
 };
 
 export default ImageUpload;

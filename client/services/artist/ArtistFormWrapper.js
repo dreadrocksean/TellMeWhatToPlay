@@ -11,12 +11,16 @@ import {
 import { connect } from "react-redux";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
+import DefaultContainer from "../../containers/DefaultContainer";
 import ArtistForm from "./ArtistForm";
-import { loginArtist, logout } from "../../redux/actions/ActionCreator";
+import {
+  loginArtist,
+  logout,
+  loadingStatus
+} from "../../redux/actions/ActionCreator";
 
 import { createDoc, updateDoc, getDataFromRef } from "../api";
-import upload from "../../utils/upload";
-// import UploadImage from 'http://widget.cloudinary.com/global/all.js';
+import { upload } from "../../utils/Cloudinary";
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,7 +46,7 @@ class ArtistFormWrapper extends Component {
   }
 
   componentWillUnmount() {
-    this.props.logout();
+    // this.props.logout();
   }
 
   updateProfile = () => {
@@ -65,13 +69,14 @@ class ArtistFormWrapper extends Component {
     };
     this.setState({
       types,
+      id: artist._id,
       name: artist.name,
       artistNameComplete: "",
       artistImageURL: "",
       genre: artist.genre,
       roles,
       errorMessage: "",
-      photo: artist.photo
+      photo: artist.imageURL
     });
   };
 
@@ -103,23 +108,11 @@ class ArtistFormWrapper extends Component {
     return Object.keys(this.state.roles).filter(k => this.state.roles[k]);
   };
 
-  uploadImage = (uri, cb) => upload(uri, url => cb(url));
-
   onSubmit = async () => {
     const type = this.getType();
     const roles = this.getRoles();
-    const { name, genre, photo } = this.state;
-    let imageURL = "";
-    if (photo) {
-      try {
-        imageURL = await this.uploadImage(photo);
-      } catch (err) {
-        console.log("error:", err);
-        this.setState({ errorMessage: `Problem upload image ${photo}` });
-      }
-    }
-
-    // console.log('imageURL', imageURL);
+    const { id, name, genre } = this.state;
+    let imageURL = this.props.artist.imageURL;
     const artistData = {
       userId: this.props.user._id,
       name,
@@ -129,7 +122,9 @@ class ArtistFormWrapper extends Component {
       imageURL
     };
 
-    const response = await createDoc("artist", artistData);
+    const response = id
+      ? await updateDoc("artist", { _id: id, ...artistData })
+      : await createDoc("artist", artistData);
     if (response.error) {
       this.setState({ errorMessage: `Problem creating ${this.state.name}` });
       return;
@@ -142,13 +137,14 @@ class ArtistFormWrapper extends Component {
     this.navigate("ArtistAdmin")();
   };
 
-  onChoosePhoto = photoName => {
-    console.log("onChoosePhoto", photoName);
-    this.setState({ photo: photoName });
+  onChoosePhoto = async imageData => {
+    this.props.loadingStatus(true);
+    const imageURL = await upload(imageData);
+    this.props.loadingStatus(false);
+    this.props.loginArtist({ imageURL });
   };
 
   showCam = () => {
-    // console.log('showCam props', this.props);
     this.props.navigation.navigate("CameraScreen", {
       onChoosePhoto: this.onChoosePhoto
     });
@@ -167,8 +163,9 @@ class ArtistFormWrapper extends Component {
 
   render() {
     if (!Object.keys(this.state).length) return null;
-    // console.log('ArtistFormWrapper render state', this.props);
+    const imageURL = this.props.artist.imageURL;
     const {
+      id,
       name,
       genre,
       roles,
@@ -178,13 +175,17 @@ class ArtistFormWrapper extends Component {
       errorMessage
     } = this.state;
     return (
-      <View>
+      <DefaultContainer
+        loading={this.state.loading}
+        navigation={this.props.navigation}
+      >
         <ArtistForm
           handleChange={this.handleChange}
           handleRoleChange={this.handleRoleChange}
           handleChooseType={this.handleChooseType}
           onSubmit={this.onSubmit}
           genre={genre}
+          id={id}
           name={name}
           errorMessage={errorMessage}
           successMessage={successMessage}
@@ -192,12 +193,12 @@ class ArtistFormWrapper extends Component {
           types={types}
           getType={this.getType}
           onPressCam={this.showCam}
-          photo={photo}
+          photo={this.props.artist.imageURL}
         />
         <TouchableOpacity onPress={this.logout}>
           <Text>LOGOUT</Text>
         </TouchableOpacity>
-      </View>
+      </DefaultContainer>
     );
   }
 }
@@ -222,13 +223,15 @@ const mapStateToProps = state => {
   // console.log('state', state);
   return {
     user: state.login.user,
-    artist: state.artist
+    artist: state.login.artist,
+    loading: state.app.loading
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   loginArtist: payload => dispatch(loginArtist(payload)),
-  logout: () => dispatch(logout())
+  logout: () => dispatch(logout()),
+  loadingStatus: status => dispatch(loadingStatus(status))
 });
 
 export default connect(
