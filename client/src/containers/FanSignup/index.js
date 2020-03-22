@@ -1,12 +1,6 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 
 import styles from "./styles";
 import Modal from "src/components/Modal";
@@ -18,69 +12,64 @@ import continueButton from "src/images/buttons/continue_btn.png";
 import { loginUser } from "src/store/actions/ActionCreator";
 import { getUser } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
+import { capitalize } from "src/utils/General";
 
-const { width, height } = Dimensions.get("window");
+const FanSignup = ({ setShowModal, loginUser }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
-class FanSignup extends Component {
-  state = {
-    email: "",
-    password: "",
-    errorMessage: null
+  const hide = () => setShowModal(false);
+
+  const onModalChange = func => val => {
+    setErrorMessage(null);
+    func(val);
   };
 
-  hide = () => this.props.setShowModal(false);
-
-  onModalChange = (field, value) => {
-    this.setState({
-      [field]: value,
-      errorMessage: null
-    });
-  };
-
-  continue = async () => {
-    const { email, password } = this.state;
-    const response = await getUser({ email, password });
-    if (response.success) {
-      const user = response.data;
-      this.props.setShowModal(false);
-      this.props.loginUser(user);
-      await saveStorage({ user });
-    } else {
-      this.setState({ errorMessage: response.error });
+  const handleContinue = async () => {
+    try {
+      const res = await getUser({ email, password });
+      console.log("RES", res);
+      if (res.success) {
+        const user = res.data;
+        setShowModal(false);
+        loginUser(user);
+        await saveStorage({ user });
+      } else throw new Error(res.error);
+    } catch (err) {
+      console.log("ERR", err);
+      setErrorMessage(err.message);
     }
   };
 
-  render() {
-    const { errorMessage, email, password } = this.state;
-    return this.props.showModal ? (
-      <Modal dismiss={this.hide}>
-        <AppText
-          style={{ flex: 1 }}
-          textStyle={{ fontFamily: "montserrat-regular" }}
-        >
-          LOG IN OR CREATE AN ACCOUNT
-        </AppText>
-        {errorMessage && <FormError>{errorMessage}</FormError>}
-        <AppTextInput
-          style={{ flex: 1 }}
-          placeholder="Email"
-          onChangeText={val => this.onModalChange.call(this, "email", val)}
-          value={email}
-        />
-        <AppTextInput
-          style={{ flex: 1 }}
-          placeholder="Password"
-          onChangeText={val => this.onModalChange.call(this, "password", val)}
-          value={password}
-          secureTextEntry={true}
-        />
-        <TouchableOpacity style={styles.imageWrapper} onPress={this.continue}>
-          <Image style={styles.image} source={continueButton} />
-        </TouchableOpacity>
-      </Modal>
-    ) : null;
-  }
-}
+  return (
+    <Modal dismiss={hide}>
+      <AppText
+        style={{ flex: 1 }}
+        textStyle={{ fontFamily: "montserrat-regular" }}
+      >
+        LOG IN OR CREATE AN ACCOUNT
+      </AppText>
+      {errorMessage && <FormError>{errorMessage}</FormError>}
+      <AppTextInput
+        style={{ flex: 1 }}
+        placeholder="Email"
+        onChangeText={onModalChange(setEmail)}
+        value={email}
+      />
+      <AppTextInput
+        style={{ flex: 1 }}
+        placeholder="Password"
+        onChangeText={onModalChange(setPassword)}
+        value={password}
+        secureTextEntry={true}
+      />
+      <TouchableOpacity style={styles.imageWrapper} onPress={handleContinue}>
+        <Image style={styles.image} source={continueButton} />
+      </TouchableOpacity>
+    </Modal>
+  );
+};
 
 const mapDispatchToProps = dispatch => ({
   loginUser: payload => dispatch(loginUser(payload))

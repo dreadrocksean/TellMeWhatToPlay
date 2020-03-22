@@ -9,8 +9,8 @@ export const UserType = Object.freeze({
 const initialState = {
   authorized: false,
   userType: null,
-  user: {},
-  artist: {}
+  user: null,
+  artist: null
 };
 
 const loginReducer = (state = initialState, action) => {
@@ -23,15 +23,19 @@ const loginReducer = (state = initialState, action) => {
         authorized: true,
         user: { ...state.user, ...action.payload }
       };
-      console.log("loginReducer LoginUser", tempState, action);
+      console.log(action, tempState);
+      saveStorage({ ...action.payload });
       return tempState;
     case AT.LoginArtist:
       tempState = { ...state, artist: { ...state.artist, ...action.payload } };
+      saveStorage({ ...action.payload });
+      //
       // console.log('loginReducer LoginArtist', tempState);
       return tempState;
     case AT.Logout:
       tempState = { ...state, authorized: false, artist: null, user: null };
       // await saveStorage({ user: tempState.user, artist: tempState.artist });
+      console.log(action, tempState);
       return tempState;
     case AT.LoginError:
       return {

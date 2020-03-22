@@ -43,9 +43,6 @@ const db = firebase.firestore();
 const { width, height } = Dimensions.get("window");
 
 const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
-  console.log("ROUTE", route);
-  console.log("NAVIGATION", navigation);
-
   const isMountedRef = useRef(false);
   const unsubscribeRef = useRef(() => {});
 
@@ -327,7 +324,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
         complete={updateSongList}
         setlist={artistSongs}
       />
-      <FanSignup showModal={showModal} setShowModal={handleSetShowModal} />
+      {showModal && <FanSignup setShowModal={handleSetShowModal} />}
       <DeleteModal
         confirm={onDeleteConfirm}
         showModal={showDeleteModal}

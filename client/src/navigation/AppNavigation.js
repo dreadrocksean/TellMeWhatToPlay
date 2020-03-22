@@ -5,6 +5,7 @@ import {
   // TransitionPresets
 } from "@react-navigation/stack";
 import { transitionConfig, noTransitionConfig } from "./Transitions";
+import { connect } from "react-redux";
 
 import Options from "../containers/Options";
 import ArtistSignup from "../containers/ArtistSignup";
@@ -40,9 +41,9 @@ const config = {
   animation: "spring",
   config: {
     stiffness: 2000,
-    damping: 300,
-    mass: 100,
-    overshootClamping: true,
+    damping: 90,
+    mass: 5,
+    overshootClamping: false,
     restDisplacementThreshold: 0.01,
     restSpeedThreshold: 0.01,
     useNativeDriver: true
@@ -58,40 +59,50 @@ const timingConfig = {
     // easing: Easing.elastic(Easing.poly(4))
   }
 };
-const RootStack = () => (
-  <Stack.Navigator
-    initialRouteName="Options"
-    screenOptions={{
-      gestureEnabled: false,
-      gestureDirection: "horizontal",
-      transitionSpec: {
-        open: config,
-        close: config
-      },
-      headerStyle: {
-        backgroundColor: "#f4511e"
-      },
-      headerTintColor: "#000",
-      headerTitleStyle: {
-        fontWeight: "bold"
-      }
-    }}
-    headerMode="float"
-    animation="fade"
-  >
-    {Object.keys(screens).map((k, i) => (
-      <Stack.Screen
-        key={i}
-        name={k}
-        component={screens[k]}
-        options={{
-          headerStyle: { backgroundColor: "red" },
-          // headerTintColor: "white",
-          title: k
-        }}
-      />
-    ))}
-  </Stack.Navigator>
-);
+const RootStack = ({ authorized }) => {
+  const headerStyles = {
+    headerStyle: { backgroundColor: authorized ? "green" : "red" },
+    headerTintColor: authorized ? "white" : "black",
+    headerTitleStyle: {
+      fontWeight: "bold"
+    },
+    headerBackTitleVisible: true,
+    gestureEnabled: true
+  };
 
-export default RootStack;
+  return (
+    <Stack.Navigator
+      initialRouteName="Options"
+      screenOptions={{
+        gestureEnabled: false,
+        gestureDirection: "horizontal",
+        transitionSpec: {
+          open: config,
+          close: config
+        },
+        ...headerStyles
+      }}
+      headerMode="float"
+      animation="fade"
+    >
+      {Object.keys(screens).map((k, i) => (
+        <Stack.Screen
+          key={i}
+          name={k}
+          component={screens[k]}
+          options={{ title: k }}
+        />
+      ))}
+    </Stack.Navigator>
+  );
+};
+
+const mapStateToProps = state => ({
+  authorized: state.login.authorized
+  // userType: state.login.userType,
+  // artist: state.login.artist,
+  // user: state.login.user,
+  // errorMessage: state.login.errorMessage
+});
+
+export default connect(mapStateToProps)(RootStack);

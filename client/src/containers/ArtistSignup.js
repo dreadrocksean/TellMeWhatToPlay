@@ -11,16 +11,10 @@ const ArtistSignup = ({ navigation, user, artist }) => {
 
   const navigateTo = () => {
     let routeName;
-    if (user && !artist) {
-      routeName = "ArtistSignup";
-      // setHeadingText('ARTIST PROFILE')
-    }
-    if (user && artist) {
-      routeName = "ArtistAdmin";
-      // setHeadingText(' ARTIST ADMIN');
-    }
+    if (user && !artist) routeName = "ArtistSignup";
+    else if (artist) routeName = "ArtistAdmin";
     if (!routeName) return;
-    navigation.navigate(routeName, { name: routeName });
+    navigation.navigate(routeName /*, { name: routeName }*/);
   };
 
   return <ArtistFormWrapper navigation={navigation} />;

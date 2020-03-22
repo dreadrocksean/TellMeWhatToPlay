@@ -1,25 +1,13 @@
 import { AsyncStorage } from "react-native";
 
 export const saveStorage = async models => {
-  // console.log('saveStorage models', models);
+  console.log("saveStorage models", models);
   if (!models) {
     return;
   }
-  const setStorage = async obj => {
-    return await AsyncStorage.setItem(Object.keys(obj)[0], JSON.stringify(obj));
-  };
-  if (Array.isArray(models)) {
-    const tuples = models.map(m => {
-      const key = m.keys[0];
-      return [key, m[key]];
-    });
-    return multiSet(tuples);
-    // models.forEach(obj => {
-    //   if (obj) { setStorage(obj); }
-    // });
-  } else {
-    return setStorage(models);
-  }
+  const setStorage = async obj =>
+    await AsyncStorage.setItem(Object.keys(obj)[0], JSON.stringify(obj));
+  return setStorage(models);
 };
 
 export const loadStorage = async model => {

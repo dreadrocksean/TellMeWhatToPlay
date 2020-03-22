@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  Dimensions,
   StyleSheet,
   View,
   Image,
@@ -22,22 +21,20 @@ import {
 import { createDoc, updateDoc, getDataFromRef } from "src/services/api";
 import cloudinaryConfig, { upload } from "src/utils/Cloudinary";
 
-const { width, height } = Dimensions.get("window");
-
 class ArtistFormWrapper extends Component {
-  static navigationOptions = ({ navigation }) => {
-    // console.log('navigation', navigation);
-    const { params = {} } = navigation.state;
-
-    return {
-      title: `${params.title || params.screen || "Profile"}`,
-      headerTitleStyle: { textAlign: "center", alignSelf: "center" },
-      headerStyle: {
-        backgroundColor: `${params.bg || "red"}`
-      },
-      headerLeft: null
-    };
-  };
+  // static navigationOptions = ({ navigation }) => {
+  //   // console.log('navigation', navigation);
+  //   const { params = {} } = navigation.state;
+  //
+  //   return {
+  //     title: `${params.title || params.screen || "Profile"}`,
+  //     headerTitleStyle: { textAlign: "center", alignSelf: "center" },
+  //     headerStyle: {
+  //       backgroundColor: `${params.bg || "red"}`
+  //     },
+  //     headerLeft: null
+  //   };
+  // };
 
   state = {};
 
@@ -112,7 +109,7 @@ class ArtistFormWrapper extends Component {
     const type = this.getType();
     const roles = this.getRoles();
     const { id, name, genre } = this.state;
-    let imageURL = this.props.artist.imageURL;
+    let imageURL = this.props.artist.imageURL || "";
     const artistData = {
       userId: this.props.user._id,
       name,
@@ -122,19 +119,25 @@ class ArtistFormWrapper extends Component {
       imageURL
     };
 
-    const response = id
-      ? await updateDoc("artist", { _id: id, ...artistData })
-      : await createDoc("artist", artistData);
-    if (response.error) {
+    try {
+      const response = id
+        ? await updateDoc("artist", { _id: id, ...artistData })
+        : await createDoc("artist", artistData);
+      if (response.error) {
+        console.log("RESPONSE.ERROR", response.error);
+        throw new Error(
+          `Problem creating ${this.state.name}: ${response.error} `
+        );
+      }
+      const artist = response.data;
+      this.props.loginArtist(artist);
+      this.setState({
+        successMessage: `Successfully created ${this.state.name}!`
+      });
+      this.navigate("ArtistAdmin")();
+    } catch (e) {
       this.setState({ errorMessage: `Problem creating ${this.state.name}` });
-      return;
     }
-    const artist = response.data;
-    this.props.loginArtist(artist);
-    this.setState({
-      successMessage: `Successfully created ${this.state.name}!`
-    });
-    this.navigate("ArtistAdmin")();
   };
 
   onChoosePhoto = async imageData => {

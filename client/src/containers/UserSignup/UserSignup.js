@@ -1,38 +1,29 @@
-import React, { useEffect } from "react";
+import React /*, { useEffect }*/ from "react";
 import { Text, View } from "react-native";
 import { connect } from "react-redux";
 
 import DefaultContainer from "src/containers/DefaultContainer";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
-import { guestTypeArtist } from "src/store/actions/ActionCreator";
+// import { guestTypeArtist } from "src/store/actions/ActionCreator";
 
 import styles from "./styles";
 
 const UserSignup = ({ navigation, user, artist, userType }) => {
-  useEffect(() => {
-    guestTypeArtist();
-  }, []);
-
-  const navigateTo = () => {
-    const artistExists = artist && Object.keys(artist).length > 0;
+  const navigateTo = artist => {
+    // console.log("UserSignup ARTIST", artist);
+    // console.log("UserSignup USER", user);
     let routeName;
 
-    if (!user) {
-      routeName = "FanSignup";
-    } else if (user && !artistExists) {
-      routeName = "ArtistSignup";
-    } else if (user && artist) {
-      routeName = "ArtistAdmin";
-    }
-    if (!routeName) {
-      return;
-    }
+    if (!user) routeName = "FanSignup";
+    else if (!artist) routeName = "ArtistSignup";
+    else routeName = "ArtistAdmin";
+    if (!routeName) return;
     navigation.replace(routeName, { name: routeName });
   };
 
   const renderHeaderChildren = () => (
     <View>
-      <Text style={styles.h1}>CREATE ACCOUNT</Text>
+      <Text style={styles.h1}>ACCOUNT</Text>
     </View>
   );
 
@@ -54,13 +45,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    guestTypeArtist: dispatch(guestTypeArtist())
-  };
-};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     guestTypeArtist: dispatch(guestTypeArtist())
+//   };
+// };
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
+  // mapDispatchToProps
 )(UserSignup);

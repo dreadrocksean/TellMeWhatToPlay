@@ -1,5 +1,7 @@
 import { Dimensions } from "react-native";
-const { width, height } = Dimensions.get("window");
+export const { width, height } = Dimensions.get("window");
+
+export const capitalize = str => str[0].toUpperCase() + str.slice(1);
 
 export const getDistance = (
   { lat: lat1, lng: lng1 },

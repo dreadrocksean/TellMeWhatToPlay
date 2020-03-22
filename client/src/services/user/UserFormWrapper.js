@@ -11,7 +11,11 @@ import {
   createArtist,
   fetchUserArtist
 } from "src/services/api";
-import { loginUser, loginArtist, logout } from "src/store/actions/ActionCreator";
+import {
+  loginUser,
+  loginArtist,
+  logout
+} from "src/store/actions/ActionCreator";
 import { saveStorage } from "src/services/LocalStorage";
 import UserForm from "./UserForm";
 import AppModal from "src/components/Modal";
@@ -22,7 +26,7 @@ import continueButton from "src/images/buttons/continue_btn.png";
 
 class UserFormWrapper extends Component {
   state = {
-    hasAccount: false,
+    hasAccount: true,
     email: "",
     password: "",
     fname: "",
@@ -53,24 +57,24 @@ class UserFormWrapper extends Component {
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
-        const response = await createDoc("user", credentials);
-        user = response.data;
+        const res = await createDoc("user", credentials);
+        user = res.data;
         successMessage = "Your Account Was Successfully Created";
         errorMessage = null;
         submitType = type;
       } else if (type === "LogIn") {
-        const response = await getUser(credentials);
-        if (response.success) {
+        const res = await getUser(credentials);
+        if (res.success) {
           successMessage = "You Were Successfully Logged In";
           errorMessage = null;
           submitType = type;
         } else {
-          throw response.error;
+          throw res.error;
         }
-        user = response.data;
+        user = res.data;
       }
 
-      await saveStorage({ user });
+      // await saveStorage({ user });
       this.props.loginUser(user);
       this.setState({
         successMessage,
@@ -90,13 +94,16 @@ class UserFormWrapper extends Component {
 
   continue = async () => {
     const { userType, user, navigateTo } = this.props;
+
     if (userType === "ARTIST" && user && this.state.submitType === "LogIn") {
-      const response = await getDocs("artist", { userId: user._id });
-      const artist = response.data;
-      this.props.loginArtist(artist);
-      saveStorage({ artist });
+      try {
+        const res = await getDocs("artist", { userId: user._id });
+        const artist = res.data;
+        this.props.loginArtist(artist);
+        await saveStorage({ artist });
+        navigateTo(artist);
+      } catch (err) {}
     }
-    navigateTo();
   };
 
   dismissModal = () =>

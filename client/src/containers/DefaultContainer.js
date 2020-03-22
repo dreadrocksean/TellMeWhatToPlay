@@ -29,15 +29,12 @@ const DefaultContainer = ({
   children
 }) => {
   const home = navigation ? () => navigation.popToTop() : () => {};
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <Background />
-        <ActivityIndicator size="large" color="#ffff00" />
-      </View>
-    );
-  }
-  return (
+  return loading ? (
+    <View style={styles.loading}>
+      <Background />
+      <ActivityIndicator size="large" color="#ffff00" />
+    </View>
+  ) : (
     <View style={styles.container}>
       <Background />
       <ListHeader home={home}>{headerChildren}</ListHeader>
@@ -67,12 +64,4 @@ const mapStateToProps = state => ({
   loading: state.app.loading
 });
 
-const mapDispatchToProps = dispatch => ({
-  // loginArtist: payload => dispatch(loginArtist(payload)),
-  // logout: () => dispatch(logout())
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DefaultContainer);
+export default connect(mapStateToProps)(DefaultContainer);

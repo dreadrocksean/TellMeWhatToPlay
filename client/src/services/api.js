@@ -68,14 +68,10 @@ export const getDocs = async (type, req) => {
   }
 };
 
-export const fetchUserArtist = req => {
-  const { userId } = req;
-  return fetch(`http://${getAPIUrl}/api/artist/user/${userId}`)
-    .then(res => {
-      return res.json();
-    })
-    .catch(err => console.error("Network Error"));
-};
+export const fetchUserArtist = req =>
+  fetch(`http://${getAPIUrl}/api/artist/user/${req.userId}`)
+    .then(res => res.json())
+    .catch(err => console.error("Error fetching User Artist: ", err));
 
 export const updateDoc = async (type, { _id, ...rest }) => {
   try {
@@ -104,6 +100,7 @@ export const deleteDoc = async (type, id) => {
 };
 
 export const getUser = async req => {
+  console.log("REQ", req);
   try {
     const ref = await db
       .collection("users")
@@ -128,18 +125,13 @@ export const getUser = async req => {
 export const fetchLastFMSong = (title, artist) => {
   const artistQuery = artist ? `&artist=${artist}` : "";
   return fetch(
-    `${lastFMAPI.ENDPOINT}track.search&track=${title}${artistQuery}&api_key=${
-      lastFMAPI.API_KEY
-    }&format=json`
+    `${lastFMAPI.ENDPOINT}track.search&track=${title}${artistQuery}&api_key=${lastFMAPI.API_KEY}&format=json`
   )
     .then(res => res.json())
     .catch(err => console.error("Network Error"));
 };
 
-export const fetchLyrics = (title, artist) => {
-  return fetch(
-    `${apiSeeds.ENDPOINT}/${artist}/${title}?apikey=${apiSeeds.API_KEY}`
-  )
+export const fetchLyrics = (title, artist) =>
+  fetch(`${apiSeeds.ENDPOINT}/${artist}/${title}?apikey=${apiSeeds.API_KEY}`)
     .then(res => res.json())
     .catch(err => console.error("Network Error"));
-};

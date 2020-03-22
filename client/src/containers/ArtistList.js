@@ -5,7 +5,6 @@ import firebase from "src/utils/Firestore";
 import { getDistance } from "src/utils/General";
 import {
   Platform,
-  Dimensions,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -34,7 +33,6 @@ import findIcon from "src/images/icons/find_btn.png";
 import { fetchArtists } from "src/services/api";
 
 const db = firebase.firestore();
-const { width, height } = Dimensions.get("window");
 
 const ArtistList = ({ navigation, authorized, loadingStatus }) => {
   const [name, setName] = useState(null);
@@ -73,14 +71,6 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
       locationRef.current.remove();
     };
   }, []);
-
-  // setState = params => {
-  //   if (!this._isMounted) {
-  //     console.log("setState memory leak: ", params);
-  //     return;
-  //   }
-  //   super.setState(params);
-  // };
 
   const _getLocationAsync = async () => {
     loadingStatus(true);

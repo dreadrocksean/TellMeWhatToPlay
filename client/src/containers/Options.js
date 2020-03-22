@@ -92,8 +92,8 @@ const Options = ({
   const getArtist = async userId => {
     try {
       // console.log('getArtist userId', userId);
-      const response = await getDocs("artist", { userId });
-      const currArtist = response.data;
+      const res = await getDocs("artist", { userId });
+      const currArtist = res.data;
       // console.log('getArtist', artist);
       if (!currArtist) {
         const storageArtist = await loadStorage("artist");
@@ -102,11 +102,11 @@ const Options = ({
         }
         loginArtist(storageArtist);
         (storageArtist.live ? onAir : offAir)();
-        return saveStorage({ artist: storageArtist });
+        // return saveStorage({ artist: storageArtist });
       }
       loginArtist(currArtist);
       (currArtist.live ? onAir : offAir)();
-      saveStorage({ currArtist });
+      // saveStorage({ currArtist });
     } catch (err) {
       setErrorMessage(err);
     }
@@ -121,14 +121,11 @@ const Options = ({
   };
 
   const onClick = userType => async () => {
+    const routeName = getRouteName(userType);
     if (userType === "ARTIST" && user && !artist) {
       await getArtist(user._id);
-      const routeName = getRouteName(userType);
-      navigation.navigate(routeName, { name: routeName });
-    } else {
-      const routeName = getRouteName(userType);
-      navigation.navigate(routeName, { name: routeName });
     }
+    navigation.navigate(routeName, { name: routeName });
   };
 
   const getRouteName = userType => {
@@ -303,18 +300,18 @@ const styles = StyleSheet.create({
   }
 });
 
-Options.navigationOptions = ({ navigation }) => {
-  const { params = {} } = navigation.state;
-
-  return {
-    title: `${params.title || params.screen || "Options"}`,
-    headerTitleStyle: { textAlign: "center", alignSelf: "center" },
-    headerStyle: {
-      backgroundColor: `${params.bg || "red"}`
-    },
-    headerLeft: null
-  };
-};
+// Options.navigationOptions = ({ navigation }) => {
+//   const { params = {} } = navigation.state;
+//
+//   return {
+//     title: `${params.title || params.screen || "Options"}`,
+//     headerTitleStyle: { textAlign: "center", alignSelf: "center" },
+//     headerStyle: {
+//       backgroundColor: `${params.bg || "red"}`
+//     },
+//     headerLeft: null
+//   };
+// };
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,

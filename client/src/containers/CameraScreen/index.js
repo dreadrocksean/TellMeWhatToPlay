@@ -3,10 +3,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { ImagePicker } from "expo";
 import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
-import { connect } from "react-redux";
 import cloudinary from "cloudinary-core";
-
-import { loginArtist } from "src/store/actions/ActionCreator";
 
 import cloudinaryConfig from "src/utils/Cloudinary";
 import styles from "./styles";
@@ -142,13 +139,4 @@ class CameraScreen extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  loginArtist: data => {
-    dispatch(loginArtist(data));
-  }
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(CameraScreen);
+export default CameraScreen;
