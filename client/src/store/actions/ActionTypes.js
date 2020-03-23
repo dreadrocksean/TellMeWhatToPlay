@@ -11,7 +11,7 @@ const RegisterSuccess = "REGISTER_SUCCESS";
 const NavigateToLogoutScreen = "NAVIGATE_TO_LOGOUT_SCREEN";
 const OnAir = "ON_AIR";
 const OffAir = "OFF_AIR";
-const addArtistPhoto = "ADD_ARTIST_PHOTO";
+const AddArtistPhoto = "ADD_ARTIST_PHOTO";
 const Loading = "LOADING";
 const Message = "MESSAGE";
 
@@ -28,7 +28,7 @@ export {
   NavigateToLogoutScreen,
   OnAir,
   OffAir,
-  addArtistPhoto,
+  AddArtistPhoto,
   Loading,
   Message
 };

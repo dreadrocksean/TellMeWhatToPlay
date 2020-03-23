@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
-// import { StackNavigator } from "react-navigation";
+
 import {
   Dimensions,
   StyleSheet,

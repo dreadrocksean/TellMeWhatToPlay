@@ -1,10 +1,9 @@
 import React from "react";
-import { Dimensions, StyleSheet, View, Image } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import bg from "src/images/bg.png";
+import { width, height } from "src/utils/General";
 
 const Background = () => <Image source={bg} style={styles.backgroundImage} />;
-
-const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   backgroundImage: {

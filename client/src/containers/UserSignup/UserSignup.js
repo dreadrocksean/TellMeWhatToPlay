@@ -10,8 +10,6 @@ import styles from "./styles";
 
 const UserSignup = ({ navigation, user, artist, userType }) => {
   const navigateTo = artist => {
-    // console.log("UserSignup ARTIST", artist);
-    // console.log("UserSignup USER", user);
     let routeName;
 
     if (!user) routeName = "FanSignup";

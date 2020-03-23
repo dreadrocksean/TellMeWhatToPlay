@@ -67,8 +67,8 @@ const offAir = () => ({
   type: AT.OffAir
 });
 
-const addArtistPhoto = imageURL => ({
-  type: AT.addArtistPhoto,
+const AddArtistPhoto = imageURL => ({
+  type: AT.AddArtistPhoto,
   payload: imageURL
 });
 
@@ -86,7 +86,7 @@ export {
   navigateToLogoutScreen,
   onAir,
   offAir,
-  addArtistPhoto,
+  AddArtistPhoto,
   loadingStatus,
   addMessage
 };
