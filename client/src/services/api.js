@@ -75,14 +75,14 @@ export const fetchUserArtist = req =>
 
 export const updateDoc = async (type, { _id, ...rest }) => {
   try {
-    const ref = await db
+    const res = await db
       .collection(`${type}s`)
       .doc(_id)
       .update(rest);
     return Promise.resolve({ success: true, data: { _id, ...rest } });
   } catch (err) {
     console.error(`Error updating ${type}: `, err);
-    return Promise.resolve({ success: false, error: err });
+    return Promise.reject({ success: false, error: err });
   }
 };
 

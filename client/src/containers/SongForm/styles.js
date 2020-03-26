@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { width, height } from "scr/utils/General";
+import { width, height } from "src/utils/General";
 
 const styles = StyleSheet.create({
   autocomplete: {

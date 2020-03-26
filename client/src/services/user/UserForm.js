@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -18,46 +18,44 @@ import signupButton from "src/images/buttons/signup_btn.png";
 import loginButton from "src/images/buttons/login_btn.png";
 import eyeslashIcon from "src/images/icons/eyeslash_icon1.png";
 
-const UserForm = props => {
-  const {
-    hasAccount,
-    onHasAccountChange,
-    handleChange,
-    fieldValues,
-    onSubmit,
-    errorMessage,
-    togglePassword,
-    hidePassword
-  } = props;
-  console.log("UserForm fieldValues", fieldValues);
-  const { email, password, fname, lname, zip } = props.fieldValues;
+const UserForm = ({
+  hasAccount,
+  onHasAccountChange,
+  handleChange,
+  fieldValues,
+  onSubmit,
+  errorMessage,
+  togglePassword,
+  hidePassword
+}) => {
+  const { email, password, fname, lname, zip } = fieldValues;
   const fields = [
     {
       placeholder: "Email",
       value: email,
-      onChange: val => handleChange({ email: val })
+      onChange: handleChange("email")
     },
     {
       placeholder: "Password",
       value: password,
       icon: eyeslashIcon,
-      onChange: val => handleChange({ password: val }),
+      onChange: handleChange("password"),
       hidePassword
     },
     {
       placeholder: "First Name",
       value: fname,
-      onChange: val => handleChange({ fname: val })
+      onChange: handleChange("fname")
     },
     {
       placeholder: "Last Name",
       value: lname,
-      onChange: val => handleChange({ lname: val })
+      onChange: handleChange("lname")
     },
     {
       placeholder: "Zip Code",
       value: zip,
-      onChange: val => handleChange({ zip: val })
+      onChange: handleChange("zip")
     }
   ];
   return (

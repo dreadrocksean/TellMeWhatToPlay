@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   StyleSheet,
   TextInput,
@@ -49,13 +49,13 @@ const ArtistForm = ({
         <AppTextInput
           textStyle={styles.input}
           placeholder="Artist Name"
-          onChangeText={name => handleChange({ name })}
+          onChangeText={handleChange("name")}
           value={name}
         />
         <AppTextInput
           textStyle={styles.input}
           placeholder="Music Genre"
-          onChangeText={genre => handleChange({ genre })}
+          onChangeText={handleChange("genre")}
           value={genre}
         />
         <Separator label="ROLES" />
@@ -63,16 +63,14 @@ const ArtistForm = ({
           ARTIST TYPE
         </AppText>
         <View style={styles.section}>
-          {Object.keys(types).map((f, i) => {
-            return (
-              <RadioButton
-                key={i}
-                checked={f === getType()}
-                onPress={() => handleChooseType(f)}
-                label={f.toUpperCase()}
-              />
-            );
-          })}
+          {Object.keys(types).map((f, i) => (
+            <RadioButton
+              key={i}
+              checked={f === getType()}
+              onPress={() => handleChooseType(f)}
+              label={f.toUpperCase()}
+            />
+          ))}
         </View>
         <AppText textStyle={styles.h2} style={styles.sectionHeader}>
           INSTRUMENTS

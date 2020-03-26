@@ -10,7 +10,7 @@
     "icon": "./src/assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./src/assets/images/splash.png",
+      "image": "./src/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

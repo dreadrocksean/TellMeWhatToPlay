@@ -5,7 +5,7 @@ import styles from "./styles";
 import ArtistDropdownItem from "./ArtistDropdownItem";
 import AppText from "src/components/AppText";
 
-const ArtistDropdown = ({ data, onPress, action }) => {
+const ArtistDropdown = ({ data = [], onPress, action }) => {
   if (!data.length) {
     return null;
   }

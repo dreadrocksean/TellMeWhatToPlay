@@ -92,7 +92,6 @@ const ArtistAdmin = ({
             },
             _id: artist._id
           });
-          console.log("Location RESPONSE", res);
         }
       );
     } catch (err) {

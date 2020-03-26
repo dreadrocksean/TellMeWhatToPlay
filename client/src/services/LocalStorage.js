@@ -1,7 +1,6 @@
 import { AsyncStorage } from "react-native";
 
 export const saveStorage = async models => {
-  console.log("saveStorage models", models);
   if (!models) {
     return;
   }

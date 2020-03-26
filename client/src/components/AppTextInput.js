@@ -37,7 +37,7 @@ export default class AppTextInput extends Component {
     return `${visibleText}${allText.substr(-1)}`;
   };
 
-  onChangeText = text => {
+  handleOnChangeText = text => {
     const str =
       this.props.formattedValue && text.length
         ? this.processVisible(this.props.formattedValue.visible, text)
@@ -53,7 +53,6 @@ export default class AppTextInput extends Component {
       formattedValue,
       placeholder,
       placeholderTextColor,
-      onChangeText,
       secureTextEntry,
       editable,
       autoCapitalize,
@@ -65,7 +64,7 @@ export default class AppTextInput extends Component {
           style={[styles.input, style]}
           placeholder={placeholder}
           placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
-          onChangeText={this.onChangeText}
+          onChangeText={this.handleOnChangeText}
           onKeyPress={this.onKeyPress}
           secureTextEntry={secureTextEntry && !this.state.showPassword}
           editable={editable}
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
 
 AppTextInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  onChangeText: PropTypes.func,
+  handleOnChangeText: PropTypes.func,
   value: PropTypes.any,
   secureTextEntry: PropTypes.bool,
   editable: PropTypes.bool

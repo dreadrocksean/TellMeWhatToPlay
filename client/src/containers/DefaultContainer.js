@@ -26,6 +26,7 @@ const DefaultContainer = ({
   loading,
   navigation,
   headerChildren,
+  style,
   children
 }) => {
   const home = navigation ? () => navigation.popToTop() : () => {};
@@ -38,7 +39,7 @@ const DefaultContainer = ({
     <View style={styles.container}>
       <Background />
       <ListHeader home={home}>{headerChildren}</ListHeader>
-      {children}
+      <View style={styles.children}>{children}</View>
     </View>
   );
 };
@@ -46,8 +47,11 @@ const DefaultContainer = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 7,
-    paddingBottom: 0
+    padding: 7
+  },
+  children: {
+    flex: 1
+    // backgroundColor: "purple"
   },
   loading: {
     flex: 1,

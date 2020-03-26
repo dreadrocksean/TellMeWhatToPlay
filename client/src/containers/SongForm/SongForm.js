@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextInput, Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles";
 
@@ -13,8 +13,15 @@ const SongForm = ({
 }) => {
   const [localTitle, setLocalTitle] = useState("");
   const [localAuthor, setLocalAuthor] = useState("");
+  const isMountedRef = useRef(false);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => (isMountedRef.current = false);
+  }, []);
 
   const _handleChange = fieldFunc => val => {
+    if (!isMountedRef.current) return;
     console.log(val);
     fieldFunc(val);
     handleChange(field);

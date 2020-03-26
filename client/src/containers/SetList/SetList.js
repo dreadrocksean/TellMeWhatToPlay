@@ -73,18 +73,6 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
 
   useEffect(() => {
     isMountedRef.current = true;
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          title="Done"
-          onPress={async () => {
-            // await saveNote();
-            navigation.replace("Options");
-          }}
-        />
-      )
-    });
-    // updateHeader({ navigation, authorized });
     updateSongList();
     return () => {
       isMountedRef.current = false;
@@ -97,7 +85,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     unsubscribeRef.current = db
       .doc(`artists/${artist._id}`)
       .onSnapshot(async doc => {
-        if (!doc.data()) return;
+        if (!doc.data() || !isMountedRef.current) return;
         const currArtistSongs = (doc.data() || {}).songs || [];
         try {
           let songs = await Promise.all(
@@ -168,7 +156,8 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
       song.visible = visible;
       return song;
     });
-    updateDoc("artist", { _id: artist._id, songs: newSongs });
+    const res = await updateDoc("artist", { _id: artist._id, songs: newSongs });
+    console.log("changeSongVisibility RES", res);
   };
 
   const vote = (_id, currVotes, sentiment) => async () => {
@@ -266,7 +255,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
   };
 
   const toggleSearch = () => {
-    this.setState({ showSearch: !showSearch });
+    setShowSearch(!showSearch);
   };
 
   const search = text => {
@@ -317,13 +306,15 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
         )}
       </ScrollView>
 
-      <AddSong
-        showModal={isArtist && add}
-        setShowModal={handleSetShowModal}
-        userArtistId={(myArtist || {})._id}
-        complete={updateSongList}
-        setlist={artistSongs}
-      />
+      {isArtist && add && (
+        <AddSong
+          showModal={isArtist && add}
+          setShowModal={handleSetShowModal}
+          userArtistId={(myArtist || {})._id}
+          complete={updateSongList}
+          setlist={artistSongs}
+        />
+      )}
       {showModal && <FanSignup setShowModal={handleSetShowModal} />}
       <DeleteModal
         confirm={onDeleteConfirm}
@@ -333,19 +324,6 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     </DefaultContainer>
   );
 };
-
-// Setlist.navigationOptions = ({ navigation }) => {
-//   const { params = {} } = navigation.state;
-//   const headerStyle = Object.assign(
-//     {},
-//     params.bg ? { backgroundColor: params.bg } : null
-//   );
-//   return {
-//     title: `${params.title || params.screen || "Set List"}`,
-//     headerTitleStyle: { textAlign: "center", alignSelf: "center" },
-//     headerStyle
-//   };
-// };
 
 const isEqual = (prev, next) =>
   prev.myArtist === next.myArtist &&

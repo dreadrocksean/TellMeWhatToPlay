@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -10,44 +10,43 @@ import {
 import { connect } from "react-redux";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
+import createProfile from "src/images/buttons/continue_btn.png";
 import DefaultContainer from "src/containers/DefaultContainer";
 import ArtistForm from "./ArtistForm";
 import {
-  loginArtist,
-  logout,
-  loadingStatus
+  loginArtist as loginArtistType,
+  logout as logoutType,
+  loadingStatus as loadingStatusType
 } from "src/store/actions/ActionCreator";
 
 import { createDoc, updateDoc, getDataFromRef } from "src/services/api";
 import cloudinaryConfig, { upload } from "src/utils/Cloudinary";
 
-class ArtistFormWrapper extends Component {
-  // static navigationOptions = ({ navigation }) => {
-  //   // console.log('navigation', navigation);
-  //   const { params = {} } = navigation.state;
-  //
-  //   return {
-  //     title: `${params.title || params.screen || "Profile"}`,
-  //     headerTitleStyle: { textAlign: "center", alignSelf: "center" },
-  //     headerStyle: {
-  //       backgroundColor: `${params.bg || "red"}`
-  //     },
-  //     headerLeft: null
-  //   };
-  // };
+const ArtistFormWrapper = ({
+  navigation,
+  user,
+  artist = {},
+  loading,
+  loginArtist,
+  logout,
+  loadingStatus
+}) => {
+  const [types, setTypes] = useState({});
+  const [id, setId] = useState(null);
+  const [name, setName] = useState(null);
+  const [artistNameComplete, setArtistNameComplete] = useState("");
+  const [artistImageURL, setArtistImageURL] = useState("");
+  const [genre, setGenre] = useState(null);
+  const [roles, setRoles] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [photo, setPhoto] = useState(null);
 
-  state = {};
+  useEffect(() => {
+    updateProfile();
+  }, []);
 
-  componentDidMount() {
-    this.updateProfile();
-  }
-
-  componentWillUnmount() {
-    // this.props.logout();
-  }
-
-  updateProfile = () => {
-    const { artist = {} } = this.props;
+  const updateProfile = () => {
     const hasRole = key => (artist.roles || []).indexOf(key) > -1;
     const roles = {
       vocals: hasRole("vocals"),
@@ -62,56 +61,59 @@ class ArtistFormWrapper extends Component {
     const types = {
       band: artist.type === "band",
       solo: artist.type === "solo"
-      // duo: false,
     };
-    this.setState({
-      types,
-      id: artist._id,
-      name: artist.name,
-      artistNameComplete: "",
-      artistImageURL: "",
-      genre: artist.genre,
-      roles,
-      errorMessage: "",
-      photo: artist.imageURL
-    });
+    setTypes(types);
+    setId(artist._id);
+    setName(artist.name);
+    setGenre(artist.genre);
+    setRoles(roles);
+    setPhoto(artist.imageURL);
   };
 
-  resetErrorMessage = () => this.setState({ errorMessage: "" });
+  const resetErrorMessage = () => setErrorMessage("");
 
-  handleChange = field => this.setState(field);
+  const handleChange = fieldName => val => {
+    switch (fieldName) {
+      case "name": {
+        setName(val);
+        break;
+      }
+      case "genre": {
+        setGenre(val);
+        break;
+      }
+    }
+  };
 
-  handleChooseType = fieldName => {
-    const typeKeys = Object.keys(this.state.types);
+  const handleChooseType = fieldName => {
+    const typeKeys = Object.keys(types);
     const newTypes = typeKeys.reduce((obj, k) => {
       obj[k] = k === fieldName;
       return obj;
     }, {});
-    this.setState({ types: newTypes });
+    setTypes(newTypes);
   };
 
-  handleRoleChange = fieldName => {
+  const handleRoleChange = fieldName => {
     const newRoles = {
-      ...this.state.roles,
-      [fieldName]: !this.state.roles[fieldName]
+      ...roles,
+      [fieldName]: !roles[fieldName]
     };
-    this.setState({ roles: newRoles });
+    setRoles(newRoles);
   };
 
-  getType = () =>
-    Object.keys(this.state.types).filter(k => this.state.types[k])[0];
+  const getType = () => Object.keys(types).filter(k => types[k])[0];
 
-  getRoles = () => {
-    return Object.keys(this.state.roles).filter(k => this.state.roles[k]);
+  const getRoles = () => {
+    return Object.keys(roles).filter(k => roles[k]);
   };
 
-  onSubmit = async () => {
-    const type = this.getType();
-    const roles = this.getRoles();
-    const { id, name, genre } = this.state;
-    let imageURL = this.props.artist.imageURL || "";
+  const onSubmit = async () => {
+    const type = getType();
+    const roles = getRoles();
+    let imageURL = artist.imageURL || "";
     const artistData = {
-      userId: this.props.user._id,
+      userId: user._id,
       name,
       genre,
       roles,
@@ -125,86 +127,63 @@ class ArtistFormWrapper extends Component {
         : await createDoc("artist", artistData);
       if (response.error) {
         console.log("RESPONSE.ERROR", response.error);
-        throw new Error(
-          `Problem creating ${this.state.name}: ${response.error} `
-        );
+        throw new Error(`Problem creating ${name}: ${response.error} `);
       }
       const artist = response.data;
-      this.props.loginArtist(artist);
-      this.setState({
-        successMessage: `Successfully created ${this.state.name}!`
-      });
-      this.navigate("ArtistAdmin")();
+      loginArtist(artist);
+      setSuccessMessage(`Successfully created ${name}!`);
+      navigate("ArtistAdmin")();
     } catch (e) {
-      this.setState({ errorMessage: `Problem creating ${this.state.name}` });
+      setErrorMessage(`Problem creating ${name}`);
     }
   };
 
-  onChoosePhoto = async imageData => {
-    this.props.loadingStatus(true);
+  const onChoosePhoto = async imageData => {
+    loadingStatus(true);
     const imageURL = await upload(imageData);
-    this.props.loadingStatus(false);
-    this.props.loginArtist({ imageURL });
+    loadingStatus(false);
+    loginArtist({ imageURL });
   };
 
-  showCam = () => {
-    this.props.navigation.navigate("CameraScreen", {
+  const showCam = () => {
+    navigation.navigate("CameraScreen", {
       onChoosePhoto: this.onChoosePhoto
     });
   };
 
-  navigate = pageName => () => {
-    this.props.navigation.navigate(pageName, {
+  const navigate = pageName => () => {
+    navigation.navigate(pageName, {
       name: pageName,
-      artist: this.props.artist
+      artist: artist
     });
   };
 
-  logout = () => {
-    this.navigate("Options")();
-  };
+  const handleLogout = () => this.navigate("Options")();
 
-  render() {
-    if (!Object.keys(this.state).length) return null;
-    const imageURL = this.props.artist.imageURL;
-    const {
-      id,
-      name,
-      genre,
-      roles,
-      types,
-      photo,
-      successMessage,
-      errorMessage
-    } = this.state;
-    return (
-      <DefaultContainer
-        loading={this.state.loading}
-        navigation={this.props.navigation}
-      >
-        <ArtistForm
-          handleChange={this.handleChange}
-          handleRoleChange={this.handleRoleChange}
-          handleChooseType={this.handleChooseType}
-          onSubmit={this.onSubmit}
-          genre={genre}
-          id={id}
-          name={name}
-          errorMessage={errorMessage}
-          successMessage={successMessage}
-          roles={roles}
-          types={types}
-          getType={this.getType}
-          onPressCam={this.showCam}
-          photo={this.props.artist.imageURL || cloudinaryConfig.userUrl}
-        />
-        <TouchableOpacity onPress={this.logout}>
-          <Text>LOGOUT</Text>
-        </TouchableOpacity>
-      </DefaultContainer>
-    );
-  }
-}
+  return (
+    <DefaultContainer loading={loading} navigation={navigation}>
+      <ArtistForm
+        handleChange={handleChange}
+        handleRoleChange={handleRoleChange}
+        handleChooseType={handleChooseType}
+        onSubmit={onSubmit}
+        genre={genre}
+        id={id}
+        name={name}
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+        roles={roles}
+        types={types}
+        getType={getType}
+        onPressCam={showCam}
+        photo={artist.imageURL || cloudinaryConfig.userUrl}
+      />
+      {/*<TouchableOpacity style={styles.cancel}>
+          <Image source={createProfile} style={styles.image} />
+        </TouchableOpacity>*/}
+    </DefaultContainer>
+  );
+};
 
 const styles = StyleSheet.create({
   cambtn: {
@@ -219,22 +198,29 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap"
+  },
+  cancel: {
+    // opacity: 0,
+    alignSelf: "center",
+    width: "50%"
+    // marginBottom: 60
+  },
+  image: {
+    width: undefined,
+    resizeMode: "contain"
   }
 });
 
-const mapStateToProps = state => {
-  // console.log('state', state);
-  return {
-    user: state.login.user,
-    artist: state.login.artist,
-    loading: state.app.loading
-  };
-};
+const mapStateToProps = state => ({
+  user: state.login.user,
+  artist: state.login.artist,
+  loading: state.app.loading
+});
 
 const mapDispatchToProps = dispatch => ({
-  loginArtist: payload => dispatch(loginArtist(payload)),
-  logout: () => dispatch(logout()),
-  loadingStatus: status => dispatch(loadingStatus(status))
+  loginArtist: payload => dispatch(loginArtistType(payload)),
+  logout: () => dispatch(logoutType()),
+  loadingStatus: status => dispatch(loadingStatusType(status))
 });
 
 export default connect(

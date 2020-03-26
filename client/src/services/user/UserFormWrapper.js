@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 
@@ -12,9 +12,9 @@ import {
   fetchUserArtist
 } from "src/services/api";
 import {
-  loginUser,
-  loginArtist,
-  logout
+  loginUser as loginUserType,
+  loginArtist as loginArtistType,
+  logout as logoutType
 } from "src/store/actions/ActionCreator";
 import { saveStorage } from "src/services/LocalStorage";
 import UserForm from "./UserForm";
@@ -24,32 +24,55 @@ import AppText from "src/components/AppText";
 import successIcon from "src/images/icons/success_icon.png";
 import continueButton from "src/images/buttons/continue_btn.png";
 
-class UserFormWrapper extends Component {
-  state = {
-    hasAccount: true,
-    email: "",
-    password: "",
-    fname: "",
-    lname: "",
-    zip: "",
-    successMessage: null,
-    errorMessage: null,
-    hidePassword: true,
-    submitType: null
+const UserFormWrapper = ({
+  navigation,
+  loginUser,
+  loginArtist,
+  logout,
+  userType,
+  user,
+  artist,
+  navigateTo
+}) => {
+  const [hasAccount, setHasAccount] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [zip, setZip] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [submitType, setSubmitType] = useState(null);
+
+  const resetErrorMessage = () => setErrorMessage("");
+
+  const handleChange = field => val => {
+    switch (field) {
+      case "email": {
+        return setEmail(val);
+      }
+      case "password": {
+        return setPassword(val);
+      }
+      case "fname": {
+        return setFname(val);
+      }
+      case "lname": {
+        return setLname(val);
+      }
+      case "zip": {
+        return setZip(val);
+      }
+    }
   };
 
-  resetErrorMessage = () => this.setState({ errorMessage: "" });
+  const onHasAccountChange = hasAccount => () => setHasAccount(hasAccount);
 
-  handleChange = field => this.setState(field);
+  const togglePassword = () => setHidePassword(!this.state.hidePassword);
 
-  onHasAccountChange = hasAccount => () => this.setState({ hasAccount });
-
-  togglePassword = () =>
-    this.setState({ hidePassword: !this.state.hidePassword });
-
-  onSubmit = type => async () => {
-    // console.log('onsubmit props', this.props);
-    const { email, password, fname, lname, zip } = this.state;
+  const onSubmit = type => async () => {
     const credentials = { email, password, fname, lname, zip };
     let user, artist, errorMessage, successMessage, submitType;
     try {
@@ -75,82 +98,66 @@ class UserFormWrapper extends Component {
       }
 
       // await saveStorage({ user });
-      this.props.loginUser(user);
-      this.setState({
-        successMessage,
-        errorMessage,
-        submitType: type
-      });
+      loginUser(user);
+      setSuccessMessage(successMessage);
+      setErrorMessage(errorMessage);
+      setShowModal(true);
+      setSubmitType(type);
     } catch (err) {
       console.log("error:", err);
-      this.setState({
-        successMessage: null,
-        errorMessage: err
-      });
-      this.props.logout();
+      setSuccessMessage(null);
+      setErrorMessage(err);
+      logout();
       await saveStorage({ user: null });
     }
   };
 
-  continue = async () => {
-    const { userType, user, navigateTo } = this.props;
-
-    if (userType === "ARTIST" && user && this.state.submitType === "LogIn") {
+  const handleContinue = async () => {
+    if (userType === "ARTIST" && user && submitType === "LogIn") {
       try {
         const res = await getDocs("artist", { userId: user._id });
         const artist = res.data;
-        this.props.loginArtist(artist);
+        loginArtist(artist);
         await saveStorage({ artist });
         navigateTo(artist);
       } catch (err) {}
     }
   };
 
-  dismissModal = () =>
-    this.setState({
-      showModal: false
-    });
+  const dismissModal = () => {
+    setShowModal(false);
+    navigation.replace("Options");
+  };
 
-  render() {
-    const {
-      email,
-      password,
-      fname,
-      lname,
-      zip,
-      successMessage,
-      errorMessage
-    } = this.state;
-    const fieldValues = { email, password, fname, lname, zip };
-    return successMessage ? (
-      <AppModal dismiss={this.dismissModal}>
-        <View style={{ width: "45%", flex: 1 }}>
-          <Image style={[styles.image]} source={successIcon} />
-        </View>
-        <AppText textStyle={{ fontWeight: "normal", fontSize: 18 }}>
-          {successMessage}
-        </AppText>
-        <TouchableOpacity
-          style={{ alignSelf: "stretch", flex: 1 }}
-          onPress={this.continue}
-        >
-          <Image style={styles.image} source={continueButton} />
-        </TouchableOpacity>
-      </AppModal>
-    ) : (
-      <UserForm
-        hasAccount={this.state.hasAccount}
-        onHasAccountChange={this.onHasAccountChange}
-        handleChange={this.handleChange}
-        onSubmit={this.onSubmit}
-        fieldValues={fieldValues}
-        errorMessage={this.state.errorMessage}
-        togglePassword={this.togglePassword}
-        hidePassword={this.state.hidePassword}
-      />
-    );
-  }
-}
+  const fieldValues = { email, password, fname, lname, zip };
+  return successMessage && showModal ? (
+    <AppModal dismiss={dismissModal}>
+      <View style={{ width: "45%", flex: 1 }}>
+        <Image style={[styles.image]} source={successIcon} />
+      </View>
+      <AppText textStyle={{ fontWeight: "normal", fontSize: 18 }}>
+        {successMessage}
+      </AppText>
+      <TouchableOpacity
+        style={{ alignSelf: "stretch", flex: 1 }}
+        onPress={handleContinue}
+      >
+        <Image style={styles.image} source={continueButton} />
+      </TouchableOpacity>
+    </AppModal>
+  ) : (
+    <UserForm
+      hasAccount={hasAccount}
+      onHasAccountChange={onHasAccountChange}
+      handleChange={handleChange}
+      onSubmit={onSubmit}
+      fieldValues={fieldValues}
+      errorMessage={errorMessage}
+      togglePassword={togglePassword}
+      hidePassword={hidePassword}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   modalContent: {
@@ -166,9 +173,9 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loginUser: payload => dispatch(loginUser(payload)),
-  loginArtist: payload => dispatch(loginArtist(payload)),
-  logout: payload => dispatch(logout())
+  loginUser: payload => dispatch(loginUserType(payload)),
+  loginArtist: payload => dispatch(loginArtistType(payload)),
+  logout: payload => dispatch(logoutType())
 });
 
 const mapStateToProps = state => ({

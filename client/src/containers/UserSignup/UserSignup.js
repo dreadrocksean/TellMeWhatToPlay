@@ -1,4 +1,4 @@
-import React /*, { useEffect }*/ from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import { connect } from "react-redux";
 
@@ -30,7 +30,7 @@ const UserSignup = ({ navigation, user, artist, userType }) => {
       style={styles.body}
       headerChildren={renderHeaderChildren()}
     >
-      <UserFormWrapper navigateTo={navigateTo} />
+      <UserFormWrapper navigation={navigation} navigateTo={navigateTo} />
     </DefaultContainer>
   );
 };
