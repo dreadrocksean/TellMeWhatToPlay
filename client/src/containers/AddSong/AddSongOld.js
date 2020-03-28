@@ -27,11 +27,16 @@ import { saveStorage } from "src/services/LocalStorage";
 import { width, height } from "src/utils/General";
 
 const init = {
+  title: "",
   formattedTitle: { invisible: "", visible: "" },
   formattedArtist: { invisible: "", visible: "" },
+  artist: "",
   songs: [],
   titleComplete: "",
   artistComplete: "",
+  mbid: "",
+  edit_title: "",
+  edit_artist: "",
   errorMessage: null
 };
 
@@ -42,80 +47,33 @@ const AddSong = ({
   setlist,
   complete
 }) => {
+  const [title, setTitle] = useState(init.title);
   const [formattedTitle, setFormattedTitle] = useState({
     ...init.formattedTitle
   });
   const [formattedArtist, setFormattedArtist] = useState({
     ...init.formattedArtist
   });
+  const [artist, setArtist] = useState(init.artist);
   const [songs, setSongs] = useState(init.songs);
   const [titleComplete, setTitleComplete] = useState(init.titleComplete);
   const [artistComplete, setArtistComplete] = useState(init.artistComplete);
+  const [mbid, setMbid] = useState(init.mbid);
+  const [edit_title, setEdit_title] = useState(init.edit_title);
+  const [edit_artist, setEdit_artist] = useState(init.edit_artist);
   const [errorMessage, setErrorMessage] = useState(init.errorMessage);
 
   const _isMountedRef = useRef(false);
   const allSongsRef = useRef([]);
-  const songRef = useRef({});
-  const titleRef = useRef("");
-  const artistRef = useRef("");
 
   useEffect(() => {
     _isMountedRef.current = true;
     return () => (_isMountedRef.current = false);
   }, []);
 
-  useEffect(() => {
-    if (titleRef.current.trim().length < 3) {
-      updateState({
-        formattedTitle: { ...init.formattedTitle, visible: titleRef.current },
-        titleComplete: init.titleComplete
-      });
-    } else {
-      songRef.current =
-        songs.find(v =>
-          v.title.toLowerCase().includes(titleRef.current.toLowerCase())
-        ) ||
-        songs[0] ||
-        {};
-      const titleComplete = songRef.current.title;
-      const formattedTitle = getFormattedStr(titleRef.current, titleComplete);
-      updateState({ formattedTitle, titleComplete });
-    }
-    const artistComplete = songRef.current.artist;
-    const formattedArtist = getFormattedStr(artistRef.current, artistComplete);
-    updateState({ formattedArtist, artistComplete });
-  }, [songs]);
+  const getFormattedStr = (strComplete, strOptional, strFormatted) => {
+    const str = strOptional || strFormatted.visible;
 
-  const reset = () => {
-    allSongsRef.current = [];
-    songRef.current = {};
-    updateState({ formattedTitle: "", titleComplete: "", songs: [] });
-  };
-
-  const hide = () => {
-    reset();
-    setShowModal(false);
-  };
-
-  const updateState = ({
-    formattedTitle,
-    formattedArtist,
-    titleComplete,
-    artistComplete,
-    songs
-  }) => {
-    if (typeof formattedTitle !== "undefined")
-      setFormattedTitle(formattedTitle);
-    if (typeof formattedArtist !== "undefined")
-      setFormattedArtist(formattedArtist);
-    if (typeof titleComplete !== "undefined") setTitleComplete(titleComplete);
-    if (typeof artistComplete !== "undefined")
-      setArtistComplete(artistComplete);
-    if (typeof songs !== "undefined") setSongs(songs);
-  };
-
-  const getFormattedStr = (str, strComplete) => {
-    const strFormatted = {};
     const pos = (strComplete || "").toLowerCase().indexOf(str.toLowerCase());
     if (pos > -1 && strComplete) {
       const l = str.length;
@@ -128,32 +86,85 @@ const AddSong = ({
     return strFormatted;
   };
 
-  const handleChange = field => async value => {
+  const presetState = params => {
+    // console.log("PARAMS", params);
+    if (!_isMountedRef.current) return;
+
+    const {
+      titleComplete,
+      title,
+      formattedTitle = { ...init.formattedTitle },
+      artistComplete,
+      artist,
+      formattedArtist = { ...init.formattedArtist }
+    } = params;
+    setFormattedTitle(getFormattedStr(titleComplete, title, formattedTitle));
+    setFormattedArtist(
+      getFormattedStr(artistComplete, artist, formattedArtist)
+    );
+
+    setArtist(params.artist);
+    setSongs(params.songs);
+    setTitleComplete(params.titleComplete);
+    setArtistComplete(params.artistComplete);
+    setMbid(params.mbid);
+    setTitle(params.title);
+    setEdit_title(params.edit_title);
+    setArtist(params.artist);
+    setEdit_artist(params.edit_artist);
+    setErrorMessage(params.errorMessage);
+  };
+
+  const reset = () => {
+    allSongsRef.current = [];
+    presetState({ ...init });
+  };
+
+  const hide = () => {
+    reset();
+    setShowModal(false);
+  };
+
+  const handleChange = field => value => {
     console.log("VALUE", value);
-    setErrorMessage(null);
-    if (field === "title") {
-      titleRef.current = value;
-      try {
-        const songs = await fetchSongSuggestionList({ [field]: value });
-        allSongsRef.current = songs;
-        setSongs(allSongsRef.current);
-      } catch (err) {}
-    } else {
-      artistRef.current = value;
-      const filteredSongs = (allSongsRef.current || []).filter(v =>
-        v.artist.toLowerCase().includes(value.toLowerCase())
+    if (!value.trim()) {
+      console.log("RESETTING", value);
+      reset();
+      return;
+    }
+    presetState({
+      [field]: value,
+      errorMessage: null
+    });
+    if (field === "title") fetchSongSuggestionList({ [field]: value });
+    else {
+      const songs = allSongsRef.current.filter(v =>
+        v.artist.toLowerCase().includes(value.trim().toLowerCase())
       );
-      setSongs(filteredSongs);
+      const bestChoice = songs[0] || {};
+      presetState({
+        songs,
+        title,
+        titleComplete: bestChoice.title,
+        artistComplete: bestChoice.artist,
+        edit_title: title,
+        edit_artist: artist,
+        artist,
+        mbid: bestChoice.mbid
+      });
     }
   };
 
   const fetchSongSuggestionList = async payload => {
     const key = Object.keys(payload)[0];
-    const title = key === "title" ? payload[key] : "";
-    const artist = key === "artist" ? payload[key] : "";
+    if (key === "title" && !payload[key]) {
+      reset();
+      return;
+    }
+    const title = key === "title" ? payload[key] : edit_title;
+    const artist = key === "artist" ? payload[key] : edit_artist;
     try {
       const data = await fetchLastFMSong(title, artist);
-      if (!_isMountedRef.current) return;
       const track = data.results ? data.results.trackmatches.track : [];
       const songs = track.map((song, i) => ({
         title: song.name,
@@ -161,10 +172,24 @@ const AddSong = ({
         mbid: song.mbid,
         key: i
       }));
-      return Promise.resolve(songs);
+      if (!songs.length) return;
+      allSongsRef.current = songs;
+
+      const bestChoice = songs[0] || {};
+
+      presetState({
+        songs,
+        title,
+        titleComplete: bestChoice.title,
+        artistComplete: bestChoice.artist,
+        edit_title: title,
+        edit_artist: artist,
+        artist,
+        mbid: bestChoice.mbid
+      });
     } catch (err) {
-      console.log("ERR", err);
-      return Promise.reject(err);
+      console.error("ERROR: ", err);
+      reset();
     }
   };
 
@@ -179,7 +204,6 @@ const AddSong = ({
       mbid
     };
     const response = await createDoc("song", data);
-    if (!_isMountedRef.current) return;
     if (response.success) {
       const song = response.data;
       await updateDoc("artist", {
@@ -196,9 +220,11 @@ const AddSong = ({
   };
 
   const onDropdownPress = song => {
-    updateState({
+    presetState({
       titleComplete: song.title,
-      artistComplete: song.artist
+      artistComplete: song.artist,
+      artist: "",
+      mbid: song.mbid
     });
   };
 
@@ -210,8 +236,7 @@ const AddSong = ({
       <Image style={styles.image} source={addSongButton} />
     </TouchableOpacity>
   );
-
-  console.log("ARTISTCOMPLETE", artistComplete);
+  // console.log("FORMATTEDARTIST", formattedArtist);
   return showModal ? (
     <Modal dismiss={hide}>
       <AppText
