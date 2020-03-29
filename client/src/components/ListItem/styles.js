@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 const styles = {
   content: {
     flexDirection: "row",
@@ -67,4 +69,4 @@ const styles = {
   }
 };
 
-export default styles;
+export default StyleSheet.create(styles);

@@ -5,6 +5,11 @@ const iconSize = 40;
 
 export const styles = StyleSheet.create({
   ...listItemStyle,
+  root: {
+    flexDirection: "row",
+    flex: 1,
+    width: "100%"
+  },
   gImage: {
     flex: 1,
     width: null,
@@ -40,11 +45,29 @@ export const styles = StyleSheet.create({
     justifyContent: "center"
     // backgroundColor: 'rgba(0,0,255,0.3)',
   },
+  itemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flex: 6
+  },
+  itemInfo: {
+    flex: 18
+    // backgroundColor: "pink"
+  },
+  itemRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flex: 7
+  },
   text: {
     fontWeight: "normal",
     textAlign: "left",
     fontFamily: "montserrat-regular"
   },
+  titleText: { fontSize: 16 },
+  artistText: { color: "#999", fontSize: 11 },
   score: {
     flexDirection: "row",
     backgroundColor: "#fcc819",

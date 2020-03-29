@@ -10,7 +10,7 @@ const Score = ({ icon, votes, disabled, short = false }) => {
     ? {
         justifyContent: "center",
         paddingHorizontal: 0,
-        width: styles.score.height * 1.3
+        width: styles.score.height * 1.4
       }
     : null;
   const shortTextStyle = short

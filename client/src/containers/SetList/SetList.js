@@ -110,6 +110,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
           setArtistSongs(currArtistSongs);
           setLoading(false);
           setUpdate(false);
+          console.log("updateSongList setting add to false");
           setAdd(false);
           setTitle("");
           setSong_artist("");
@@ -237,6 +238,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
 
   const handleSetShowModal = show => {
     setShowModal(show);
+    console.log("HANDLESETSHOWMODAL setAdd", show);
     setAdd(show);
   };
 
@@ -267,6 +269,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     setSongs(filtered.length ? filtered : allSongs);
   };
 
+  console.log("ADD", add);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>

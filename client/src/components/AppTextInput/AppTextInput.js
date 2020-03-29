@@ -48,7 +48,7 @@ const AppTextInput = ({
 
   const onKeyPress = evt => (keyPressedRef.current = evt.nativeEvent.key);
 
-  console.log("RENDER APPTEXTINPUT");
+  // console.log("RENDER APPTEXTINPUT");
 
   return (
     <View style={styles.container}>
