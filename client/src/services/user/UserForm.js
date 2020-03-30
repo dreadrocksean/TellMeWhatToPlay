@@ -72,6 +72,7 @@ const UserForm = ({
             .map((field, i) => (
               <AppTextInput
                 key={i}
+                style={styles.input}
                 placeholder={field.placeholder}
                 onChangeText={field.onChange}
                 value={field.value}

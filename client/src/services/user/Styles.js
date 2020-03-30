@@ -1,6 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
-
-const { height, width } = Dimensions.get("window");
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
@@ -11,8 +9,7 @@ export default StyleSheet.create({
     padding: 10
   },
   input: {
-    backgroundColor: "#f3f3f3",
-    color: "purple"
+    marginBottom: 10
   },
   label: {
     marginTop: 10,

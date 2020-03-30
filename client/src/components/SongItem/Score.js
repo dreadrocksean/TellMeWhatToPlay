@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, View } from "react-native";
 
-import { styles } from "./styles";
+import styles from "./styles";
 import AppText from "src/components/AppText";
 
 const Score = ({ icon, votes, disabled, short = false }) => {

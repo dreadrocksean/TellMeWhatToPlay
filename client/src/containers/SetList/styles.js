@@ -6,6 +6,9 @@ export default StyleSheet.create({
     alignItems: "stretch",
     padding: 5
   },
+  headerIconContatiner: {
+    flexDirection: "row"
+  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
@@ -42,5 +45,6 @@ export default StyleSheet.create({
     width: null,
     height: null,
     resizeMode: "contain"
-  }
+  },
+  roundImage: { borderColor: "transparent" }
 });

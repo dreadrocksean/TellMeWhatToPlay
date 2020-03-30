@@ -3,11 +3,10 @@ import { StyleSheet, Image, Text, View } from "react-native";
 
 const RoundImage = props => {
   const size = {
-    width: props.style.size,
-    height: props.style.size,
-    borderRadius: props.style.size / 2
+    width: props.size,
+    height: props.size,
+    borderRadius: props.size / 2
   };
-  delete props.style.size;
   return (
     <View style={[styles.avatarContainer, size, props.style]}>
       <Image

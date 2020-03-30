@@ -3,7 +3,7 @@ import listItemStyle from "../ListItem/styles";
 
 const iconSize = 40;
 
-export const styles = StyleSheet.create({
+export default StyleSheet.create({
   ...listItemStyle,
   root: {
     flexDirection: "row",

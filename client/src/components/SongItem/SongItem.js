@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Button as RNButton, Icon } from "react-native-elements";
 
-import { styles } from "./styles";
+import styles from "./styles";
 import Score from "./Score";
 import ListItemIcon from "./ListItemIcon";
 import ListItem from "src/components/ListItem/";

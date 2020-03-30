@@ -25,7 +25,7 @@ import { updateDoc } from "src/services/api";
 
 import listItemAvatar from "src/images/test_avatar.png";
 
-import { styles } from "./styles";
+import styles from "./styles";
 
 import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";

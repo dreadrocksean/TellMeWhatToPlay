@@ -40,7 +40,6 @@ import { saveStorage } from "src/services/LocalStorage";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
 
 const db = firebase.firestore();
-const { width, height } = Dimensions.get("window");
 
 const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
   const isMountedRef = useRef(false);
@@ -217,18 +216,14 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     const headerPreface = isArtist ? "MANAGE " : "";
     return (
       <Fragment>
-        <TouchableOpacity onPress={openAddForm}>
-          <RoundImage
-            source={addIcon}
-            style={{ size: 40, borderColor: "transparent" }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleSearch}>
-          <RoundImage
-            source={findIcon}
-            style={{ size: 40, borderColor: "transparent" }}
-          />
-        </TouchableOpacity>
+        <View style={styles.headerIconContatiner}>
+          <TouchableOpacity onPress={openAddForm}>
+            <RoundImage source={addIcon} style={styles.roundImage} size={44} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleSearch}>
+            <RoundImage source={findIcon} style={styles.roundImage} size={44} />
+          </TouchableOpacity>
+        </View>
         <AppText textStyle={[styles.text, { fontSize: 16, color: "white" }]}>
           {headerPreface}SETLIST
         </AppText>

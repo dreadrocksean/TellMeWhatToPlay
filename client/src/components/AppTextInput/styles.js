@@ -8,20 +8,19 @@ export default StyleSheet.create({
     fontSize: 20,
     textAlign: "center"
   },
-  container: {
+  root: {
     flexDirection: "row"
   },
   input: {
     color: "white",
-    // flex: 1,
-    width: "100%",
+    flex: 1,
     fontSize: 20,
     padding: 5,
     paddingLeft: 15,
     height: 60,
     borderColor: "#7a42f4",
     borderWidth: 1,
-    marginBottom: 20,
+    // marginBottom: 20,
     borderRadius: 15
   },
   inputIcon: {

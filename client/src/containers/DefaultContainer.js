@@ -17,10 +17,7 @@ import { Button as RNButton, Icon } from "react-native-elements";
 
 import Background from "src/components/Background";
 import ListHeader from "src/components/ListHeader";
-
 import bg from "src/images/bg.png";
-
-const { width, height } = Dimensions.get("window");
 
 const DefaultContainer = ({
   loading,

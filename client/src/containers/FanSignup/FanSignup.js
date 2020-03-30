@@ -29,7 +29,6 @@ const FanSignup = ({ setShowModal, loginUser }) => {
   const handleContinue = async () => {
     try {
       const res = await getUser({ email, password });
-      console.log("RES", res);
       if (res.success) {
         const user = res.data;
         setShowModal(false);
@@ -44,26 +43,31 @@ const FanSignup = ({ setShowModal, loginUser }) => {
 
   return (
     <Modal dismiss={hide}>
-      <AppText
-        style={{ flex: 1 }}
-        textStyle={{ fontFamily: "montserrat-regular" }}
-      >
-        LOG IN OR CREATE AN ACCOUNT
-      </AppText>
-      {errorMessage && <FormError>{errorMessage}</FormError>}
-      <AppTextInput
-        style={{ flex: 1 }}
-        placeholder="Email"
-        onChangeText={onModalChange(setEmail)}
-        value={email}
-      />
-      <AppTextInput
-        style={{ flex: 1 }}
-        placeholder="Password"
-        onChangeText={onModalChange(setPassword)}
-        value={password}
-        secureTextEntry={true}
-      />
+      <View style={styles.children}>
+        <AppText
+          style={styles.child}
+          numberOfLines={2}
+          textStyle={{ fontFamily: "montserrat-regular" }}
+        >
+          LOG IN OR CREATE AN ACCOUNT
+        </AppText>
+        {errorMessage && (
+          <FormError style={styles.child}>{errorMessage}</FormError>
+        )}
+        <AppTextInput
+          style={styles.child}
+          placeholder="Email"
+          onChangeText={onModalChange(setEmail)}
+          value={email}
+        />
+        <AppTextInput
+          style={styles.child}
+          placeholder="Password"
+          onChangeText={onModalChange(setPassword)}
+          value={password}
+          secureTextEntry={true}
+        />
+      </View>
       <TouchableOpacity style={styles.imageWrapper} onPress={handleContinue}>
         <Image style={styles.image} source={continueButton} />
       </TouchableOpacity>
