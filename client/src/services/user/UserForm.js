@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  StyleSheet,
   ScrollView,
   TextInput,
   Text,
@@ -11,7 +10,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import styles from "./Styles";
+import styles from "./styles";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import signupButton from "src/images/buttons/signup_btn.png";

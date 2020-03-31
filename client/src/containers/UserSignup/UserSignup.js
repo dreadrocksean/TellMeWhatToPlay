@@ -10,12 +10,15 @@ import styles from "./styles";
 
 const UserSignup = ({ navigation, user, artist, userType }) => {
   const navigateTo = artist => {
+    // navigation.replace("ArtistAdmin");
+    // return;
     let routeName;
 
     if (!user) routeName = "FanSignup";
     else if (!artist) routeName = "ArtistSignup";
     else routeName = "ArtistAdmin";
     if (!routeName) return;
+    console.log("NAVIGATETO", routeName);
     navigation.replace(routeName, { name: routeName });
   };
 

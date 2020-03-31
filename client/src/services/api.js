@@ -108,17 +108,22 @@ export const getUser = async req => {
       .where("password", "==", req.password)
       .get();
     const doc = ref.docs[0];
-    const data = doc ? { ...doc.data(), _id: doc.id } : null;
-    const message = data ? "Found successfully" : "Not found";
+    if (!doc) throw new Error("Doc doesnt exist");
+    const user = { ...doc.data(), _id: doc.id };
     return Promise.resolve({
-      success: !!data,
-      data,
-      message,
-      error: "User not found"
+      success: !!user,
+      data: user,
+      message: "User found successfully",
+      error: null
     });
   } catch (err) {
-    console.error(`Error getting ${type}: `, err);
-    return Promise.resolve({ success: false, error: err });
+    const errorMessage = `Error getting User`;
+    console.error(errorMessage);
+    return Promise.reject({
+      success: false,
+      error: err,
+      message: errorMessage
+    });
   }
 };
 

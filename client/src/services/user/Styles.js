@@ -27,5 +27,20 @@ export default StyleSheet.create({
   },
   error: {
     color: "red"
+  },
+  modalContent: {
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  image: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    resizeMode: "contain"
+  },
+  imageWrapper: {
+    height: 60,
+    marginTop: 20,
+    alignSelf: "stretch"
   }
 });

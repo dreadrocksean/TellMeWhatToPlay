@@ -1,4 +1,14 @@
 import * as AT from "./ActionTypes";
+import {
+  createUser,
+  createDoc,
+  getDocs,
+  getUser,
+  fetchUser,
+  createArtist,
+  fetchUserArtist
+} from "src/services/api";
+import { saveStorage } from "src/services/LocalStorage";
 
 const incrementVotes = () => ({
   type: AT.IncrementVotes
@@ -16,21 +26,31 @@ const guestTypeArtist = () => ({
   type: AT.GuestTypeArtist
 });
 
-const loginUser = user => ({
-  type: AT.LoginUser,
-  payload: user
-});
-
-const loginArtist = artist => {
-  return {
-    type: AT.LoginArtist,
-    payload: artist
-  };
+const loginUser = credentials => async (dispatch, getState) => {
+  try {
+    const res = await getUser(credentials);
+    dispatch({ type: AT.LoginUser, payload: res.data });
+    saveStorage({ user: res.data });
+    res.message = "You Were Successfully Logged In";
+    // console.log("loginUserAC RES", res);
+    return Promise.resolve(res);
+  } catch (err) {
+    dispatch(logout());
+    return Promise.reject(err);
+  }
 };
 
-const logout = () => ({
-  type: AT.Logout
+const loginArtist = artist => ({
+  type: AT.LoginArtist,
+  payload: artist
 });
+
+// const logout = dispatch => ({ type: AT.Logout });
+
+const logout = () => (dispatch, getState) => {
+  saveStorage({ user: null });
+  dispatch({ type: AT.Logout });
+};
 
 const loadingStatus = status => ({
   type: AT.Loading,

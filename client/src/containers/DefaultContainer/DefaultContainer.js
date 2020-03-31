@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-
 import {
-  Dimensions,
-  StyleSheet,
   Image,
   Text,
   View,
@@ -14,6 +11,8 @@ import {
   PanResponder
 } from "react-native";
 import { Button as RNButton, Icon } from "react-native-elements";
+
+import styles from "./styles";
 
 import Background from "src/components/Background";
 import ListHeader from "src/components/ListHeader";
@@ -40,26 +39,6 @@ const DefaultContainer = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 7
-  },
-  children: {
-    flex: 1
-    // backgroundColor: "purple"
-  },
-  loading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ddccff"
-  },
-  body: {
-    marginTop: 0
-  }
-});
 
 const mapStateToProps = state => ({
   loading: state.app.loading

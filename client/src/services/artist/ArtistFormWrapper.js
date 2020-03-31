@@ -10,6 +10,8 @@ import {
 import { connect } from "react-redux";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
+import styles from "./styles";
+
 import createProfile from "src/images/buttons/continue_btn.png";
 import DefaultContainer from "src/containers/DefaultContainer";
 import ArtistForm from "./ArtistForm";
@@ -25,7 +27,7 @@ import cloudinaryConfig, { upload } from "src/utils/Cloudinary";
 const ArtistFormWrapper = ({
   navigation,
   user,
-  artist = {},
+  artist,
   loading,
   loginArtist,
   logout,
@@ -160,6 +162,7 @@ const ArtistFormWrapper = ({
 
   const handleLogout = () => this.navigate("Options")();
 
+  // return null;
   return (
     <DefaultContainer loading={loading} navigation={navigation}>
       <ArtistForm
@@ -178,42 +181,13 @@ const ArtistFormWrapper = ({
         onPressCam={showCam}
         photo={artist.imageURL || cloudinaryConfig.userUrl}
       />
-      {/*<TouchableOpacity style={styles.cancel}>
-          <Image source={createProfile} style={styles.image} />
-        </TouchableOpacity>*/}
     </DefaultContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  cambtn: {
-    flexDirection: "row",
-    width: 100,
-    height: 100,
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  photos: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap"
-  },
-  cancel: {
-    // opacity: 0,
-    alignSelf: "center",
-    width: "50%"
-    // marginBottom: 60
-  },
-  image: {
-    width: undefined,
-    resizeMode: "contain"
-  }
-});
-
 const mapStateToProps = state => ({
   user: state.login.user,
-  artist: state.login.artist,
+  artist: state.login.artist || {},
   loading: state.app.loading
 });
 

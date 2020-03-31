@@ -10,9 +10,9 @@ import {
 import { FileSystem, FaceDetector, MediaLibrary } from "expo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import testPhoto from "src/images/test_avatar.png";
+import styles from "./styles";
 
-import styles from "./Styles";
+import testPhoto from "src/images/test_avatar.png";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import CheckBox from "src/components/CheckBox/";
@@ -39,7 +39,7 @@ const ArtistForm = ({
   const roleKeys = Object.keys(roles);
 
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView contentContainerStyle={styles.formRoot}>
       <View style={styles.container}>
         <ImageUpload
           style={styles.imageUpload}
@@ -47,13 +47,15 @@ const ArtistForm = ({
           onPress={onPressCam}
         />
         <AppTextInput
-          textStyle={styles.input}
+          textStyle={styles.inputText}
+          style={styles.input}
           placeholder="Artist Name"
           onChangeText={handleChange("name")}
           value={name}
         />
         <AppTextInput
-          textStyle={styles.input}
+          textStyle={styles.inputText}
+          style={styles.input}
           placeholder="Music Genre"
           onChangeText={handleChange("genre")}
           value={genre}
@@ -88,7 +90,9 @@ const ArtistForm = ({
         <TouchableOpacity style={styles.button} onPress={onSubmit}>
           <Image source={createProfile} style={styles.image} />
         </TouchableOpacity>
-        <AppText textStyle={styles.error}>{errorMessage}</AppText>
+        {!!errorMessage && (
+          <AppText textStyle={styles.error}>{errorMessage}</AppText>
+        )}
       </View>
     </KeyboardAwareScrollView>
   );

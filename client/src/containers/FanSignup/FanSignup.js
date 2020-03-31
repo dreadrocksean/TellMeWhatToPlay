@@ -8,8 +8,12 @@ import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import FormError from "src/components/FormError";
 import continueButton from "src/images/buttons/continue_btn.png";
+import signupButton from "src/images/buttons/signup_button.png";
 
-import { loginUser } from "src/store/actions/ActionCreator";
+import {
+  loginUser as storeLoginUser,
+  signupUser as storeSignupUser
+} from "src/store/actions/ActionCreator";
 import { getUser } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import { capitalize } from "src/utils/General";
@@ -24,6 +28,21 @@ const FanSignup = ({ setShowModal, loginUser }) => {
   const onModalChange = func => val => {
     setErrorMessage(null);
     func(val);
+  };
+
+  const handleSignup = async () => {
+    try {
+      const res = await getUser({ email, password });
+      if (res.success) {
+        const user = res.data;
+        setShowModal(false);
+        loginUser(user);
+        await saveStorage({ user });
+      } else throw new Error(res.error);
+    } catch (err) {
+      console.log("ERR", err);
+      setErrorMessage(err.message);
+    }
   };
 
   const handleContinue = async () => {
@@ -68,15 +87,22 @@ const FanSignup = ({ setShowModal, loginUser }) => {
           secureTextEntry={true}
         />
       </View>
-      <TouchableOpacity style={styles.imageWrapper} onPress={handleContinue}>
-        <Image style={styles.image} source={continueButton} />
-      </TouchableOpacity>
+      {!errorMessage ? (
+        <TouchableOpacity style={styles.imageWrapper} onPress={handleContinue}>
+          <Image style={styles.image} source={continueButton} />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.imageWrapper} onPress={handleSignup}>
+          <Image style={styles.image} source={signupButton} />
+        </TouchableOpacity>
+      )}
     </Modal>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  loginUser: payload => dispatch(loginUser(payload))
+  loginUser: payload => dispatch(storeLoginUser(payload)),
+  signupUser: payload => dispatch(storeSignupUser(payload))
 });
 
 export default connect(

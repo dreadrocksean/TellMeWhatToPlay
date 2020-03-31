@@ -18,7 +18,7 @@ import { getDocs } from "src/services/api";
 import {
   loginUser,
   loginArtist,
-  logout,
+  logout as logoutAction,
   guestTypeFan,
   guestTypeArtist,
   onAir,
@@ -322,7 +322,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout()),
+  logout: () => logoutAction(dispatch),
   loginUser: user => dispatch(loginUser(user)),
   loginArtist: artist => dispatch(loginArtist(artist)),
   guestTypeFan: () => dispatch(guestTypeFan()),

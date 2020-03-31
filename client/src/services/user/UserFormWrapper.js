@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
+
+import styles from "./styles";
 
 import {
   createUser,
@@ -35,8 +37,8 @@ const UserFormWrapper = ({
   navigateTo
 }) => {
   const [hasAccount, setHasAccount] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("adrian@bartholomusic.com");
+  const [password, setPassword] = useState("1234");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [zip, setZip] = useState("");
@@ -80,35 +82,23 @@ const UserFormWrapper = ({
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
-        const res = await createDoc("user", credentials);
-        user = res.data;
+        await createDoc("user", credentials);
         successMessage = "Your Account Was Successfully Created";
-        errorMessage = null;
-        submitType = type;
       } else if (type === "LogIn") {
-        const res = await getUser(credentials);
-        if (res.success) {
-          successMessage = "You Were Successfully Logged In";
-          errorMessage = null;
-          submitType = type;
-        } else {
-          throw res.error;
-        }
-        user = res.data;
+        const res = await loginUser(credentials);
+        console.log("UserFormWrapper loginUser RES", res);
+        successMessage = res.message;
       }
 
-      // await saveStorage({ user });
-      loginUser(user);
       setSuccessMessage(successMessage);
-      setErrorMessage(errorMessage);
+      console.log("SUCCESSMESSAGE", successMessage);
+      setErrorMessage(null);
       setShowModal(true);
       setSubmitType(type);
     } catch (err) {
-      console.log("error:", err);
+      // console.log("error:", err);
       setSuccessMessage(null);
       setErrorMessage(err);
-      logout();
-      await saveStorage({ user: null });
     }
   };
 
@@ -116,11 +106,20 @@ const UserFormWrapper = ({
     if (userType === "ARTIST" && user && submitType === "LogIn") {
       try {
         const res = await getDocs("artist", { userId: user._id });
+        navigateTo();
+        return;
+        console.log("handleContinue1 NAVIGATETO", navigateTo);
         const artist = res.data;
+        console.log("handleContinue2 NAVIGATETO", navigateTo);
         loginArtist(artist);
+        console.log("handleContinue3 NAVIGATETO", navigateTo);
         await saveStorage({ artist });
+        console.log("handleContinue4 NAVIGATETO", navigateTo);
         navigateTo(artist);
-      } catch (err) {}
+      } catch (err) {
+        console.log("ERR", err);
+        navigateTo();
+      }
     }
   };
 
@@ -138,10 +137,7 @@ const UserFormWrapper = ({
       <AppText textStyle={{ fontWeight: "normal", fontSize: 18 }}>
         {successMessage}
       </AppText>
-      <TouchableOpacity
-        style={{ alignSelf: "stretch", flex: 1 }}
-        onPress={handleContinue}
-      >
+      <TouchableOpacity style={styles.imageWrapper} onPress={handleContinue}>
         <Image style={styles.image} source={continueButton} />
       </TouchableOpacity>
     </AppModal>
@@ -158,19 +154,6 @@ const UserFormWrapper = ({
     />
   );
 };
-
-const styles = StyleSheet.create({
-  modalContent: {
-    alignItems: "center",
-    justifyContent: "space-around"
-  },
-  image: {
-    flex: 1,
-    width: undefined,
-    height: undefined,
-    resizeMode: "contain"
-  }
-});
 
 const mapDispatchToProps = dispatch => ({
   loginUser: payload => dispatch(loginUserType(payload)),
