@@ -264,7 +264,6 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     setSongs(filtered.length ? filtered : allSongs);
   };
 
-  console.log("ADD", add);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>
