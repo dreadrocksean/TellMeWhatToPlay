@@ -86,17 +86,13 @@ const UserFormWrapper = ({
         successMessage = "Your Account Was Successfully Created";
       } else if (type === "LogIn") {
         const res = await loginUser(credentials);
-        console.log("UserFormWrapper loginUser RES", res);
         successMessage = res.message;
       }
-
       setSuccessMessage(successMessage);
-      console.log("SUCCESSMESSAGE", successMessage);
       setErrorMessage(null);
       setShowModal(true);
       setSubmitType(type);
     } catch (err) {
-      // console.log("error:", err);
       setSuccessMessage(null);
       setErrorMessage(err);
     }
@@ -105,19 +101,9 @@ const UserFormWrapper = ({
   const handleContinue = async () => {
     if (userType === "ARTIST" && user && submitType === "LogIn") {
       try {
-        const res = await getDocs("artist", { userId: user._id });
-        navigateTo();
-        return;
-        console.log("handleContinue1 NAVIGATETO", navigateTo);
-        const artist = res.data;
-        console.log("handleContinue2 NAVIGATETO", navigateTo);
-        loginArtist(artist);
-        console.log("handleContinue3 NAVIGATETO", navigateTo);
-        await saveStorage({ artist });
-        console.log("handleContinue4 NAVIGATETO", navigateTo);
-        navigateTo(artist);
+        const res = await loginArtist(user._id);
+        navigateTo(res.data);
       } catch (err) {
-        console.log("ERR", err);
         navigateTo();
       }
     }

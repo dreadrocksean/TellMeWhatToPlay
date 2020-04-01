@@ -8,18 +8,16 @@ import UserFormWrapper from "src/services/user/UserFormWrapper";
 
 import styles from "./styles";
 
-const UserSignup = ({ navigation, user, artist, userType }) => {
+const UserSignup = ({ navigation, user }) => {
   const navigateTo = artist => {
-    // navigation.replace("ArtistAdmin");
-    // return;
     let routeName;
 
     if (!user) routeName = "FanSignup";
     else if (!artist) routeName = "ArtistSignup";
     else routeName = "ArtistAdmin";
     if (!routeName) return;
-    console.log("NAVIGATETO", routeName);
-    navigation.replace(routeName, { name: routeName });
+    console.log("NAVIGATION", navigation);
+    navigation.replace(routeName);
   };
 
   const renderHeaderChildren = () => (
@@ -40,9 +38,7 @@ const UserSignup = ({ navigation, user, artist, userType }) => {
 
 const mapStateToProps = state => {
   return {
-    user: state.login.user,
-    artist: state.login.artist,
-    userType: state.login.userType
+    user: state.login.user
   };
 };
 

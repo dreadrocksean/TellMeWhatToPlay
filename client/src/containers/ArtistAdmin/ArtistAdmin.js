@@ -164,10 +164,10 @@ const ArtistAdmin = ({
                   uri: artist.imageURL || cloudinaryConfig.userUrl
                 }}
                 style={{
-                  size: 150,
                   borderColor: "#ffd72b",
                   borderWidth: 4
                 }}
+                size={150}
               />
               <AppText textStyle={styles.title}>{artist.name}</AppText>
               <View>

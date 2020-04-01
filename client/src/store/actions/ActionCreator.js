@@ -30,9 +30,8 @@ const loginUser = credentials => async (dispatch, getState) => {
   try {
     const res = await getUser(credentials);
     dispatch({ type: AT.LoginUser, payload: res.data });
-    saveStorage({ user: res.data });
+    await saveStorage({ user: res.data });
     res.message = "You Were Successfully Logged In";
-    // console.log("loginUserAC RES", res);
     return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
@@ -40,10 +39,17 @@ const loginUser = credentials => async (dispatch, getState) => {
   }
 };
 
-const loginArtist = artist => ({
-  type: AT.LoginArtist,
-  payload: artist
-});
+const loginArtist = userId => async (dispatch, getState) => {
+  try {
+    const res = await getDocs("artist", { userId });
+    const artist = res.data;
+    dispatch({ type: AT.LoginArtist, payload: artist });
+    await saveStorage({ artist });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
 
 // const logout = dispatch => ({ type: AT.Logout });
 
