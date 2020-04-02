@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import styles from "./styles";
 import Modal from "src/components/Modal";

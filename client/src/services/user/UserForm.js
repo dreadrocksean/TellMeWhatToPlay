@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ScrollView,
   TextInput,
@@ -27,6 +27,7 @@ const UserForm = ({
   togglePassword,
   hidePassword
 }) => {
+  const [extraScrollHeight, setExtraScrollHeight] = useState(0);
   const { email, password, fname, lname, zip } = fieldValues;
   const fields = [
     {
@@ -57,10 +58,18 @@ const UserForm = ({
       onChange: handleChange("zip")
     }
   ];
+
+  const handleOnFocus = index => () => {
+    setExtraScrollHeight(index * 10 - 100);
+  };
+
   return (
     <View>
       <View style={styles.container}>
-        <KeyboardAwareScrollView style={styles.form}>
+        <KeyboardAwareScrollView
+          extraScrollHeight={extraScrollHeight}
+          style={styles.form}
+        >
           {fields
             .filter(
               f =>
@@ -71,6 +80,7 @@ const UserForm = ({
             .map((field, i) => (
               <AppTextInput
                 key={i}
+                onFocus={handleOnFocus(i)}
                 style={styles.input}
                 placeholder={field.placeholder}
                 onChangeText={field.onChange}

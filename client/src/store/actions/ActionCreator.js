@@ -57,14 +57,13 @@ const loginArtist = userId => async (dispatch, getState) => {
     const res = await getDocs("artist", { userId });
     const artist = res.data;
     dispatch({ type: AT.LoginArtist, payload: artist });
+    res.message = "Your Artist Successfully Logged In";
     await saveStorage({ artist });
     return Promise.resolve(res);
   } catch (err) {
     return Promise.reject(err);
   }
 };
-
-// const logout = dispatch => ({ type: AT.Logout });
 
 const logout = () => (dispatch, getState) => {
   saveStorage({ user: null });

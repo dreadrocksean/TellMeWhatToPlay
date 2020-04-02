@@ -14,6 +14,7 @@ import icon from "src/images/icons/eyeslash_icon1.png";
 
 const AppTextInput = ({
   onChangeText,
+  onFocus,
   value,
   formattedValue = {},
   placeholder,
@@ -57,6 +58,7 @@ const AppTextInput = ({
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
         onChangeText={handleOnChangeText}
+        onFocus={onFocus}
         onKeyPress={onKeyPress}
         secureTextEntry={secureTextEntry && !showPassword}
         editable={editable}
@@ -85,6 +87,7 @@ const AppTextInput = ({
 AppTextInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
   handleOnChangeText: PropTypes.func,
+  onFocus: PropTypes.func,
   value: PropTypes.any,
   secureTextEntry: PropTypes.bool,
   editable: PropTypes.bool
