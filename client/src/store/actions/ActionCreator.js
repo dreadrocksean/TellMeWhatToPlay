@@ -8,7 +8,7 @@ import {
   createArtist,
   fetchUserArtist
 } from "src/services/api";
-import { saveStorage } from "src/services/LocalStorage";
+import { saveStorage, loadStorage } from "src/services/LocalStorage";
 
 const incrementVotes = () => ({
   type: AT.IncrementVotes
@@ -26,6 +26,16 @@ const guestTypeArtist = () => ({
   type: AT.GuestTypeArtist
 });
 
+const loadStoredUserArtist = () => async (dispatch, getState) => {
+  try {
+    await loginStorageUser()(dispatch, getState);
+    await loginStorageArtist()(dispatch, getState);
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const loginUser = credentials => async (dispatch, getState) => {
   try {
     const res = await getUser(credentials);
@@ -33,6 +43,18 @@ const loginUser = credentials => async (dispatch, getState) => {
     await saveStorage({ user: res.data });
     res.message = "You Were Successfully Logged In";
     return Promise.resolve(res);
+  } catch (err) {
+    dispatch(logout());
+    return Promise.reject(err);
+  }
+};
+
+const loginStorageUser = () => async (dispatch, getState) => {
+  try {
+    const user = await loadStorage("user");
+    if (!user) throw "No user stored";
+    dispatch({ type: AT.LoginUser, payload: user });
+    return Promise.resolve(user);
   } catch (err) {
     dispatch(logout());
     return Promise.reject(err);
@@ -59,6 +81,18 @@ const loginArtist = userId => async (dispatch, getState) => {
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = "Your Artist Successfully Logged In";
     await saveStorage({ artist });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const loginStorageArtist = () => async (dispatch, getState) => {
+  try {
+    const artist = await loadStorage("artist");
+    if (!artist) throw "No artist stored";
+    dispatch({ type: AT.LoginArtist, payload: artist });
+    res.message = "Your Artist Successfully Logged In";
     return Promise.resolve(res);
   } catch (err) {
     return Promise.reject(err);
@@ -116,8 +150,11 @@ export {
   guestTypeFan,
   guestTypeArtist,
   loginUser,
+  loadStoredUserArtist,
+  loginStorageUser,
   signupUser,
   loginArtist,
+  loginStorageArtist,
   logout,
   loginError,
   register,

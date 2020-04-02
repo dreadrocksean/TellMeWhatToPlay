@@ -18,7 +18,6 @@ import {
   loginArtist as loginArtistType,
   logout as logoutType
 } from "src/store/actions/ActionCreator";
-import { saveStorage } from "src/services/LocalStorage";
 import UserForm from "./UserForm";
 import AppModal from "src/components/Modal";
 import AppText from "src/components/AppText";
@@ -52,21 +51,16 @@ const UserFormWrapper = ({
 
   const handleChange = field => val => {
     switch (field) {
-      case "email": {
+      case "email":
         return setEmail(val);
-      }
-      case "password": {
+      case "password":
         return setPassword(val);
-      }
-      case "fname": {
+      case "fname":
         return setFname(val);
-      }
-      case "lname": {
+      case "lname":
         return setLname(val);
-      }
-      case "zip": {
+      case "zip":
         return setZip(val);
-      }
     }
   };
 
@@ -86,6 +80,7 @@ const UserFormWrapper = ({
         successMessage = "Your Account Was Successfully Created";
       } else if (type === "LogIn") {
         const res = await loginUser(credentials);
+        console.log("onSubmit RES", res);
         successMessage = res.message;
       }
       setSuccessMessage(successMessage);

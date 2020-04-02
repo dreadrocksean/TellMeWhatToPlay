@@ -1,24 +1,23 @@
 import { AsyncStorage } from "react-native";
 
 export const saveStorage = async models => {
-  if (!models) {
-    return;
+  if (!models) return;
+  try {
+    await AsyncStorage.setItem(Object.keys(models)[0], JSON.stringify(models));
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    return Promise.reject(err);
   }
-  const setStorage = async obj =>
-    await AsyncStorage.setItem(Object.keys(obj)[0], JSON.stringify(obj));
-  return setStorage(models);
 };
 
 export const loadStorage = async model => {
   try {
-    AsyncStorage.clear();
-    const userJson = await AsyncStorage.getItem(model);
-    // console.log('loadStorage', model, userJson);
-    if (!userJson) {
-      return null;
-    }
-    return JSON.parse(userJson)[model];
-  } catch (e) {
+    // AsyncStorage.clear();
+    const modelJson = await AsyncStorage.getItem(model);
+    console.log("loadStorage", model, JSON.parse(modelJson)[model]);
+    return Promise.resolve(JSON.parse(modelJson)[model]);
+  } catch (err) {
     console.log(`Error getting storage ${model}: `, e);
+    return Promise.reject(err);
   }
 };
