@@ -51,19 +51,20 @@ const loginUser = credentials => async (dispatch, getState) => {
 
 const loginStorageUser = () => async (dispatch, getState) => {
   try {
-    const user = await loadStorage("user");
-    if (!user) throw "No user stored";
-    dispatch({ type: AT.LoginUser, payload: user });
-    return Promise.resolve(user);
+    const res = await loadStorage("user");
+    console.log("loginStorageUser RES", res);
+    if (!res || !res.data) throw "No user stored";
+    dispatch({ type: AT.LoginUser, payload: res.data });
+    return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
     return Promise.reject(err);
   }
 };
 
-const signupUser = credentials => async (dispatch, getState) => {
+const signupUser = payload => async (dispatch, getState) => {
   try {
-    const res = await createUser(credentials);
+    const res = await createUser(payload);
     dispatch({ type: AT.LoginUser, payload: res.data });
     await saveStorage({ user: res.data });
     res.message = "You Were Successfully Logged In";
@@ -77,6 +78,7 @@ const signupUser = credentials => async (dispatch, getState) => {
 const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
+    console.log("RES", res);
     const artist = res.data;
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = "Your Artist Successfully Logged In";
@@ -87,11 +89,24 @@ const loginArtist = userId => async (dispatch, getState) => {
   }
 };
 
+const signUpArtist = payload => async (dispatch, getState) => {
+  try {
+    const res = await createArtist(payload);
+    console.log("RES", res);
+    dispatch({ type: AT.LoginArtist, payload: res.data });
+    res.message = "Artist Successfully created";
+    await saveStorage({ artist: res.data });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const loginStorageArtist = () => async (dispatch, getState) => {
   try {
-    const artist = await loadStorage("artist");
-    if (!artist) throw "No artist stored";
-    dispatch({ type: AT.LoginArtist, payload: artist });
+    const res = await loadStorage("artist");
+    if (!res || !res.data) throw "No artist stored";
+    dispatch({ type: AT.LoginArtist, payload: res.data });
     return Promise.resolve(res);
   } catch (err) {
     return Promise.reject(err);
@@ -99,7 +114,7 @@ const loginStorageArtist = () => async (dispatch, getState) => {
 };
 
 const logout = () => (dispatch, getState) => {
-  saveStorage({ user: null });
+  saveStorage({ user: null, artist: null });
   dispatch({ type: AT.Logout });
 };
 

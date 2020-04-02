@@ -3,20 +3,9 @@ import { connect } from "react-redux";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import styles from "./styles";
-
-import {
-  createUser,
-  createDoc,
-  getDocs,
-  getUser,
-  fetchUser,
-  createArtist,
-  fetchUserArtist
-} from "src/services/api";
 import {
   loginUser as loginUserType,
-  loginArtist as loginArtistType,
-  logout as logoutType
+  signupUser as signupUserType
 } from "src/store/actions/ActionCreator";
 import UserForm from "./UserForm";
 import AppModal from "src/components/Modal";
@@ -28,8 +17,8 @@ import continueButton from "src/images/buttons/continue_btn.png";
 const UserFormWrapper = ({
   navigation,
   loginUser,
+  signupUser,
   loginArtist,
-  logout,
   userType,
   user,
   artist,
@@ -76,7 +65,7 @@ const UserFormWrapper = ({
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
-        await createDoc("user", credentials);
+        await signupUser(credentials);
         successMessage = "Your Account Was Successfully Created";
       } else if (type === "LogIn") {
         const res = await loginUser(credentials);
@@ -94,14 +83,16 @@ const UserFormWrapper = ({
   };
 
   const handleContinue = async () => {
-    if (userType === "ARTIST" && user && submitType === "LogIn") {
+    if (!user) navigateTo();
+    else if (userType === "ARTIST" && user && submitType === "LogIn") {
       try {
         const res = await loginArtist(user._id);
+        console.log("handleContinue RES", res);
         navigateTo(res.data);
       } catch (err) {
         navigateTo();
       }
-    }
+    } else if (submitType === "SignUp") navigateTo();
   };
 
   const dismissModal = () => {
@@ -138,8 +129,8 @@ const UserFormWrapper = ({
 
 const mapDispatchToProps = dispatch => ({
   loginUser: payload => dispatch(loginUserType(payload)),
-  loginArtist: payload => dispatch(loginArtistType(payload)),
-  logout: payload => dispatch(logoutType())
+  signupUser: payload => dispatch(signupUserType(payload)),
+  loginArtist: payload => dispatch(loginArtistType(payload))
 });
 
 const mapStateToProps = state => ({
