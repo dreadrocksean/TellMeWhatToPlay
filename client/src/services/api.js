@@ -44,9 +44,19 @@ export const getDataFromRef = async ref => {
 export const createDoc = async (type, req) => {
   try {
     const ref = await db.collection(`${type}s`).add(req);
-    return getDataFromRef(ref);
+    return Promise.resolve(getDataFromRef(ref));
   } catch (err) {
     console.error(`Error adding ${type}: `, err);
+    return Promise.reject({ success: false, error: err });
+  }
+};
+
+export const createUser = async req => {
+  try {
+    const data = await createDoc("user", req);
+    return Promise.resolve(data);
+  } catch (err) {
+    console.error(`Error adding User: `, err);
     return Promise.resolve({ success: false, error: err });
   }
 };
@@ -100,7 +110,6 @@ export const deleteDoc = async (type, id) => {
 };
 
 export const getUser = async req => {
-  console.log("REQ", req);
   try {
     const ref = await db
       .collection("users")
@@ -118,7 +127,7 @@ export const getUser = async req => {
     });
   } catch (err) {
     const errorMessage = `Error getting User`;
-    console.error(errorMessage);
+    // console.error(errorMessage);
     return Promise.reject({
       success: false,
       error: err,

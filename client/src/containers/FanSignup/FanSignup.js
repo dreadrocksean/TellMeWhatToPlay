@@ -18,9 +18,9 @@ import { getUser } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import { capitalize } from "src/utils/General";
 
-const FanSignup = ({ setShowModal, loginUser }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
+  const [email, setEmail] = useState("a@a.a");
+  const [password, setPassword] = useState("1111");
   const [errorMessage, setErrorMessage] = useState(null);
 
   const hide = () => setShowModal(false);
@@ -32,12 +32,9 @@ const FanSignup = ({ setShowModal, loginUser }) => {
 
   const handleSignup = async () => {
     try {
-      const res = await getUser({ email, password });
+      const res = await signupUser({ email, password });
       if (res.success) {
-        const user = res.data;
         setShowModal(false);
-        loginUser(user);
-        await saveStorage({ user });
       } else throw new Error(res.error);
     } catch (err) {
       console.log("ERR", err);
@@ -47,12 +44,10 @@ const FanSignup = ({ setShowModal, loginUser }) => {
 
   const handleContinue = async () => {
     try {
-      const res = await getUser({ email, password });
+      const res = await loginUser({ email, password });
+      console.log("handleContinue RES", res);
       if (res.success) {
-        const user = res.data;
         setShowModal(false);
-        loginUser(user);
-        await saveStorage({ user });
       } else throw new Error(res.error);
     } catch (err) {
       console.log("ERR", err);

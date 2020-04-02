@@ -39,6 +39,19 @@ const loginUser = credentials => async (dispatch, getState) => {
   }
 };
 
+const signupUser = credentials => async (dispatch, getState) => {
+  try {
+    const res = await createUser(credentials);
+    dispatch({ type: AT.LoginUser, payload: res.data });
+    await saveStorage({ user: res.data });
+    res.message = "You Were Successfully Logged In";
+    return Promise.resolve(res);
+  } catch (err) {
+    dispatch(logout());
+    return Promise.reject(err);
+  }
+};
+
 const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
@@ -104,6 +117,7 @@ export {
   guestTypeFan,
   guestTypeArtist,
   loginUser,
+  signupUser,
   loginArtist,
   logout,
   loginError,
