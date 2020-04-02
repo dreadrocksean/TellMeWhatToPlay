@@ -92,7 +92,6 @@ const loginStorageArtist = () => async (dispatch, getState) => {
     const artist = await loadStorage("artist");
     if (!artist) throw "No artist stored";
     dispatch({ type: AT.LoginArtist, payload: artist });
-    res.message = "Your Artist Successfully Logged In";
     return Promise.resolve(res);
   } catch (err) {
     return Promise.reject(err);
