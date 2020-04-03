@@ -64,7 +64,7 @@ const Options = ({
       try {
         await loadStoredUserArtist();
       } catch (err) {
-        console.log("ERR", err);
+        console.log("loadStoredUserArtist ERR", err);
       }
     };
     checkStoredCreds();

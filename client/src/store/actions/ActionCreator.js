@@ -57,6 +57,7 @@ const loginStorageUser = () => async (dispatch, getState) => {
     dispatch({ type: AT.LoginUser, payload: res.data });
     return Promise.resolve(res);
   } catch (err) {
+    // console.log("loginStorageUser ERR", err);
     dispatch(logout());
     return Promise.reject(err);
   }

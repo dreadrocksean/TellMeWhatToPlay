@@ -5,7 +5,6 @@ import firebase from "src/utils/Firestore";
 import { getDistance } from "src/utils/General";
 import {
   Platform,
-  StyleSheet,
   Image,
   TouchableOpacity,
   Text,
@@ -20,9 +19,10 @@ import { Constants } from "expo";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 
-import { loadingStatus } from "src/store/actions/ActionCreator";
+import styles from "./styles";
 
-import DefaultContainer from "./DefaultContainer";
+import { loadingStatus } from "src/store/actions/ActionCreator";
+import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import ArtistItem from "src/components/ArtistItem";
@@ -30,11 +30,10 @@ import { updateHeader } from "src/utils/UpdateHeader";
 
 import sortIcon from "src/images/icons/sort_btn.png";
 import findIcon from "src/images/icons/find_btn.png";
-import { fetchArtists } from "src/services/api";
 
 const db = firebase.firestore();
 
-const ArtistList = ({ navigation, authorized, loadingStatus }) => {
+const ArtistList = ({ navigation, loadingStatus }) => {
   const [name, setName] = useState(null);
   const [edit_name, setEdit_name] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,16 +47,13 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
   const [showSearch, setShowSearch] = useState(false);
 
   const locationRef = useRef({ remove: () => {} });
-  const unsubscribe = useRef(null);
+  const unsubscribe = useRef(() => {});
   const _isMounted = useRef(false);
-
-  useEffect(() => {
-    // updateHeader({ navigation, authorized });
-  }, []);
 
   useEffect(() => {
     _isMounted.current = true;
     if (Platform.OS === "android" && !Constants.isDevice) {
+      // console.log("WTF");
       setErrorMessage(
         "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
       );
@@ -74,23 +70,29 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
 
   const _getLocationAsync = async () => {
     loadingStatus(true);
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== "granted") {
-      setErrorMessage("Permission to access location was denied");
-    }
-
-    locationRef.current = await Location.watchPositionAsync(
-      { distanceInterval: 10 },
-      ({ coords = {} }) => {
-        loadingStatus(false);
-        console.log("Latitude: ", coords.latitude);
-        setLocation({ lat: coords.latitude, lng: coords.longitude });
+    try {
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== "granted") {
+        setErrorMessage("Permission to access location was denied");
+        throw new Error("Permission to access location was denied");
       }
-    );
+
+      locationRef.current = await Location.watchPositionAsync(
+        { distanceInterval: 10 },
+        ({ coords = {} }) => {
+          // loadingStatus(false);
+          console.log("Latitude: ", coords.latitude);
+          setLocation({ lat: coords.latitude, lng: coords.longitude });
+        }
+      );
+    } catch (err) {
+      console.log("_getLocationAsync ERR", err);
+    }
   };
 
   const getSortedArtists = () => {
     if (!location) return [];
+    console.log("getSortedArtists ARTISTS", artists);
     return artists
       .map(v => {
         v.distance = getDistance(location, v.location);
@@ -141,8 +143,6 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
     navigate("SetList", { name: "SetList", artist });
   };
 
-  const home = () => navigation.navigate("Options");
-
   const renderHeaderChildren = () => (
     <Fragment>
       <View style={styles.icons}>
@@ -159,9 +159,8 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
 
   return (
     <DefaultContainer
-      loading={loading}
-      headerChildren={renderHeaderChildren()}
       navigation={navigation}
+      headerChildren={renderHeaderChildren()}
     >
       {showSearch && (
         <AppTextInput
@@ -171,66 +170,23 @@ const ArtistList = ({ navigation, authorized, loadingStatus }) => {
         />
       )}
       <ScrollView style={styles.scroll} pagingEnabled={true}>
-        {getSortedArtists().map((artist, i) => {
-          return (
-            <ArtistItem
-              key={i}
-              artist={artist}
-              showSetList={showSetList(artist)}
-            />
-          );
-        })}
+        {(getSortedArtists() || artists).map((artist, i) => (
+          <ArtistItem
+            key={i}
+            artist={artist}
+            showSetList={showSetList(artist)}
+          />
+        ))}
       </ScrollView>
     </DefaultContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    marginTop: 60
-  },
-  icon: {
-    width: 30,
-    height: 30
-  },
-  icons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 65
-  },
-  text: {
-    // textAlign: 'right',
-    color: "white",
-    fontSize: 17,
-    fontFamily: "montserrat-regular"
-  }
-});
-
-ArtistList.navigationOptions = ({ navigation }) => {
-  const { params = {} } = navigation.state;
-  const headerStyle = Object.assign(
-    {},
-    params.bg ? { backgroundColor: params.bg } : null
-  );
-  return {
-    title: `${params.title || params.screen || "Artist List"}`,
-    headerTitleStyle: { textAlign: "center", alignSelf: "center" },
-    headerStyle
-  };
-};
-
-ArtistList.defaultProps = { fetchArtists };
-
-const mapStateToProps = state => ({
-  authorized: state.login.authorized
-});
 
 const mapDispatchToProps = dispatch => ({
   loadingStatus: status => dispatch(loadingStatus(status))
 });
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(ArtistList);

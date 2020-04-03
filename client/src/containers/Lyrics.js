@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { connect } from "react-redux";
 
 import DefaultContainer from "./DefaultContainer";
 import { updateHeader } from "src/utils/UpdateHeader";
 import { fetchLyrics } from "src/services/api";
+import { loadingStatus } from "src/store/actions/ActionCreator";
 
-const Lyrics = ({ navigation, route }) => {
-  const [loading, setLoading] = useState(false);
+const Lyrics = ({ navigation, route, loadingStatus }) => {
   const [lyrics, setLyrics] = useState("");
 
   useEffect(() => {
@@ -14,15 +15,14 @@ const Lyrics = ({ navigation, route }) => {
       try {
         const { title, artist } = route.params;
         const data = await fetchLyrics(title, artist);
-        setLoading(false);
+        loadingStatus(false);
         setLyrics(data.result.track.text);
       } catch (err) {
-        setLoading(false);
+        loadingStatus(false);
         setLyrics("Sorry. No lyrics available :-(");
       }
     };
-    // updateHeader({ navigation });
-    setLoading(true);
+    loadingStatus(true);
     getLyrics();
   }, []);
 
@@ -50,4 +50,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Lyrics;
+const mapDispatchToProps = dispatch => ({
+  loadingStatus: status => dispatch(loadingStatus(status))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Lyrics);

@@ -34,14 +34,21 @@ import AppTextInput from "src/components/AppTextInput";
 import SongItem from "src/components/SongItem";
 import { updateHeader } from "src/utils/UpdateHeader";
 
-import { loginUser } from "src/store/actions/ActionCreator";
+import { loadingStatus } from "src/store/actions/ActionCreator";
 import { updateDoc, deleteDoc } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
 
 const db = firebase.firestore();
 
-const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
+const Setlist = ({
+  authorized,
+  loadingStatus,
+  myArtist,
+  navigation,
+  route,
+  userType
+}) => {
   const isMountedRef = useRef(false);
   const unsubscribeRef = useRef(() => {});
 
@@ -49,7 +56,6 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
   const [song_artist, setSong_artist] = useState(null);
   const [edit_title, setEdit_title] = useState(null);
   const [edit_artist, setEdit_artist] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(null);
   const [add, setAdd] = useState(false);
   const [allSongs, setAllSongs] = useState([]);
@@ -80,7 +86,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
   }, []);
 
   const updateSongList = async () => {
-    setLoading(true);
+    loadingStatus(true);
     unsubscribeRef.current = db
       .doc(`artists/${artist._id}`)
       .onSnapshot(async doc => {
@@ -107,7 +113,7 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
           setAllSongs(songs);
           setSongs(songs);
           setArtistSongs(currArtistSongs);
-          setLoading(false);
+          loadingStatus(false);
           setUpdate(false);
           console.log("updateSongList setting add to false");
           setAdd(false);
@@ -272,7 +278,6 @@ const Setlist = ({ authorized, myArtist, navigation, route, userType }) => {
     </View>
   ) : (
     <DefaultContainer
-      loading={loading}
       navigation={navigation}
       headerChildren={renderHeaderChildren()}
     >
@@ -327,10 +332,17 @@ const isEqual = (prev, next) =>
   prev.user === next.user &&
   prev.authorized === next.authorized;
 
+const mapDispatchToProps = dispatch => ({
+  loadingStatus: status => dispatch(loadingStatus(status))
+});
+
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   myArtist: state.login.artist,
   userType: state.login.userType
 });
 
-export default connect(mapStateToProps)(memo(Setlist, isEqual));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(memo(Setlist, isEqual));

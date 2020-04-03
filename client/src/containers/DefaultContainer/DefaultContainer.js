@@ -25,6 +25,7 @@ const DefaultContainer = ({
   style,
   children
 }) => {
+  // console.log("HEADERCHILDREN", headerChildren);
   const home = navigation ? () => navigation.popToTop() : () => {};
   return loading ? (
     <View style={styles.loading}>
@@ -32,7 +33,7 @@ const DefaultContainer = ({
       <ActivityIndicator size="large" color="#ffff00" />
     </View>
   ) : (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Background />
       <ListHeader home={home}>{headerChildren}</ListHeader>
       <View style={styles.children}>{children}</View>

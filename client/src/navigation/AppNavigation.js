@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Animated, Easing } from "react-native";
+import { Text, Button, Animated, Easing } from "react-native";
 import {
   createStackNavigator
   // TransitionPresets
@@ -7,6 +7,7 @@ import {
 import { transitionConfig, noTransitionConfig } from "./Transitions";
 import { connect } from "react-redux";
 
+import { logout } from "src/store/actions/ActionCreator";
 import Options from "../containers/Options";
 import ArtistSignup from "../containers/ArtistSignup";
 import CameraScreen from "../containers/CameraScreen";
@@ -59,13 +60,13 @@ const timingConfig = {
     // easing: Easing.elastic(Easing.poly(4))
   }
 };
-const RootStack = ({ authorized }) => {
+const RootStack = ({ authorized, logout }) => {
+  const textColor = authorized ? "white" : "black";
+  const backgroundColor = authorized ? "green" : "red";
   const headerStyles = {
-    headerStyle: { backgroundColor: authorized ? "green" : "red" },
-    headerTintColor: authorized ? "white" : "black",
-    headerTitleStyle: {
-      fontWeight: "bold"
-    },
+    headerStyle: { backgroundColor },
+    headerTintColor: textColor,
+    headerTitleStyle: { fontWeight: "bold" },
     headerBackTitleVisible: true,
     gestureEnabled: true
   };
@@ -74,12 +75,15 @@ const RootStack = ({ authorized }) => {
     <Stack.Navigator
       initialRouteName="Options"
       screenOptions={{
-        gestureEnabled: false,
         gestureDirection: "horizontal",
         transitionSpec: {
           open: config,
           close: config
         },
+        headerRight: () =>
+          authorized && (
+            <Button onPress={logout} title="LogOut" color={textColor} />
+          ),
         ...headerStyles
       }}
       headerMode="float"
@@ -105,4 +109,11 @@ const mapStateToProps = state => ({
   // errorMessage: state.login.errorMessage
 });
 
-export default connect(mapStateToProps)(RootStack);
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RootStack);
