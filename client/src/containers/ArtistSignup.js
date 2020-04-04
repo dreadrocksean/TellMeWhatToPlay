@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import ArtistFormWrapper from "../services/artist/ArtistFormWrapper";
@@ -6,8 +6,10 @@ import ArtistFormWrapper from "../services/artist/ArtistFormWrapper";
 import DefaultContainer from "./DefaultContainer";
 import AppText from "src/components/AppText";
 
-const ArtistSignup = ({ navigation, user, artist }) => {
-  // const [headingText, setHeadingText] = useState("");
+const ArtistSignup = ({ navigation, user, artist, authorized }) => {
+  useEffect(() => {
+    if (!authorized) navigation.replace("Options");
+  }, [authorized]);
 
   const navigateTo = () => {
     let routeName;
@@ -28,6 +30,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  authorized: state.login.authorized,
   user: state.login.user,
   artist: state.login.artist
 });

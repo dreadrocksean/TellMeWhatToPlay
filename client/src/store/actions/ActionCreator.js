@@ -50,14 +50,13 @@ const loginUser = credentials => async (dispatch, getState) => {
 };
 
 const loginStorageUser = () => async (dispatch, getState) => {
+  console.log("LOGINSTORAGEUSER");
   try {
     const res = await loadStorage("user");
-    console.log("loginStorageUser RES", res);
     if (!res || !res.data) throw "No user stored";
     dispatch({ type: AT.LoginUser, payload: res.data });
     return Promise.resolve(res);
   } catch (err) {
-    // console.log("loginStorageUser ERR", err);
     dispatch(logout());
     return Promise.reject(err);
   }
@@ -79,10 +78,9 @@ const signupUser = payload => async (dispatch, getState) => {
 const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
-    console.log("RES", res);
-    const artist = res.data;
+    const artist = res && res.data;
     dispatch({ type: AT.LoginArtist, payload: artist });
-    res.message = "Your Artist Successfully Logged In";
+    res.message = artist ? "Artist Successfully Logged In" : "Artist Not Found";
     await saveStorage({ artist });
     return Promise.resolve(res);
   } catch (err) {
@@ -105,10 +103,17 @@ const signUpArtist = payload => async (dispatch, getState) => {
 
 const loginStorageArtist = () => async (dispatch, getState) => {
   try {
-    const res = await loadStorage("artist");
-    if (!res || !res.data) throw "No artist stored";
-    dispatch({ type: AT.LoginArtist, payload: res.data });
-    return Promise.resolve(res);
+    let artist = await loadStorage("artist");
+    if (!artist || !artist.data) {
+      console.log("DID NOT FIND ARTIST");
+      const localUser = await loadStorage("user");
+      if (!localUser || !localUser.data) {
+        logout();
+        throw new Error("Something weird occurred");
+      }
+      loginArtist(localUser.data._id)(dispatch, getState);
+    } else dispatch({ type: AT.LoginArtist, payload: artist.data });
+    return Promise.resolve(artist);
   } catch (err) {
     return Promise.reject(err);
   }

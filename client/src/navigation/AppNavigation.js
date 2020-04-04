@@ -54,9 +54,9 @@ const config = {
 const timingConfig = {
   animation: "timiing",
   config: {
-    duration: 500,
-    useNativeDriver: true
-    // easing: Easing.easeOutElastic
+    duration: 300,
+    useNativeDriver: true,
+    easing: Easing.easeOutElastic
     // easing: Easing.elastic(Easing.poly(4))
   }
 };
@@ -77,8 +77,8 @@ const RootStack = ({ authorized, logout }) => {
       screenOptions={{
         gestureDirection: "horizontal",
         transitionSpec: {
-          open: config,
-          close: config
+          open: timingConfig,
+          close: timingConfig
         },
         headerRight: () =>
           authorized && (
@@ -103,10 +103,6 @@ const RootStack = ({ authorized, logout }) => {
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized
-  // userType: state.login.userType,
-  // artist: state.login.artist,
-  // user: state.login.user,
-  // errorMessage: state.login.errorMessage
 });
 
 const mapDispatchToProps = dispatch => ({

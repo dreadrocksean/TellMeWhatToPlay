@@ -16,7 +16,6 @@ const UserSignup = ({ navigation, user }) => {
     else if (!artist) routeName = "ArtistSignup";
     else routeName = "ArtistAdmin";
     if (!routeName) return;
-    console.log("NAVIGATION", navigation);
     navigation.replace(routeName);
   };
 
@@ -36,11 +35,9 @@ const UserSignup = ({ navigation, user }) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    user: state.login.user
-  };
-};
+const mapStateToProps = state => ({
+  user: state.login.user
+});
 
 // const mapDispatchToProps = dispatch => {
 //   return {

@@ -14,6 +14,7 @@ import { Button as RNButton, Icon } from "react-native-elements";
 
 import styles from "./styles";
 
+import Loading from "src/components/Loading";
 import Background from "src/components/Background";
 import ListHeader from "src/components/ListHeader";
 import bg from "src/images/bg.png";
@@ -25,12 +26,12 @@ const DefaultContainer = ({
   style,
   children
 }) => {
-  // console.log("HEADERCHILDREN", headerChildren);
   const home = navigation ? () => navigation.popToTop() : () => {};
   return loading ? (
     <View style={styles.loading}>
       <Background />
-      <ActivityIndicator size="large" color="#ffff00" />
+      {/*<ActivityIndicator size="large" color="#ffff00" />*/}
+      <Loading size="large" color="#ffff00" />
     </View>
   ) : (
     <View style={[styles.container, style]}>

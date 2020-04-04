@@ -67,6 +67,10 @@ const ArtistAdmin = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!authorized) navigation.replace("Options");
+  }, [authorized]);
+
   const editAdmin = () =>
     navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
 

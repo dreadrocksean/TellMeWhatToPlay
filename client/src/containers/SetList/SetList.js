@@ -115,7 +115,6 @@ const Setlist = ({
           setArtistSongs(currArtistSongs);
           loadingStatus(false);
           setUpdate(false);
-          console.log("updateSongList setting add to false");
           setAdd(false);
           setTitle("");
           setSong_artist("");

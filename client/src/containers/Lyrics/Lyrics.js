@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 
-import DefaultContainer from "./DefaultContainer";
+import styles from "./styles";
+
+import DefaultContainer from "src/containers/DefaultContainer";
 import { updateHeader } from "src/utils/UpdateHeader";
 import { fetchLyrics } from "src/services/api";
 import { loadingStatus } from "src/store/actions/ActionCreator";
 
-const Lyrics = ({ navigation, route, loadingStatus }) => {
+const Lyrics = ({ navigation, route, loadingStatus, authorized }) => {
   const [lyrics, setLyrics] = useState("");
 
   useEffect(() => {
@@ -26,11 +28,12 @@ const Lyrics = ({ navigation, route, loadingStatus }) => {
     getLyrics();
   }, []);
 
+  useEffect(() => {
+    if (!authorized) navigation.replace("Options");
+  }, [authorized]);
+
   return (
-    <DefaultContainer
-      loading={false}
-      goHome={() => navigation.navigate("Options")}
-    >
+    <DefaultContainer>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.text}>{lyrics}</Text>
@@ -40,14 +43,8 @@ const Lyrics = ({ navigation, route, loadingStatus }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 10
-  },
-  text: {
-    fontSize: 20,
-    color: "#d4d4d4"
-  }
+const mapStateToProps = state => ({
+  authorized: state.login.authorized
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -55,6 +52,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Lyrics);

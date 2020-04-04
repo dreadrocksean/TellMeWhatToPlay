@@ -14,13 +14,13 @@ export const loadStorage = async model => {
   try {
     // AsyncStorage.clear();
     const modelJson = await AsyncStorage.getItem(model);
-    console.log("loadStorage", model, JSON.parse(modelJson)[model]);
+    const data = modelJson && JSON.parse(modelJson)[model];
     return Promise.resolve({
-      data: JSON.parse(modelJson)[model],
-      message: "Storage User found successfully"
+      data,
+      message: `Storage User ${data ? "" : "not"} found`
     });
   } catch (err) {
-    console.log(`Error getting storage ${model}: `, e);
+    console.log(`Error getting storage ${model}: `, err);
     return Promise.reject({ error: err });
   }
 };

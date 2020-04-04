@@ -92,7 +92,6 @@ const ArtistList = ({ navigation, loadingStatus }) => {
 
   const getSortedArtists = () => {
     if (!location) return [];
-    console.log("getSortedArtists ARTISTS", artists);
     return artists
       .map(v => {
         v.distance = getDistance(location, v.location);

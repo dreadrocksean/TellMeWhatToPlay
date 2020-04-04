@@ -5,7 +5,8 @@ import { View, Image, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import {
   loginUser as loginUserType,
-  signupUser as signupUserType
+  signupUser as signupUserType,
+  loginArtist as loginArtistType
 } from "src/store/actions/ActionCreator";
 import UserForm from "./UserForm";
 import AppModal from "src/components/Modal";
@@ -69,7 +70,6 @@ const UserFormWrapper = ({
         successMessage = "Your Account Was Successfully Created";
       } else if (type === "LogIn") {
         const res = await loginUser(credentials);
-        console.log("onSubmit RES", res);
         successMessage = res.message;
       }
       setSuccessMessage(successMessage);
@@ -87,9 +87,9 @@ const UserFormWrapper = ({
     else if (userType === "ARTIST" && user && submitType === "LogIn") {
       try {
         const res = await loginArtist(user._id);
-        console.log("handleContinue RES", res);
         navigateTo(res.data);
       } catch (err) {
+        console.log("handleContinue ERR", err);
         navigateTo();
       }
     } else if (submitType === "SignUp") navigateTo();
