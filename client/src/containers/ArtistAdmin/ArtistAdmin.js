@@ -68,7 +68,7 @@ const ArtistAdmin = ({
   }, []);
 
   useEffect(() => {
-    if (!authorized) navigation.replace("Options");
+    if (!authorized) navigation.replace("Home");
   }, [authorized]);
 
   const editAdmin = () =>
@@ -114,7 +114,7 @@ const ArtistAdmin = ({
 
   const handleLogout = () => {
     logout();
-    handleNavigate("Options")();
+    handleNavigate("Home")();
   };
 
   const toggleOnAir = async () => {

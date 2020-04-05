@@ -8,7 +8,7 @@ import { transitionConfig, noTransitionConfig } from "./Transitions";
 import { connect } from "react-redux";
 
 import { logout } from "src/store/actions/ActionCreator";
-import Options from "../containers/Options";
+import Home from "../containers/Home";
 import ArtistSignup from "../containers/ArtistSignup";
 import CameraScreen from "../containers/CameraScreen";
 import UserSignup from "../containers/UserSignup";
@@ -22,7 +22,7 @@ import ArtistFormWrapper from "../services/artist/ArtistFormWrapper";
 import Lyrics from "../containers/Lyrics";
 
 const screens = {
-  Options,
+  Home,
   ArtistSignup,
   ArtistList,
   SetList,
@@ -73,7 +73,7 @@ const RootStack = ({ authorized, logout }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName="Options"
+      initialRouteName="Home"
       screenOptions={{
         gestureDirection: "horizontal",
         transitionSpec: {

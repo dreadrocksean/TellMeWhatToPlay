@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import DefaultContainer from "src/containers/DefaultContainer";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
-// import { guestTypeArtist } from "src/store/actions/ActionCreator";
 
 import styles from "./styles";
 
@@ -39,13 +38,4 @@ const mapStateToProps = state => ({
   user: state.login.user
 });
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     guestTypeArtist: dispatch(guestTypeArtist())
-//   };
-// };
-
-export default connect(
-  mapStateToProps
-  // mapDispatchToProps
-)(UserSignup);
+export default connect(mapStateToProps)(UserSignup);

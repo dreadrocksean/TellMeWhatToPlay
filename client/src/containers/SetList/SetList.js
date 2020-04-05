@@ -51,7 +51,6 @@ const Setlist = ({
 }) => {
   const isMountedRef = useRef(false);
   const unsubscribeRef = useRef(() => {});
-
   const [title, setTitle] = useState(null);
   const [song_artist, setSong_artist] = useState(null);
   const [edit_title, setEdit_title] = useState(null);
@@ -62,7 +61,6 @@ const Setlist = ({
   const [songs, setSongs] = useState([]);
   const [titleComplete, setTitleComplete] = useState("");
   const [artistComplete, setArtistComplete] = useState("");
-  const [mbid, setMbid] = useState("");
   const [artist, setArtist] = useState(route.params.artist);
   const [artistSongs, setArtistSongs] = useState([]);
   const [likes, setLikes] = useState([]);
@@ -84,6 +82,10 @@ const Setlist = ({
       unsubscribeRef.current();
     };
   }, []);
+
+  useEffect(() => {
+    if (!authorized) navigation.replace("Home");
+  }, [authorized]);
 
   const updateSongList = async () => {
     loadingStatus(true);
@@ -162,7 +164,6 @@ const Setlist = ({
       return song;
     });
     const res = await updateDoc("artist", { _id: artist._id, songs: newSongs });
-    console.log("changeSongVisibility RES", res);
   };
 
   const vote = (_id, currVotes, sentiment) => async () => {
@@ -214,7 +215,7 @@ const Setlist = ({
     </TouchableOpacity>
   );
 
-  const home = () => navigation.navigate("Options");
+  const home = () => navigation.navigate("Home");
 
   const renderHeaderChildren = () => {
     const { name, genre } = artist;
@@ -248,6 +249,7 @@ const Setlist = ({
   };
 
   const onDeleteConfirm = confirm => {
+    console.log("CONFIRM", confirm);
     if (confirm) {
       const { _id } = artist;
       const newSongs = songs.filter(song => song._id !== songDeleteId);
@@ -268,7 +270,8 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongs);
   };
-
+  console.log("ADD", add);
+  console.log("SHOWDELETEMODAL", showDeleteModal);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>
@@ -309,19 +312,19 @@ const Setlist = ({
 
       {isArtist && add && (
         <AddSong
-          showModal={isArtist && add}
-          setShowModal={handleSetShowModal}
+          setShow={handleSetShowModal}
           userArtistId={(myArtist || {})._id}
           complete={updateSongList}
           setlist={artistSongs}
         />
       )}
       {showModal && <FanSignup setShowModal={handleSetShowModal} />}
-      <DeleteModal
-        confirm={onDeleteConfirm}
-        showModal={showDeleteModal}
-        setShowModal={handleSetShowModal}
-      />
+      {showDeleteModal && (
+        <DeleteModal
+          confirm={onDeleteConfirm}
+          setShowModal={handleSetShowModal}
+        />
+      )}
     </DefaultContainer>
   );
 };

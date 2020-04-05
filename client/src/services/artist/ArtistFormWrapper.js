@@ -160,7 +160,7 @@ const ArtistFormWrapper = ({
     });
   };
 
-  const handleLogout = () => this.navigate("Options")();
+  const handleLogout = () => this.navigate("Home")();
 
   // return null;
   return (

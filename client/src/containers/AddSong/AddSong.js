@@ -34,13 +34,7 @@ const init = {
   errorMessage: null
 };
 
-const AddSong = ({
-  setShowModal,
-  showModal,
-  userArtistId,
-  setlist,
-  complete
-}) => {
+const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
   const [errorMessage, setErrorMessage] = useState(init.errorMessage);
   const [formattedTitle, setFormattedTitle] = useState(init.formattedTitle);
   const [formattedArtist, setFormattedArtist] = useState(init.formattedArtist);
@@ -75,7 +69,7 @@ const AddSong = ({
 
   const hide = () => {
     reset();
-    setShowModal(false);
+    setShow(false);
   };
 
   const updateState = ({ formattedTitle, formattedArtist, songs, song }) => {
@@ -190,7 +184,7 @@ const AddSong = ({
     </TouchableOpacity>
   );
 
-  return showModal ? (
+  return (
     <Modal dismiss={hide}>
       <AppText
         style={{ flex: 1 }}
@@ -201,7 +195,7 @@ const AddSong = ({
       {errorMessage && <FormError>{errorMessage}</FormError>}
       <View style={styles.inputContainer}>
         <AppTextInput
-          style={styles.autocomplete}
+          style={[styles.input, styles.autocomplete]}
           placeholder={song.title || ""}
           editable={false}
         />
@@ -232,7 +226,7 @@ const AddSong = ({
       </View>
       {renderAction()}
     </Modal>
-  ) : null;
+  );
 };
 
 export default AddSong;

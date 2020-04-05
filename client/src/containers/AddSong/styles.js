@@ -48,13 +48,7 @@ const styles = {
     position: "absolute",
     left: 0,
     top: 0,
-    width: "100%",
-    fontSize: 20,
-    fontFamily: "montserrat-regular",
-    padding: 5,
-    height: 60,
-    borderColor: "#7a42f4",
-    borderWidth: 1
+    width: "100%"
   },
   input: {
     fontFamily: "montserrat-regular",
@@ -63,7 +57,8 @@ const styles = {
     height: 60,
     borderColor: "#7a42f4",
     borderWidth: 1,
-    color: "white"
+    color: "white",
+    marginBottom: 10
   },
   submitButton: {
     flex: 1,

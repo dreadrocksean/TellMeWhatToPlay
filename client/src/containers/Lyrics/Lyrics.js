@@ -29,7 +29,7 @@ const Lyrics = ({ navigation, route, loadingStatus, authorized }) => {
   }, []);
 
   useEffect(() => {
-    if (!authorized) navigation.replace("Options");
+    if (!authorized) navigation.replace("Home");
   }, [authorized]);
 
   return (

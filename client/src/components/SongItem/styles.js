@@ -48,18 +48,21 @@ export default StyleSheet.create({
   itemLeft: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     flex: 6
+    // backgroundColor: "brown"
   },
   itemInfo: {
-    flex: 18
-    // backgroundColor: "pink"
+    flex: 18,
+    // backgroundColor: "rgba(0,0,255,0.3)",
+    paddingLeft: 5
   },
   itemRight: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
     flex: 7
+    // backgroundColor: "yellow"
   },
   text: {
     fontWeight: "normal",

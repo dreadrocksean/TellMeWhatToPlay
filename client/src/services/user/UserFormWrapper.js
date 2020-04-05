@@ -97,7 +97,7 @@ const UserFormWrapper = ({
 
   const dismissModal = () => {
     setShowModal(false);
-    navigation.replace("Options");
+    navigation.replace("Home");
   };
 
   const fieldValues = { email, password, fname, lname, zip };

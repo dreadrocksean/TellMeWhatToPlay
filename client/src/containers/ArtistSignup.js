@@ -8,7 +8,7 @@ import AppText from "src/components/AppText";
 
 const ArtistSignup = ({ navigation, user, artist, authorized }) => {
   useEffect(() => {
-    if (!authorized) navigation.replace("Options");
+    if (!authorized) navigation.replace("Home");
   }, [authorized]);
 
   const navigateTo = () => {
