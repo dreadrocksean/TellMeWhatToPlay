@@ -2,10 +2,11 @@ import * as AT from "./ActionTypes";
 import {
   createUser,
   createDoc,
+  updateDoc,
+  deleteDoc,
   getDocs,
   getUser,
   fetchUser,
-  createArtist,
   fetchUserArtist
 } from "src/services/api";
 import { saveStorage, loadStorage } from "src/services/LocalStorage";
@@ -42,6 +43,7 @@ const loginUser = credentials => async (dispatch, getState) => {
     dispatch({ type: AT.LoginUser, payload: res.data });
     await saveStorage({ user: res.data });
     res.message = "You Were Successfully Logged In";
+    console.log("User logged in", res);
     return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
@@ -75,13 +77,65 @@ const signupUser = payload => async (dispatch, getState) => {
   }
 };
 
+const newArtist = data => async (dispatch, getState) => {
+  console.log("NEW ARTIST");
+  if (!data.userId) {
+    return updateArtist(data)(dispatch, getState);
+  }
+  try {
+    const res = await createDoc("artist", data);
+    const artist = res && res.data;
+    console.log("NEW ARTIST", artist);
+    dispatch({ type: AT.LoginArtist, payload: artist });
+    res.message = artist
+      ? "Artist Successfully Logged In"
+      : "Problem Creating Artist";
+    await saveStorage({ artist });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const updateArtist = data => async (dispatch, getState) => {
+  try {
+    const res = await updateDoc("artist", data);
+    const artist = res && res.data;
+    dispatch({ type: AT.LoginArtist, payload: artist });
+    res.message = artist
+      ? "Artist Successfully Logged In"
+      : "Problem Creating Artist";
+    await saveStorage({ artist });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
+    console.log("Artist Logged In", userId, res);
     const artist = res && res.data;
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = artist ? "Artist Successfully Logged In" : "Artist Not Found";
     await saveStorage({ artist });
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const deleteArtist = artistId => async (dispatch, getState) => {
+  console.log("DELETEARTIST", deleteArtist);
+  try {
+    const res = await deleteDoc("artist", artistId);
+    const artist = res && res.data;
+    dispatch({ type: AT.LogoutArtist });
+    res.message = artist
+      ? "Artist Successfully Logged Out"
+      : "Artist Not Found";
+    await saveStorage({ artist: null });
     return Promise.resolve(res);
   } catch (err) {
     return Promise.reject(err);
@@ -174,7 +228,9 @@ export {
   loginStorageUser,
   signupUser,
   loginArtist,
+  newArtist,
   loginStorageArtist,
+  deleteArtist,
   logout,
   loginError,
   register,

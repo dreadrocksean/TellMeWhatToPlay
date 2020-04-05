@@ -270,8 +270,7 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongs);
   };
-  console.log("ADD", add);
-  console.log("SHOWDELETEMODAL", showDeleteModal);
+  console.log("MY LOCATION", myArtist.location);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>
@@ -330,8 +329,7 @@ const Setlist = ({
 };
 
 const isEqual = (prev, next) =>
-  prev.myArtist === next.myArtist &&
-  prev.user === next.user &&
+  (prev.myArtist || {})._id === (next.myArtist || {})._id &&
   prev.authorized === next.authorized;
 
 const mapDispatchToProps = dispatch => ({
@@ -340,7 +338,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
-  myArtist: state.login.artist,
+  myArtist: state.artist,
   userType: state.login.userType
 });
 

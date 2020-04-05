@@ -4,6 +4,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  Button,
   View,
   AsyncStorage,
   Image,
@@ -19,7 +20,8 @@ import { Button as RNButton, Icon } from "react-native-elements";
 import {
   onAir as onAirActionType,
   offAir as offAirActionType,
-  logout as logoutActionType
+  logout as logoutActionType,
+  deleteArtist
 } from "src/store/actions/ActionCreator";
 import { updateDoc } from "src/services/api";
 
@@ -45,7 +47,8 @@ const ArtistAdmin = ({
   artist,
   logout,
   onAir,
-  offAir
+  offAir,
+  deleteArtist
 }) => {
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(true);
@@ -71,6 +74,10 @@ const ArtistAdmin = ({
     if (!authorized) navigation.replace("Home");
   }, [authorized]);
 
+  useEffect(() => {
+    if (!artist) navigation.replace("ArtistSignup");
+  }, [artist]);
+
   const editAdmin = () =>
     navigation.navigate("ArtistSignup", { name: "ArtistSignup" });
 
@@ -89,7 +96,7 @@ const ArtistAdmin = ({
       locationRef.current = await Location.watchPositionAsync(
         { distanceInterval: 10 },
         async ({ coords = {} }) => {
-          const res = await updateDoc("artist", {
+          await updateDoc("artist", {
             location: {
               lat: coords.latitude,
               lng: coords.longitude
@@ -114,7 +121,11 @@ const ArtistAdmin = ({
 
   const handleLogout = () => {
     logout();
-    handleNavigate("Home")();
+  };
+
+  const handleArtistDelete = () => {
+    console.log("HANDLEARTISTDELETE", artist._id);
+    deleteArtist(artist._id);
   };
 
   const toggleOnAir = async () => {
@@ -151,6 +162,7 @@ const ArtistAdmin = ({
     </Fragment>
   );
 
+  console.log("ArtistAdmin ARTIST", artist);
   return !authorized || !artist
     ? null
     : artist && (
@@ -188,7 +200,7 @@ const ArtistAdmin = ({
               <View style={styles.mainBox}>
                 <AppText textStyle={styles.h2}>Roles</AppText>
                 <AppText textStyle={styles.h3}>
-                  {artist.roles.join(" | ")}
+                  {(artist.roles || []).join(" | ")}
                 </AppText>
               </View>
             </View>
@@ -205,6 +217,7 @@ const ArtistAdmin = ({
                   source={logoutButton}
                 />
               </TouchableOpacity>
+              <Button onPress={handleArtistDelete} title="Delete Artist" />
             </View>
           </View>
         </DefaultContainer>
@@ -214,13 +227,13 @@ const ArtistAdmin = ({
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   artist: state.artist
-  // showModal: state.login.showModal
 });
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logoutActionType()),
   onAir: () => dispatch(onAirActionType()),
-  offAir: () => dispatch(offAirActionType())
+  offAir: () => dispatch(offAirActionType()),
+  deleteArtist: id => dispatch(deleteArtist(id))
 });
 
 export default connect(

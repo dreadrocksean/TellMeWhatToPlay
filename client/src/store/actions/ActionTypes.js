@@ -4,6 +4,7 @@ const GuestTypeFan = "GUEST_FAN";
 const GuestTypeArtist = "GUEST_ARTIST";
 const LoginUser = "LOGIN_USER";
 const LoginArtist = "LOGIN_ARTIST";
+const LogoutArtist = "LOGOUT_ARTIST";
 const Logout = "LOGOUT";
 const LoginError = "LOGINERROR";
 const Register = "REGISTER";
@@ -22,6 +23,7 @@ export {
   GuestTypeArtist,
   LoginUser,
   LoginArtist,
+  LogoutArtist,
   Logout,
   Register,
   RegisterSuccess,

@@ -26,8 +26,8 @@ const UserFormWrapper = ({
   navigateTo
 }) => {
   const [hasAccount, setHasAccount] = useState(true);
-  const [email, setEmail] = useState("adrian@bartholomusic.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState("test3@a.a");
+  const [password, setPassword] = useState("1111");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [zip, setZip] = useState("");
@@ -135,7 +135,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   userType: state.login.userType,
-  artist: state.login.artist,
+  artist: state.artist,
   user: state.login.user
 });
 

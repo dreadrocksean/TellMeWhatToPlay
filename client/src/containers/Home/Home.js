@@ -59,6 +59,7 @@ const Home = ({
     }
   };
 
+  console.log("HOME ARTIST", artist);
   return (
     <DefaultContainer>
       <View style={styles.container}>
@@ -87,7 +88,7 @@ const Home = ({
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
-  artist: state.login.artist,
+  artist: state.artist,
   user: state.login.user
 });
 

@@ -18,23 +18,24 @@ import ArtistForm from "./ArtistForm";
 import {
   loginArtist as loginArtistType,
   logout as logoutType,
-  loadingStatus as loadingStatusType
+  loadingStatus as loadingStatusType,
+  newArtist
 } from "src/store/actions/ActionCreator";
 
-import { createDoc, updateDoc, getDataFromRef } from "src/services/api";
 import cloudinaryConfig, { upload } from "src/utils/Cloudinary";
 
 const ArtistFormWrapper = ({
   navigation,
+  navigateTo,
   user,
   artist,
+  newArtist,
   loading,
   loginArtist,
   logout,
   loadingStatus
 }) => {
   const [types, setTypes] = useState({});
-  const [id, setId] = useState(null);
   const [name, setName] = useState(null);
   const [artistNameComplete, setArtistNameComplete] = useState("");
   const [artistImageURL, setArtistImageURL] = useState("");
@@ -65,7 +66,6 @@ const ArtistFormWrapper = ({
       solo: artist.type === "solo"
     };
     setTypes(types);
-    setId(artist._id);
     setName(artist.name);
     setGenre(artist.genre);
     setRoles(roles);
@@ -122,20 +122,18 @@ const ArtistFormWrapper = ({
       type,
       imageURL
     };
-
+    console.log("ArtistFormWrapper onSubmit", artistData);
+    // console.log("ARTIST._ID", artist._id);
     try {
-      const response = id
-        ? await updateDoc("artist", { _id: id, ...artistData })
-        : await createDoc("artist", artistData);
-      if (response.error) {
-        console.log("RESPONSE.ERROR", response.error);
-        throw new Error(`Problem creating ${name}: ${response.error} `);
+      const res = await newArtist(artistData);
+      console.log("RESPONSE", res);
+      if (res.error) {
+        console.log("RESPONSE.ERROR", res.error);
+        throw new Error(`Problem creating ${name}: ${res.error} `);
       }
-      const artist = response.data;
-      loginArtist(artist);
-      setSuccessMessage(`Successfully created ${name}!`);
-      navigate("ArtistAdmin")();
-    } catch (e) {
+      navigateTo(res.data);
+    } catch (err) {
+      console.log("Error", err);
       setErrorMessage(`Problem creating ${name}`);
     }
   };
@@ -152,17 +150,17 @@ const ArtistFormWrapper = ({
       onChoosePhoto: this.onChoosePhoto
     });
   };
+  //
+  // const navigate = pageName => () => {
+  //   navigation.navigate(pageName, {
+  //     name: pageName,
+  //     artist: artist
+  //   });
+  // };
 
-  const navigate = pageName => () => {
-    navigation.navigate(pageName, {
-      name: pageName,
-      artist: artist
-    });
-  };
+  // const handleLogout = () => this.navigate("Home")();
 
-  const handleLogout = () => this.navigate("Home")();
-
-  // return null;
+  console.log("ArtistFormWrapper ARTIST", artist);
   return (
     <DefaultContainer loading={loading} navigation={navigation}>
       <ArtistForm
@@ -171,7 +169,7 @@ const ArtistFormWrapper = ({
         handleChooseType={handleChooseType}
         onSubmit={onSubmit}
         genre={genre}
-        id={id}
+        id={artist._id}
         name={name}
         errorMessage={errorMessage}
         successMessage={successMessage}
@@ -187,12 +185,13 @@ const ArtistFormWrapper = ({
 
 const mapStateToProps = state => ({
   user: state.login.user,
-  artist: state.login.artist || {},
+  artist: state.artist || {},
   loading: state.app.loading
 });
 
 const mapDispatchToProps = dispatch => ({
   loginArtist: payload => dispatch(loginArtistType(payload)),
+  newArtist: payload => dispatch(newArtist(payload)),
   logout: () => dispatch(logoutType()),
   loadingStatus: status => dispatch(loadingStatusType(status))
 });

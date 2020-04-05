@@ -80,8 +80,6 @@ const ArtistList = ({ navigation, loadingStatus }) => {
       locationRef.current = await Location.watchPositionAsync(
         { distanceInterval: 10 },
         ({ coords = {} }) => {
-          // loadingStatus(false);
-          console.log("Latitude: ", coords.latitude);
           setLocation({ lat: coords.latitude, lng: coords.longitude });
         }
       );
