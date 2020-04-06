@@ -42,7 +42,6 @@ export const getDataFromRef = async ref => {
 };
 
 export const createDoc = async (type, req) => {
-  console.log("CREATEDOC", type, req);
   try {
     const ref = await db.collection(`${type}s`).add(req);
     return Promise.resolve(getDataFromRef(ref));
@@ -85,7 +84,6 @@ export const fetchUserArtist = req =>
     .catch(err => console.error("Error fetching User Artist: ", err));
 
 export const updateDoc = async (type, { _id, ...rest }) => {
-  console.log("UPDATEDOC", updateDoc);
   try {
     const res = await db
       .collection(`${type}s`)
@@ -99,14 +97,13 @@ export const updateDoc = async (type, { _id, ...rest }) => {
 };
 
 export const updateLocation = async ({ _id, location }) => {
-  console.log("UPDATELOCATION");
   try {
     const res = await db
       .collection("artists")
       .doc(_id)
       .collection("geoData")
       .doc("location")
-      .update(location);
+      .set(location);
     return Promise.resolve({ success: true, data: { _id, location } });
   } catch (err) {
     console.error(`Error updating location: `, err);
@@ -115,7 +112,6 @@ export const updateLocation = async ({ _id, location }) => {
 };
 
 export const deleteDoc = async (type, id) => {
-  console.log("TYPE, ID", type, id);
   try {
     await db
       .collection(`${type}s`)
