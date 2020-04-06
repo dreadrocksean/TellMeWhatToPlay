@@ -84,7 +84,7 @@ const Setlist = ({
   }, []);
 
   useEffect(() => {
-    if (!authorized) navigation.replace("Home");
+    if (!authorized && userType === "ARTIST") navigation.replace("Home");
   }, [authorized]);
 
   const updateSongList = async () => {
@@ -270,7 +270,7 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongs);
   };
-  console.log("MY LOCATION", myArtist.location);
+  console.log("MY LOCATION", (myArtist || {}).location);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>

@@ -5,10 +5,12 @@ import { connect } from "react-redux";
 
 import styles from "./styles";
 
+import { UserType } from "src/store/reducers/LoginReducer";
 import {
   loadStoredUserArtist,
   guestTypeFan,
-  guestTypeArtist
+  guestTypeArtist,
+  guestTypeNone
 } from "src/store/actions/ActionCreator";
 import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";
@@ -22,9 +24,11 @@ const Home = ({
   artist,
   guestTypeFan,
   guestTypeArtist,
+  guestTypeNone,
   loadStoredUserArtist
 }) => {
   useEffect(() => {
+    console.log("MOUNTED");
     const checkStoredCreds = async () => {
       try {
         await loadStoredUserArtist();
@@ -33,25 +37,35 @@ const Home = ({
       }
     };
     checkStoredCreds();
-  }, []);
+    // guestTypeNone();
+  }, [loadStoredUserArtist]);
 
-  const onClick = userType => async () => {
-    const routeName = getRouteName(userType);
-    navigation.navigate(routeName, { name: routeName });
+  const onClick = type => async () => {
+    console.log("CLICKED", type);
+    switch (type) {
+      case "ARTIST":
+        guestTypeArtist();
+        break;
+      case "FAN":
+        guestTypeFan();
+        break;
+      default:
+        return null;
+    }
+    const routeName = getRouteName(type);
+    console.log("ROUTENAME", routeName);
+    if (routeName) navigation.navigate(routeName);
   };
 
-  const getRouteName = userType => {
-    const artistAuth = artist && Object.keys(artist).length > 0;
-    console.log("getRouteName ARTIST", artist);
-    switch (userType) {
+  const getRouteName = type => {
+    console.log("USER, ARTIST", user, artist);
+    switch (type) {
       case "ARTIST": {
-        guestTypeArtist();
-        if (!authorized) return "UserSignup";
-        if (!artistAuth) return "ArtistSignup";
+        if (!user) return "UserSignup";
+        if (!artist) return "ArtistSignup";
         return "ArtistAdmin";
       }
       case "FAN": {
-        guestTypeFan();
         return "ArtistList";
       }
       default:
@@ -59,7 +73,6 @@ const Home = ({
     }
   };
 
-  console.log("HOME ARTIST", artist);
   return (
     <DefaultContainer>
       <View style={styles.container}>
@@ -95,15 +108,14 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadStoredUserArtist: () => dispatch(loadStoredUserArtist()),
   guestTypeFan: () => dispatch(guestTypeFan()),
-  guestTypeArtist: () => dispatch(guestTypeArtist())
+  guestTypeArtist: () => dispatch(guestTypeArtist()),
+  guestTypeNone: () => dispatch(guestTypeNone())
 });
 
 const isEqual = (prev, next) =>
-  next.artist === prev.artist &&
-  next.user === prev.user &&
-  next.authorized === prev.authorized;
+  next.artist === prev.artist && next.authorized === prev.authorized;
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(memo(Home, isEqual));
+)(Home);

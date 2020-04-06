@@ -4,16 +4,19 @@ import { connect } from "react-redux";
 
 import DefaultContainer from "src/containers/DefaultContainer";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
+import { UserType } from "src/store/reducers/LoginReducer";
 
 import styles from "./styles";
 
-const UserSignup = ({ navigation, user }) => {
-  const navigateTo = artist => {
+const UserSignup = ({ navigation, userType }) => {
+  const navigateTo = (user, artist) => {
+    console.log("UserSignup navigateTo USER, ARTIST", user, artist);
     let routeName;
-
-    if (!user) routeName = "FanSignup";
-    else if (!artist) routeName = "ArtistSignup";
-    else routeName = "ArtistAdmin";
+    if (!user) return; //set sture message here
+    if (userType === UserType.ARTIST) {
+      if (artist) routeName = "ArtistAdmin";
+      else routeName = "ArtistSignup";
+    }
     if (!routeName) return;
     navigation.replace(routeName);
   };
@@ -29,13 +32,13 @@ const UserSignup = ({ navigation, user }) => {
       style={styles.body}
       headerChildren={renderHeaderChildren()}
     >
-      <UserFormWrapper navigation={navigation} navigateTo={navigateTo} />
+      <UserFormWrapper navigateTo={navigateTo} />
     </DefaultContainer>
   );
 };
 
 const mapStateToProps = state => ({
-  user: state.login.user
+  userType: state.login.userType
 });
 
 export default connect(mapStateToProps)(UserSignup);

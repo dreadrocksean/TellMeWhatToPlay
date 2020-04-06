@@ -2,6 +2,7 @@ const IncrementVotes = "INCREMENT_VOTES";
 const DecrementVotes = "DECREMENT_VOTES";
 const GuestTypeFan = "GUEST_FAN";
 const GuestTypeArtist = "GUEST_ARTIST";
+const GuestTypeNone = "GUEST_NONE";
 const LoginUser = "LOGIN_USER";
 const LoginArtist = "LOGIN_ARTIST";
 const LogoutArtist = "LOGOUT_ARTIST";
@@ -21,6 +22,7 @@ export {
   DecrementVotes,
   GuestTypeFan,
   GuestTypeArtist,
+  GuestTypeNone,
   LoginUser,
   LoginArtist,
   LogoutArtist,

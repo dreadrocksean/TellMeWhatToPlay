@@ -30,8 +30,8 @@ const DefaultContainer = ({
   return loading ? (
     <View style={styles.loading}>
       <Background />
-      {/*<ActivityIndicator size="large" color="#ffff00" />*/}
-      <Loading size="large" color="#ffff00" />
+      <ActivityIndicator size="large" color="#ffff00" />
+      {/*<Loading size="large" color="#ffff00" />*/}
     </View>
   ) : (
     <View style={[styles.container, style]}>

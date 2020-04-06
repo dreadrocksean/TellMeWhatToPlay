@@ -75,7 +75,9 @@ export default StyleSheet.create({
     alignSelf: "flex-start"
   },
   error: {
-    color: "red"
+    color: "red",
+    fontWeight: "bold",
+    fontSize: 12
   },
 
   cambtn: {

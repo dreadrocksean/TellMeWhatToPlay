@@ -211,13 +211,15 @@ const ArtistAdmin = ({
                   source={manageSetlistButton}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleLogout}>
-                <Image
-                  style={[styles.button, { height: 55 }]}
-                  source={logoutButton}
-                />
-              </TouchableOpacity>
-              <Button onPress={handleArtistDelete} title="Delete Artist" />
+              <View style={styles.row}>
+                <TouchableOpacity onPress={handleLogout}>
+                  <Image
+                    style={[styles.button, { height: 55 }]}
+                    source={logoutButton}
+                  />
+                </TouchableOpacity>
+                <Button onPress={handleArtistDelete} title="Delete" />
+              </View>
             </View>
           </View>
         </DefaultContainer>

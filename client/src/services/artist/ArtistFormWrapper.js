@@ -30,7 +30,6 @@ const ArtistFormWrapper = ({
   user,
   artist,
   newArtist,
-  loading,
   loginArtist,
   logout,
   loadingStatus
@@ -110,7 +109,27 @@ const ArtistFormWrapper = ({
     return Object.keys(roles).filter(k => roles[k]);
   };
 
+  const validate = creds => {
+    const clone = { ...creds };
+    delete clone.userId;
+    delete clone.imageURL;
+    for (const k of Object.keys(clone)) {
+      if (Array.isArray(clone[k]) && !clone[k].length) {
+        return {
+          valid: false,
+          field: k,
+          reason: `[${k}] must have at least one checked`
+        };
+      }
+      if (!clone[k]) {
+        return { valid: false, field: k, reason: `[${k}] cannot be empty` };
+      }
+    }
+    return { valid: true };
+  };
+
   const onSubmit = async () => {
+    setErrorMessage("");
     const type = getType();
     const roles = getRoles();
     let imageURL = artist.imageURL || "";
@@ -122,19 +141,20 @@ const ArtistFormWrapper = ({
       type,
       imageURL
     };
-    console.log("ArtistFormWrapper onSubmit", artistData);
-    // console.log("ARTIST._ID", artist._id);
     try {
+      const validation = validate(artistData);
+      if (!validation.valid) {
+        throw new Error(validation.reason);
+      }
       const res = await newArtist(artistData);
-      console.log("RESPONSE", res);
       if (res.error) {
-        console.log("RESPONSE.ERROR", res.error);
-        throw new Error(`Problem creating ${name}: ${res.error} `);
+        throw new Error(res.error);
       }
       navigateTo(res.data);
     } catch (err) {
       console.log("Error", err);
-      setErrorMessage(`Problem creating ${name}`);
+      // setErrorMessage(err.message);
+      setErrorMessage(`Problem creating ${name || "Artist"}. ${err.message}`);
     }
   };
 
@@ -162,7 +182,7 @@ const ArtistFormWrapper = ({
 
   console.log("ArtistFormWrapper ARTIST", artist);
   return (
-    <DefaultContainer loading={loading} navigation={navigation}>
+    <DefaultContainer navigation={navigation}>
       <ArtistForm
         handleChange={handleChange}
         handleRoleChange={handleRoleChange}
@@ -185,8 +205,7 @@ const ArtistFormWrapper = ({
 
 const mapStateToProps = state => ({
   user: state.login.user,
-  artist: state.artist || {},
-  loading: state.app.loading
+  artist: state.artist || {}
 });
 
 const mapDispatchToProps = dispatch => ({

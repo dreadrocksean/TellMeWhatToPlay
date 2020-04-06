@@ -12,6 +12,9 @@ export default StyleSheet.create({
     alignSelf: "flex-end",
     height: 65,
     width: 65
+    // top: -20,
+    // zIndex: 99999,
+    // position: "relative"
   },
   logo: {
     flex: 1,

@@ -9,7 +9,7 @@ import { updateHeader } from "src/utils/UpdateHeader";
 import { fetchLyrics } from "src/services/api";
 import { loadingStatus } from "src/store/actions/ActionCreator";
 
-const Lyrics = ({ navigation, route, loadingStatus, authorized }) => {
+const Lyrics = ({ navigation, route, loadingStatus, authorized, userType }) => {
   const [lyrics, setLyrics] = useState("");
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Lyrics = ({ navigation, route, loadingStatus, authorized }) => {
   }, []);
 
   useEffect(() => {
-    if (!authorized) navigation.replace("Home");
+    if (!authorized && userType === "Artist") navigation.replace("Home");
   }, [authorized]);
 
   return (
@@ -44,7 +44,8 @@ const Lyrics = ({ navigation, route, loadingStatus, authorized }) => {
 };
 
 const mapStateToProps = state => ({
-  authorized: state.login.authorized
+  authorized: state.login.authorized,
+  userType: state.login.userType
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -8,8 +8,7 @@ export const UserType = Object.freeze({
 const initialState = {
   authorized: false,
   userType: null,
-  user: null,
-  artist: null
+  user: null
 };
 
 const loginReducer = (state = initialState, action) => {
@@ -34,6 +33,8 @@ const loginReducer = (state = initialState, action) => {
       return { ...state, userType: UserType.FAN };
     case AT.GuestTypeArtist:
       return { ...state, userType: UserType.ARTIST };
+    case AT.GuestTypeNone:
+      return { ...state, userType: null };
     default:
       return state;
   }

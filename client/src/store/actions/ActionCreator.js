@@ -27,6 +27,10 @@ const guestTypeArtist = () => ({
   type: AT.GuestTypeArtist
 });
 
+const guestTypeNone = () => ({
+  type: AT.GuestTypeNone
+});
+
 const loadStoredUserArtist = () => async (dispatch, getState) => {
   try {
     await loginStorageUser()(dispatch, getState);
@@ -223,6 +227,7 @@ export {
   decrementVotes,
   guestTypeFan,
   guestTypeArtist,
+  guestTypeNone,
   loginUser,
   loadStoredUserArtist,
   loginStorageUser,

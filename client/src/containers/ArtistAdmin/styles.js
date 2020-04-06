@@ -19,6 +19,10 @@ export default StyleSheet.create({
     // width: null,
     resizeMode: "contain"
   },
+  row: {
+    justifyContent: "space-around",
+    flexDirection: "row"
+  },
   container: {
     display: "flex",
     flex: 1,
