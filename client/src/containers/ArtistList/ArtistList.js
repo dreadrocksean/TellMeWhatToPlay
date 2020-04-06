@@ -92,7 +92,8 @@ const ArtistList = ({ navigation, loadingStatus }) => {
     if (!location) return [];
     return artists
       .map(v => {
-        v.distance = getDistance(location, v.location);
+        v.distance =
+          location && v.location ? getDistance(location, v.location) : 0;
         return v;
       })
       .sort((a, b) => {
@@ -108,20 +109,42 @@ const ArtistList = ({ navigation, loadingStatus }) => {
 
   const updateArtistList = async () => {
     loadingStatus(true);
-    unsubscribe.current = db.collection("artists").onSnapshot(querySnapshot => {
-      loadingStatus(false);
-      const artists = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        _id: doc.id
-      }));
-      setAllArtists(artists);
-      setArtists(artists);
-      setLoading(false);
-      setUpdate(false);
-      setAdd(false);
-      setName("");
-      setShowSearch(false);
-    });
+    unsubscribe.current = db
+      .collection("artists")
+      .onSnapshot(async querySnapshot => {
+        loadingStatus(false);
+
+        const anAsyncFunction = async doc => {
+          const locationSnap = await doc.ref
+            .collection("geoData")
+            .doc("location")
+            .get();
+          const data = {
+            ...doc.data(),
+            _id: doc.id,
+            location: locationSnap.data()
+          };
+          return Promise.resolve(data);
+        };
+
+        const getData = async () =>
+          Promise.all(querySnapshot.docs.map(doc => anAsyncFunction(doc)));
+
+        try {
+          const artists = await getData();
+
+          setAllArtists(artists);
+          setArtists(artists);
+          setLoading(false);
+          setUpdate(false);
+          setAdd(false);
+          setName("");
+          setShowSearch(false);
+        } catch (err) {
+          console.log(err);
+          setErrorMessage("Problem getting artists.");
+        }
+      });
   };
 
   const toggleSearch = () => setShowSearch(!showSearch);

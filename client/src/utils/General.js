@@ -8,6 +8,13 @@ export const getDistance = (
   { lat: lat2, lng: lng2 },
   unit = "M"
 ) => {
+  if (
+    typeof lat1 === "undefined" ||
+    typeof lat2 === "undefined" ||
+    typeof lng1 === "undefined" ||
+    typeof lng2 === "undefined"
+  )
+    return 0;
   if (lat1 == lat2 && lng1 == lng2) return 0;
   const radlat1 = (Math.PI * lat1) / 180;
   const radlat2 = (Math.PI * lat2) / 180;

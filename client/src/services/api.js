@@ -98,6 +98,22 @@ export const updateDoc = async (type, { _id, ...rest }) => {
   }
 };
 
+export const updateLocation = async ({ _id, location }) => {
+  console.log("UPDATELOCATION");
+  try {
+    const res = await db
+      .collection("artists")
+      .doc(_id)
+      .collection("geoData")
+      .doc("location")
+      .update(location);
+    return Promise.resolve({ success: true, data: { _id, location } });
+  } catch (err) {
+    console.error(`Error updating location: `, err);
+    return Promise.reject({ success: false, error: err });
+  }
+};
+
 export const deleteDoc = async (type, id) => {
   console.log("TYPE, ID", type, id);
   try {

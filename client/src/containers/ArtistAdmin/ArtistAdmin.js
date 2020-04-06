@@ -23,7 +23,7 @@ import {
   logout as logoutActionType,
   deleteArtist
 } from "src/store/actions/ActionCreator";
-import { updateDoc } from "src/services/api";
+import { updateDoc, updateLocation } from "src/services/api";
 
 import listItemAvatar from "src/images/test_avatar.png";
 
@@ -96,7 +96,7 @@ const ArtistAdmin = ({
       locationRef.current = await Location.watchPositionAsync(
         { distanceInterval: 10 },
         async ({ coords = {} }) => {
-          await updateDoc("artist", {
+          await updateLocation({
             location: {
               lat: coords.latitude,
               lng: coords.longitude
