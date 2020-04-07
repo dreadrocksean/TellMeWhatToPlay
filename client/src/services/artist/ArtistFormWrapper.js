@@ -46,7 +46,7 @@ const ArtistFormWrapper = ({
 
   useEffect(() => {
     updateProfile();
-  }, []);
+  }, [artist]);
 
   const updateProfile = () => {
     const hasRole = key => (artist.roles || []).indexOf(key) > -1;

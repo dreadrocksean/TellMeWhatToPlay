@@ -289,25 +289,34 @@ const Setlist = ({
           value=""
         />
       )}
-      <ScrollView style={styles.scroll} pagingEnabled={true}>
-        {songs.map(
-          (song, i) =>
-            (song.visible || isArtist) && (
-              <SongItem
-                key={i}
-                song={song}
-                userType={userType}
-                liked={likes.indexOf(song._id) > -1}
-                vote={vote}
-                artistLiveStatus={artist.live}
-                showEditForm={showEditForm(i, song._id)}
-                showLyrics={showLyrics(i, song._id)}
-                onDeleteSong={onDeleteSong}
-                changeSongVisibility={changeSongVisibility}
-              />
-            )
-        )}
-      </ScrollView>
+      {!songs.length && (
+        <View>
+          <Text style={styles.text}>
+            {`${(artist.name || "").toUpperCase()} has no current SetList.`}
+          </Text>
+        </View>
+      )}
+      {!!songs.length && (
+        <ScrollView style={styles.scroll} pagingEnabled={true}>
+          {songs.map(
+            (song, i) =>
+              (song.visible || isArtist) && (
+                <SongItem
+                  key={i}
+                  song={song}
+                  userType={userType}
+                  liked={likes.indexOf(song._id) > -1}
+                  vote={vote}
+                  artistLiveStatus={artist.live}
+                  showEditForm={showEditForm(i, song._id)}
+                  showLyrics={showLyrics(i, song._id)}
+                  onDeleteSong={onDeleteSong}
+                  changeSongVisibility={changeSongVisibility}
+                />
+              )
+          )}
+        </ScrollView>
+      )}
 
       {isArtist && add && (
         <AddSong

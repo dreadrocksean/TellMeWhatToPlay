@@ -1,4 +1,4 @@
-import * as AT from "./ActionTypes";
+import * as AT from "src/store/actions/ActionTypes";
 import {
   createUser,
   createDoc,
@@ -11,27 +11,27 @@ import {
 } from "src/services/api";
 import { saveStorage, loadStorage } from "src/services/LocalStorage";
 
-const incrementVotes = () => ({
+export const incrementVotes = () => ({
   type: AT.IncrementVotes
 });
 
-const decrementVotes = () => ({
+export const decrementVotes = () => ({
   type: AT.DecrementVotes
 });
 
-const guestTypeFan = () => ({
+export const guestTypeFan = () => ({
   type: AT.GuestTypeFan
 });
 
-const guestTypeArtist = () => ({
+export const guestTypeArtist = () => ({
   type: AT.GuestTypeArtist
 });
 
-const guestTypeNone = () => ({
+export const guestTypeNone = () => ({
   type: AT.GuestTypeNone
 });
 
-const loadStoredUserArtist = () => async (dispatch, getState) => {
+export const loadStoredUserArtist = () => async (dispatch, getState) => {
   try {
     await loginStorageUser()(dispatch, getState);
     await loginStorageArtist()(dispatch, getState);
@@ -41,7 +41,7 @@ const loadStoredUserArtist = () => async (dispatch, getState) => {
   }
 };
 
-const loginUser = credentials => async (dispatch, getState) => {
+export const loginUser = credentials => async (dispatch, getState) => {
   try {
     const res = await getUser(credentials);
     dispatch({ type: AT.LoginUser, payload: res.data });
@@ -55,7 +55,7 @@ const loginUser = credentials => async (dispatch, getState) => {
   }
 };
 
-const loginStorageUser = () => async (dispatch, getState) => {
+export const loginStorageUser = () => async (dispatch, getState) => {
   console.log("LOGINSTORAGEUSER");
   try {
     const res = await loadStorage("user");
@@ -68,7 +68,7 @@ const loginStorageUser = () => async (dispatch, getState) => {
   }
 };
 
-const signupUser = payload => async (dispatch, getState) => {
+export const signupUser = payload => async (dispatch, getState) => {
   try {
     const res = await createUser(payload);
     dispatch({ type: AT.LoginUser, payload: res.data });
@@ -81,7 +81,7 @@ const signupUser = payload => async (dispatch, getState) => {
   }
 };
 
-const newArtist = data => async (dispatch, getState) => {
+export const newArtist = data => async (dispatch, getState) => {
   console.log("NEW ARTIST");
   if (!data.userId) {
     return updateArtist(data)(dispatch, getState);
@@ -101,7 +101,7 @@ const newArtist = data => async (dispatch, getState) => {
   }
 };
 
-const updateArtist = data => async (dispatch, getState) => {
+export const updateArtist = data => async (dispatch, getState) => {
   try {
     const res = await updateDoc("artist", data);
     const artist = res && res.data;
@@ -116,7 +116,7 @@ const updateArtist = data => async (dispatch, getState) => {
   }
 };
 
-const loginArtist = userId => async (dispatch, getState) => {
+export const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
     console.log("Artist Logged In", userId, res);
@@ -130,7 +130,7 @@ const loginArtist = userId => async (dispatch, getState) => {
   }
 };
 
-const deleteArtist = artistId => async (dispatch, getState) => {
+export const deleteArtist = artistId => async (dispatch, getState) => {
   console.log("DELETEARTIST", deleteArtist);
   try {
     const res = await deleteDoc("artist", artistId);
@@ -146,7 +146,7 @@ const deleteArtist = artistId => async (dispatch, getState) => {
   }
 };
 
-const signUpArtist = payload => async (dispatch, getState) => {
+export const signUpArtist = payload => async (dispatch, getState) => {
   try {
     const res = await createArtist(payload);
     console.log("RES", res);
@@ -159,7 +159,7 @@ const signUpArtist = payload => async (dispatch, getState) => {
   }
 };
 
-const loginStorageArtist = () => async (dispatch, getState) => {
+export const loginStorageArtist = () => async (dispatch, getState) => {
   try {
     let artist = await loadStorage("artist");
     if (!artist || !artist.data) {
@@ -177,73 +177,48 @@ const loginStorageArtist = () => async (dispatch, getState) => {
   }
 };
 
-const logout = () => (dispatch, getState) => {
+export const logout = () => (dispatch, getState) => {
+  console.log("LOGOUT", logout);
   saveStorage({ user: null, artist: null });
   dispatch({ type: AT.Logout });
 };
 
-const loadingStatus = status => ({
+export const loadingStatus = status => ({
   type: AT.Loading,
   payload: { loading: status }
 });
 
-const addMessage = msg => ({
+export const addMessage = msg => ({
   type: AT.Message,
   payload: { message: msg }
 });
 
-const loginError = payload => ({
+export const loginError = payload => ({
   type: AT.LoginError,
   errorMessage: payload.errorMessage
 });
 
-const register = () => ({
+export const register = () => ({
   type: AT.Register
 });
 
-const registerSuccess = () => ({
+export const registerSuccess = () => ({
   type: AT.RegisterSuccess
 });
 
-const navigateToLogoutScreen = () => ({
+export const navigateToLogoutScreen = () => ({
   type: AT.NavigateToLogoutScreen
 });
 
-const onAir = () => ({
+export const onAir = () => ({
   type: AT.OnAir
 });
 
-const offAir = () => ({
+export const offAir = () => ({
   type: AT.OffAir
 });
 
-const AddArtistPhoto = imageURL => ({
+export const AddArtistPhoto = imageURL => ({
   type: AT.AddArtistPhoto,
   payload: imageURL
 });
-
-export {
-  incrementVotes,
-  decrementVotes,
-  guestTypeFan,
-  guestTypeArtist,
-  guestTypeNone,
-  loginUser,
-  loadStoredUserArtist,
-  loginStorageUser,
-  signupUser,
-  loginArtist,
-  newArtist,
-  loginStorageArtist,
-  deleteArtist,
-  logout,
-  loginError,
-  register,
-  registerSuccess,
-  navigateToLogoutScreen,
-  onAir,
-  offAir,
-  AddArtistPhoto,
-  loadingStatus,
-  addMessage
-};

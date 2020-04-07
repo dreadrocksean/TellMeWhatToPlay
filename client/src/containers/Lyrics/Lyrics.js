@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import styles from "./styles";
 
 import DefaultContainer from "src/containers/DefaultContainer";
-import { updateHeader } from "src/utils/UpdateHeader";
+import LyricsForm from "src/containers/LyricsForm";
 import { fetchLyrics } from "src/services/api";
 import { loadingStatus } from "src/store/actions/ActionCreator";
 
@@ -21,7 +21,7 @@ const Lyrics = ({ navigation, route, loadingStatus, authorized, userType }) => {
         setLyrics(data.result.track.text);
       } catch (err) {
         loadingStatus(false);
-        setLyrics("Sorry. No lyrics available :-(");
+        setLyrics("");
       }
     };
     loadingStatus(true);
@@ -32,13 +32,18 @@ const Lyrics = ({ navigation, route, loadingStatus, authorized, userType }) => {
     if (!authorized && userType === "Artist") navigation.replace("Home");
   }, [authorized]);
 
+  console.log("LYRICS", lyrics);
   return (
     <DefaultContainer>
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.text}>{lyrics}</Text>
-        </View>
-      </ScrollView>
+      {!!lyrics ? (
+        <ScrollView>
+          <View style={styles.container}>
+            <Text style={styles.text}>{lyrics}</Text>
+          </View>
+        </ScrollView>
+      ) : (
+        <LyricsForm />
+      )}
     </DefaultContainer>
   );
 };
