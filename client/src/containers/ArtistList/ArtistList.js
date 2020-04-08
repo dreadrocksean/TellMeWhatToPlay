@@ -163,24 +163,26 @@ const ArtistList = ({ navigation, loadingStatus }) => {
     navigate("SetList", { name: "SetList", artist });
   };
 
-  const renderHeaderChildren = () => (
-    <Fragment>
-      <View style={styles.icons}>
-        <TouchableOpacity>
-          <Image style={styles.icon} source={sortIcon} resizeMode={"cover"} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleSearch}>
-          <Image style={styles.icon} source={findIcon} resizeMode={"cover"} />
-        </TouchableOpacity>
-      </View>
-      <AppText textStyle={[styles.text]}>ARTIST LIST</AppText>
-    </Fragment>
+  const renderHeaderLeft = () => (
+    <View style={styles.icons}>
+      <TouchableOpacity>
+        <Image style={styles.icon} source={sortIcon} resizeMode={"cover"} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={toggleSearch}>
+        <Image style={styles.icon} source={findIcon} resizeMode={"cover"} />
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderHeaderMiddle = () => (
+    <AppText textStyle={[styles.text]}>ARTIST LIST</AppText>
   );
 
   return (
     <DefaultContainer
       navigation={navigation}
-      headerChildren={renderHeaderChildren()}
+      headerLeft={renderHeaderLeft()}
+      headerMiddle={renderHeaderMiddle()}
     >
       {showSearch && (
         <AppTextInput

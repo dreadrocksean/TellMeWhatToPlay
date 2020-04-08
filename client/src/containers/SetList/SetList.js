@@ -50,7 +50,10 @@ const Setlist = ({
   userType
 }) => {
   const isMountedRef = useRef(false);
-  const unsubscribeRef = useRef(() => {});
+  const unsubscribeArtistRef = useRef(() => {});
+  const unsubscribeSongRefs = useRef([]);
+  const initialGetRef = useRef(true);
+
   const [title, setTitle] = useState(null);
   const [song_artist, setSong_artist] = useState(null);
   const [edit_title, setEdit_title] = useState(null);
@@ -79,7 +82,8 @@ const Setlist = ({
     updateSongList();
     return () => {
       isMountedRef.current = false;
-      unsubscribeRef.current();
+      unsubscribeArtistRef.current();
+      unsubscribeSongRefs.current.forEach(f => f());
     };
   }, []);
 
@@ -87,9 +91,18 @@ const Setlist = ({
     if (!authorized && userType === "ARTIST") navigation.replace("Home");
   }, [authorized]);
 
+  const [updatedSong, setUpdatedSong] = useState(null);
+  useEffect(() => {
+    const updatedSongs = songs.map(v => {
+      if (v._id === updatedSong._id) return updatedSong;
+      return v;
+    });
+    setSongs(updatedSongs);
+  }, [updatedSong]);
+
   const updateSongList = async () => {
     loadingStatus(true);
-    unsubscribeRef.current = db
+    unsubscribeArtistRef.current = db
       .doc(`artists/${artist._id}`)
       .onSnapshot(async doc => {
         if (!doc.data() || !isMountedRef.current) return;
@@ -98,8 +111,15 @@ const Setlist = ({
           let songs = await Promise.all(
             currArtistSongs.map(async v => {
               const docRef = db.doc(`songs/${v._id}`);
-              const snap = await docRef.get();
-              return { ...snap.data(), ...v };
+              return new Promise((resolve, reject) => {
+                const unsubscribe = docRef.onSnapshot(doc => {
+                  // console.log("ONSNAPSHOT UPDATE", doc.data().title);
+                  const song = { ...doc.data(), ...v };
+                  if (!initialGetRef.current) setUpdatedSong(song);
+                  resolve(song);
+                }, reject);
+                unsubscribeSongRefs.current.push(unsubscribe);
+              });
             })
           );
 
@@ -113,7 +133,10 @@ const Setlist = ({
             });
           }
           setAllSongs(songs);
-          setSongs(songs);
+          setSongs(() => {
+            initialGetRef.current = false;
+            return songs;
+          });
           setArtistSongs(currArtistSongs);
           loadingStatus(false);
           setUpdate(false);
@@ -121,9 +144,7 @@ const Setlist = ({
           setTitle("");
           setSong_artist("");
 
-          if (!songs.length) {
-            openAddForm();
-          }
+          if (!songs.length) openAddForm();
         } catch (err) {
           console.log("Error: ", err);
         }
@@ -138,14 +159,14 @@ const Setlist = ({
   };
 
   const showLyrics = (i, songId) => () => {
+    // console.log("SONGID", songId);
     const { navigate } = navigation;
-    const { title, artist } = songs.find(el => {
+    const song = songs.find(el => {
       return el._id === songId;
     });
     navigate("Lyrics", {
       name: "Lyrics",
-      title,
-      artist
+      song
     });
   };
 
@@ -198,48 +219,28 @@ const Setlist = ({
     setSong_artist("");
   };
 
-  const renderButton = (text, onPress) => (
-    <TouchableOpacity onPress={onPress} style={styles.close}>
-      <View>
-        <Text
-          style={{
-            color: "#d4d4ff",
-            fontSize: 20,
-            alignItems: "center",
-            textAlign: "center"
-          }}
-        >
-          {text}
-        </Text>
-      </View>
-    </TouchableOpacity>
+  const renderHeaderLeft = () => (
+    <View style={styles.headerIconContatiner}>
+      <TouchableOpacity onPress={openAddForm}>
+        <RoundImage source={addIcon} style={styles.roundImage} size={44} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={toggleSearch}>
+        <RoundImage source={findIcon} style={styles.roundImage} size={44} />
+      </TouchableOpacity>
+    </View>
   );
 
-  const home = () => navigation.navigate("Home");
-
-  const renderHeaderChildren = () => {
-    const { name, genre } = artist;
+  const renderHeaderMiddle = () => {
     const headerPreface = isArtist ? "MANAGE " : "";
     return (
-      <Fragment>
-        <View style={styles.headerIconContatiner}>
-          <TouchableOpacity onPress={openAddForm}>
-            <RoundImage source={addIcon} style={styles.roundImage} size={44} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleSearch}>
-            <RoundImage source={findIcon} style={styles.roundImage} size={44} />
-          </TouchableOpacity>
-        </View>
-        <AppText textStyle={[styles.text, { fontSize: 16, color: "white" }]}>
-          {headerPreface}SETLIST
-        </AppText>
-      </Fragment>
+      <AppText textStyle={[styles.text, { fontSize: 16, color: "white" }]}>
+        {headerPreface}SETLIST
+      </AppText>
     );
   };
 
   const handleSetShowModal = show => {
     setShowModal(show);
-    console.log("HANDLESETSHOWMODAL setAdd", show);
     setAdd(show);
   };
 
@@ -249,7 +250,6 @@ const Setlist = ({
   };
 
   const onDeleteConfirm = confirm => {
-    console.log("CONFIRM", confirm);
     if (confirm) {
       const { _id } = artist;
       const newSongs = songs.filter(song => song._id !== songDeleteId);
@@ -270,7 +270,6 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongs);
   };
-  console.log("MY LOCATION", (myArtist || {}).location);
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>
@@ -280,7 +279,8 @@ const Setlist = ({
   ) : (
     <DefaultContainer
       navigation={navigation}
-      headerChildren={renderHeaderChildren()}
+      headerLeft={renderHeaderLeft()}
+      headerMiddle={renderHeaderMiddle()}
     >
       {showSearch && (
         <AppTextInput

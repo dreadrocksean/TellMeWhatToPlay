@@ -4,7 +4,10 @@ import PropTypes from "prop-types";
 
 const AppText = ({ style, textStyle, numberOfLines, children }) => (
   <View style={[style, { justifyContent: "center" }]}>
-    <Text style={[styles.text, textStyle]} numberOfLines={numberOfLines}>
+    <Text
+      style={{ ...styles.text, ...textStyle }}
+      numberOfLines={numberOfLines}
+    >
       {children}
     </Text>
   </View>

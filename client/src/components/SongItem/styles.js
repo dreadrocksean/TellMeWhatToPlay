@@ -65,9 +65,9 @@ export default StyleSheet.create({
     // backgroundColor: "yellow"
   },
   text: {
-    fontWeight: "normal",
-    textAlign: "left",
-    fontFamily: "montserrat-regular"
+    // fontWeight: "normal",
+    textAlign: "left"
+    // fontFamily: "montserrat-regular"
   },
   titleText: { fontSize: 16 },
   artistText: { color: "#999", fontSize: 11 },

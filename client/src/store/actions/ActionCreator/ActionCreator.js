@@ -81,6 +81,19 @@ export const signupUser = payload => async (dispatch, getState) => {
   }
 };
 
+export const addLyrics = ({ _id, lyrics }) => async (dispatch, getState) => {
+  if (!_id) return;
+  try {
+    const res = await updateDoc("song", { _id, lyrics });
+    const song = res && res.data;
+    // console.log("SONG", song);
+    res.message = song ? "Lyrics successfully added" : "Problem Adding Lyrics";
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 export const newArtist = data => async (dispatch, getState) => {
   console.log("NEW ARTIST");
   if (!data.userId) {

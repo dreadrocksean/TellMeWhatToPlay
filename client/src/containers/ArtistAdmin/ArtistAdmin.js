@@ -153,21 +153,22 @@ const ArtistAdmin = ({
     return <Image style={[styles.button, { height: 50 }]} source={source} />;
   };
 
-  const renderHeaderChildren = () => (
-    <Fragment>
-      <TouchableOpacity onPress={editAdmin}>
-        <Image style={styles.icon} source={editIcon} resizeMode={"cover"} />
-      </TouchableOpacity>
-      <Text style={styles.headingText}>ARTIST</Text>
-    </Fragment>
+  const renderHeaderLeft = () => (
+    <TouchableOpacity onPress={editAdmin}>
+      <Image style={styles.icon} source={editIcon} resizeMode={"cover"} />
+    </TouchableOpacity>
   );
 
-  console.log("ArtistAdmin ARTIST", artist);
+  const renderHeaderMiddle = () => (
+    <Text style={styles.headingText}>ARTIST</Text>
+  );
+
   return !authorized || !artist
     ? null
     : artist && (
         <DefaultContainer
-          headerChildren={renderHeaderChildren()}
+          headerLeft={renderHeaderLeft()}
+          headerMiddle={renderHeaderMiddle()}
           navigation={navigation}
         >
           <View style={styles.container}>

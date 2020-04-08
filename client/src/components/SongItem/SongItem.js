@@ -57,11 +57,15 @@ class SongItem extends Component {
         <View style={styles.itemInfo}>
           <AppText
             numberOfLines={2}
-            textStyle={[styles.text, styles.titleText, { color: titleColor }]}
+            textStyle={{
+              ...styles.text,
+              ...styles.titleText,
+              color: titleColor
+            }}
           >
             {title}
           </AppText>
-          <AppText textStyle={[styles.text, styles.artistText]}>
+          <AppText textStyle={{ ...styles.text, ...styles.artistText }}>
             {artist}
           </AppText>
         </View>
@@ -91,12 +95,20 @@ class SongItem extends Component {
         <View style={[styles.itemInfo, { flex: 20 }]}>
           <AppText
             numberOfLines={2}
-            textStyle={[styles.text, styles.titleText, { color: "#3c2385" }]}
+            textStyle={{
+              ...styles.text,
+              ...styles.titleText,
+              color: "#3c2385"
+            }}
           >
             {title}
           </AppText>
           <AppText
-            textStyle={[styles.text, styles.artistText, { color: "#ff3a80" }]}
+            textStyle={{
+              ...styles.text,
+              ...styles.artistText,
+              color: "#ff3a80"
+            }}
           >
             {artist}
           </AppText>

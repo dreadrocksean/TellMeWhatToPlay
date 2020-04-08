@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Text, TextInput, View, Image } from "react-native";
+import { Text, TextInput, View, Image, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 
 import styles from "./styles";
 
 import submitButton from "src/images/buttons/post_lyrics_btn.png";
-import { loadingStatus } from "src/store/actions/ActionCreator";
+import { loadingStatus, addLyrics } from "src/store/actions/ActionCreator";
 
 const placeholder = "Enter lyrics here.";
 
@@ -14,14 +14,21 @@ const LyricsForm = ({
   route,
   loadingStatus,
   authorized,
-  userType
+  userType,
+  onSubmit,
+  origLyrics
 }) => {
-  const [message, setMessage] = useState("Sorry. No lyrics available :-(");
   const [lyrics, setLyrics] = useState(null);
+
+  useEffect(() => {
+    setLyrics(origLyrics);
+  }, []);
 
   useEffect(() => {
     if (!authorized && userType === "Artist") navigation.replace("Home");
   }, [authorized]);
+
+  const handleOnSubmit = () => onSubmit(lyrics);
 
   return (
     <View style={styles.root}>
@@ -37,9 +44,9 @@ const LyricsForm = ({
           placeholderTextColor="white"
         />
       </View>
-      <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleOnSubmit}>
         <Image style={styles.image} source={submitButton} />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

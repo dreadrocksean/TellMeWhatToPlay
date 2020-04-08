@@ -3,29 +3,34 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   component: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    // backgroundColor: 'rgba(220,220,255,0.9)',
-    height: 45
+    // backgroundColor: "rgba(220,220,255,0.9)"
+    // height: 45
+    overflow: "hidden",
+    // alignItems: "center",
+    justifyContent: "space-between"
   },
   logoWrap: {
-    alignSelf: "flex-end",
-    height: 65,
-    width: 65
-    // top: -20,
-    // zIndex: 99999,
-    // position: "relative"
+    flex: 1
   },
   logo: {
     flex: 1,
     height: null,
     width: null
   },
-  children: {
-    // backgroundColor: "grey",
-    flex: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+  left: {
+    flex: 1,
+    justifyContent: "center"
+    // backgroundColor: "cyan"
+  },
+  middle: {
+    flex: 5,
+    justifyContent: "center"
+    // backgroundColor: "magenta"
+  },
+  right: {
+    flex: 1,
+    justifyContent: "center"
+    // backgroundColor: "orange"
   }
 });

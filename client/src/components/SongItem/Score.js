@@ -26,7 +26,9 @@ const Score = ({ icon, votes, disabled, short = false }) => {
           <Image source={icon} style={styles.gImage} />
         </View>
       )}
-      <AppText textStyle={[styles.text, shortTextStyle, styles.scoreText]}>
+      <AppText
+        textStyle={{ ...styles.text, ...shortTextStyle, ...styles.scoreText }}
+      >
         {votes}
       </AppText>
     </View>

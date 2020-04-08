@@ -21,17 +21,14 @@ const UserSignup = ({ navigation, userType }) => {
     navigation.replace(routeName);
   };
 
-  const renderHeaderChildren = () => (
+  const renderHeaderMiddle = () => (
     <View>
       <Text style={styles.h1}>ACCOUNT</Text>
     </View>
   );
 
   return (
-    <DefaultContainer
-      style={styles.body}
-      headerChildren={renderHeaderChildren()}
-    >
+    <DefaultContainer style={styles.body} headerMiddle={renderHeaderMiddle()}>
       <UserFormWrapper navigateTo={navigateTo} />
     </DefaultContainer>
   );

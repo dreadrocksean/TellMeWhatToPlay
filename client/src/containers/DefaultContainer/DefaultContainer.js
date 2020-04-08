@@ -22,9 +22,11 @@ import bg from "src/images/bg.png";
 const DefaultContainer = ({
   loading,
   navigation,
-  headerChildren,
+  children,
   style,
-  children
+  headerLeft,
+  headerMiddle,
+  headerRight
 }) => {
   const home = navigation ? () => navigation.popToTop() : () => {};
   return loading ? (
@@ -36,7 +38,12 @@ const DefaultContainer = ({
   ) : (
     <View style={[styles.container, style]}>
       <Background />
-      <ListHeader home={home}>{headerChildren}</ListHeader>
+      <ListHeader
+        home={home}
+        headerLeft={headerLeft}
+        headerMiddle={headerMiddle}
+        headerRight={headerRight}
+      />
       <View style={styles.children}>{children}</View>
     </View>
   );

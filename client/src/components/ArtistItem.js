@@ -46,17 +46,17 @@ const ArtistItem = props => {
         </View>
         <View style={styles.info}>
           <AppText
-            textStyle={[styles.text, { color: "#3c2385", fontSize: 16 }]}
+            textStyle={{ ...styles.text, color: "#3c2385", fontSize: 16 }}
           >
             {name}
           </AppText>
           <AppText
-            textStyle={[styles.text, { color: "#ff3a80", fontSize: 11 }]}
+            textStyle={{ ...styles.text, color: "#ff3a80", fontSize: 11 }}
           >
             {genre}
           </AppText>
           <AppText
-            textStyle={[styles.text, { color: "#9c9c9c", fontSize: 11 }]}
+            textStyle={{ ...styles.text, color: "#9c9c9c", fontSize: 11 }}
           >
             {instruments.join(" | ")}
           </AppText>
@@ -99,8 +99,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "left",
-    fontFamily: "montserrat-regular",
-    fontWeight: "normal"
+    fontFamily: "montserrat-regular"
   }
 });
 
