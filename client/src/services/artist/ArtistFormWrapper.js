@@ -134,6 +134,7 @@ const ArtistFormWrapper = ({
     const roles = getRoles();
     let imageURL = artist.imageURL || "";
     const artistData = {
+      _id: artist._id,
       userId: user._id,
       name,
       genre,

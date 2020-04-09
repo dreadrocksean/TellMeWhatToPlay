@@ -26,7 +26,7 @@ export default StyleSheet.create({
     marginTop: 10
   },
   text: {
-    fontSize: 36,
+    fontSize: 20,
     color: "white",
     fontFamily: "montserrat-regular"
   },

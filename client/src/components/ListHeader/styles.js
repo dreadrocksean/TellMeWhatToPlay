@@ -5,7 +5,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     // backgroundColor: "rgba(220,220,255,0.9)"
-    // height: 45
+    height: 50,
     overflow: "hidden",
     // alignItems: "center",
     justifyContent: "space-between",
@@ -25,8 +25,9 @@ export default StyleSheet.create({
     // backgroundColor: "cyan"
   },
   middle: {
-    flex: 5,
-    justifyContent: "center"
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center"
     // backgroundColor: "magenta"
   },
   right: {

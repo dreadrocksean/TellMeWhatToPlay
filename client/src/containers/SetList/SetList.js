@@ -95,12 +95,14 @@ const Setlist = ({
 
   // const [updatedSong, setUpdatedSong] = useState(null);
   useEffect(() => {
-    const updatedSongs = songs.map(v => {
-      if (v._id === currSong._id) return currSong;
-      return v;
-    });
-    setSongs(updatedSongs);
-  }, [currSong]);
+    if (authorized && currSong) {
+      const updatedSongs = songs.map(v => {
+        if (v._id === currSong._id) return currSong;
+        return v;
+      });
+      setSongs(updatedSongs);
+    }
+  }, [currSong, authorized]);
 
   const updateSongList = async () => {
     loadingStatus(true);

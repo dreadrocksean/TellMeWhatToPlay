@@ -96,7 +96,7 @@ export const addLyrics = ({ _id, lyrics }) => async (dispatch, getState) => {
 
 export const newArtist = data => async (dispatch, getState) => {
   console.log("NEW ARTIST");
-  if (!data.userId) {
+  if (data._id) {
     return updateArtist(data)(dispatch, getState);
   }
   try {
