@@ -19,7 +19,8 @@ import CheckBox from "src/components/CheckBox/";
 import RadioButton from "src/components/RadioButton/";
 import ImageUpload from "src/components/ImageUpload/";
 import Separator from "src/components/Separator/";
-import createProfile from "src/images/buttons/create_profile_btn.png";
+import createArtist from "src/images/buttons/create_artist_btn.png";
+import updateArtist from "src/images/buttons/update_artist_btn.png";
 
 const ArtistForm = ({
   roles,
@@ -88,7 +89,11 @@ const ArtistForm = ({
           ))}
         </View>
         <TouchableOpacity style={styles.button} onPress={onSubmit}>
-          <Image source={createProfile} style={styles.image} />
+          {id ? (
+            <Image source={updateArtist} style={styles.image} />
+          ) : (
+            <Image source={createArtist} style={styles.image} />
+          )}
         </TouchableOpacity>
         {!!errorMessage && (
           <AppText textStyle={styles.error}>{errorMessage}</AppText>

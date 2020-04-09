@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { ImagePicker } from "expo";
+import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import { Camera } from "expo-camera";
 import cloudinary from "cloudinary-core";
@@ -65,8 +65,7 @@ class CameraScreen extends Component {
   };
 
   onGalleryChoice = data => async () => {
-    this.props.navigation.state.params.onChoosePhoto(data);
-    // this.navigate("ArtistSignup", { imageData: data })();
+    this.props.route.params.onChoosePhoto(data);
     this.navigate("ArtistFormWrapper", { imageData: data })();
   };
 
@@ -79,8 +78,7 @@ class CameraScreen extends Component {
     if (result.cancelled) {
       return;
     }
-    this.props.navigation.state.params.onChoosePhoto(result.base64);
-    // this.navigate("ArtistSignup", { imageData: result.base64 })();
+    this.props.route.params.onChoosePhoto(result.base64);
     this.navigate("ArtistFormWrapper", { imageData: result.base64 })();
   };
 

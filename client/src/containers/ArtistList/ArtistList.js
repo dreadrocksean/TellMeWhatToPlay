@@ -26,7 +26,6 @@ import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import ArtistItem from "src/components/ArtistItem";
-import { updateHeader } from "src/utils/UpdateHeader";
 
 import sortIcon from "src/images/icons/sort_btn.png";
 import findIcon from "src/images/icons/find_btn.png";

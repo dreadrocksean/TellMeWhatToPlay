@@ -16,13 +16,13 @@ import createProfile from "src/images/buttons/continue_btn.png";
 import DefaultContainer from "src/containers/DefaultContainer";
 import ArtistForm from "./ArtistForm";
 import {
-  loginArtist as loginArtistType,
-  logout as logoutType,
-  loadingStatus as loadingStatusType,
+  updateArtist,
+  logout,
+  loadingStatus,
   newArtist
 } from "src/store/actions/ActionCreator";
 
-import cloudinaryConfig, { upload } from "src/utils/Cloudinary";
+import cloudinaryConfig, { upload as uploadImage } from "src/utils/Cloudinary";
 
 const ArtistFormWrapper = ({
   navigation,
@@ -30,7 +30,7 @@ const ArtistFormWrapper = ({
   user,
   artist,
   newArtist,
-  loginArtist,
+  updateArtist,
   logout,
   loadingStatus
 }) => {
@@ -161,27 +161,17 @@ const ArtistFormWrapper = ({
 
   const onChoosePhoto = async imageData => {
     loadingStatus(true);
-    const imageURL = await upload(imageData);
+    const imageURL = await uploadImage(imageData);
     loadingStatus(false);
-    loginArtist({ imageURL });
+    updateArtist({ _id: artist._id, imageURL });
   };
 
   const showCam = () => {
     navigation.navigate("CameraScreen", {
-      onChoosePhoto: this.onChoosePhoto
+      onChoosePhoto
     });
   };
-  //
-  // const navigate = pageName => () => {
-  //   navigation.navigate(pageName, {
-  //     name: pageName,
-  //     artist: artist
-  //   });
-  // };
 
-  // const handleLogout = () => this.navigate("Home")();
-
-  console.log("ArtistFormWrapper ARTIST", artist);
   return (
     <DefaultContainer navigation={navigation}>
       <ArtistForm
@@ -210,10 +200,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loginArtist: payload => dispatch(loginArtistType(payload)),
+  updateArtist: payload => dispatch(updateArtist(payload)),
   newArtist: payload => dispatch(newArtist(payload)),
-  logout: () => dispatch(logoutType()),
-  loadingStatus: status => dispatch(loadingStatusType(status))
+  logout: () => dispatch(logout()),
+  loadingStatus: status => dispatch(loadingStatus(status))
 });
 
 export default connect(

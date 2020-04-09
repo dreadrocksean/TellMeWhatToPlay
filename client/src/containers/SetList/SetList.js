@@ -32,7 +32,6 @@ import DeleteModal from "src/components/DeleteModal";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import SongItem from "src/components/SongItem";
-import { updateHeader } from "src/utils/UpdateHeader";
 
 import { loadingStatus, updateCurrSong } from "src/store/actions/ActionCreator";
 import { updateDoc, deleteDoc } from "src/services/api";

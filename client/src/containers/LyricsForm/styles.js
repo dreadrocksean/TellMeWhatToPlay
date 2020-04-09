@@ -16,7 +16,6 @@ export default StyleSheet.create({
     backgroundColor: "rgba(255,255,255, 0.5)"
   },
   text: {
-    // flex: 1,
     fontSize: 20,
     color: "#363636",
     padding: 10

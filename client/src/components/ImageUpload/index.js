@@ -24,7 +24,9 @@ const ImageUpload = ({ label, style, onPress, source }) => {
         {source && <View style={styles.imageOverlay} />}
       </View>
       <Image style={styles.icon} source={Icon} />
-      <AppText textStyle={[styles.text, textColor]}>UPLOAD PHOTO</AppText>
+      <AppText textStyle={{ ...styles.text, ...textColor }}>
+        UPLOAD PHOTO
+      </AppText>
     </TouchableOpacity>
   );
 };
