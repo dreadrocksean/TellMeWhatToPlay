@@ -6,8 +6,9 @@ export default StyleSheet.create({
     padding: 7
   },
   children: {
-    flex: 1
-    // backgroundColor: "purple"
+    flex: 1,
+    // backgroundColor: "#80008070",
+    justifyContent: "space-between"
   },
   loading: {
     flex: 1,

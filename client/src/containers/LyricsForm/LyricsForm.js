@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Text, TextInput, View, Image, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 
 import styles from "./styles";
 
+import AppText from "src/components/AppText";
 import submitButton from "src/images/buttons/post_lyrics_btn.png";
 import { loadingStatus, addLyrics } from "src/store/actions/ActionCreator";
 
@@ -28,11 +29,13 @@ const LyricsForm = ({
     if (!authorized && userType === "Artist") navigation.replace("Home");
   }, [authorized]);
 
+  const headerText = lyrics ? "Edit lyrics" : "Create your own lyrics";
+
   const handleOnSubmit = () => onSubmit(lyrics);
 
   return (
-    <View style={styles.root}>
-      <Text style={styles.headerText}>Create your own lyrics</Text>
+    <Fragment>
+      <Text style={styles.headerText}>{headerText}</Text>
       <View style={styles.container}>
         <TextInput
           style={styles.text}
@@ -47,7 +50,7 @@ const LyricsForm = ({
       <TouchableOpacity style={styles.buttonContainer} onPress={handleOnSubmit}>
         <Image style={styles.image} source={submitButton} />
       </TouchableOpacity>
-    </View>
+    </Fragment>
   );
 };
 

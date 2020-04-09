@@ -5,7 +5,7 @@ import styles from "./styles";
 
 const ListHeader = ({ home, headerLeft, headerMiddle, headerRight }) => {
   return (
-    <View style={styles.component}>
+    <View style={styles.root}>
       <View style={styles.left}>{headerLeft || <View />}</View>
       <View style={styles.middle}>{headerMiddle || <View />}</View>
       {headerRight ? (

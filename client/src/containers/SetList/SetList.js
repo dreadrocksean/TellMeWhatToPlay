@@ -34,7 +34,7 @@ import AppTextInput from "src/components/AppTextInput";
 import SongItem from "src/components/SongItem";
 import { updateHeader } from "src/utils/UpdateHeader";
 
-import { loadingStatus } from "src/store/actions/ActionCreator";
+import { loadingStatus, updateCurrSong } from "src/store/actions/ActionCreator";
 import { updateDoc, deleteDoc } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
@@ -47,7 +47,9 @@ const Setlist = ({
   myArtist,
   navigation,
   route,
-  userType
+  userType,
+  currSong,
+  updateCurrSong
 }) => {
   const isMountedRef = useRef(false);
   const unsubscribeArtistRef = useRef(() => {});
@@ -91,14 +93,14 @@ const Setlist = ({
     if (!authorized && userType === "ARTIST") navigation.replace("Home");
   }, [authorized]);
 
-  const [updatedSong, setUpdatedSong] = useState(null);
+  // const [updatedSong, setUpdatedSong] = useState(null);
   useEffect(() => {
     const updatedSongs = songs.map(v => {
-      if (v._id === updatedSong._id) return updatedSong;
+      if (v._id === updatedSong._id) return currSong;
       return v;
     });
     setSongs(updatedSongs);
-  }, [updatedSong]);
+  }, [currSong]);
 
   const updateSongList = async () => {
     loadingStatus(true);
@@ -115,7 +117,8 @@ const Setlist = ({
                 const unsubscribe = docRef.onSnapshot(doc => {
                   // console.log("ONSNAPSHOT UPDATE", doc.data().title);
                   const song = { ...doc.data(), ...v };
-                  if (!initialGetRef.current) setUpdatedSong(song);
+                  // if (!initialGetRef.current) setUpdatedSong(song);
+                  if (!initialGetRef.current) updateCurrSong(song);
                   resolve(song);
                 }, reject);
                 unsubscribeSongRefs.current.push(unsubscribe);
@@ -164,9 +167,10 @@ const Setlist = ({
     const song = songs.find(el => {
       return el._id === songId;
     });
+    updateCurrSong(song);
     navigate("Lyrics", {
-      name: "Lyrics",
-      song
+      name: "Lyrics"
+      // song
     });
   };
 
@@ -342,13 +346,15 @@ const isEqual = (prev, next) =>
   prev.authorized === next.authorized;
 
 const mapDispatchToProps = dispatch => ({
-  loadingStatus: status => dispatch(loadingStatus(status))
+  loadingStatus: status => dispatch(loadingStatus(status)),
+  updateCurrSong: song => dispatch(updateCurrSong(song))
 });
 
 const mapStateToProps = state => ({
   authorized: state.login.authorized,
   myArtist: state.artist,
-  userType: state.login.userType
+  userType: state.login.userType,
+  currSong: state.song.currSong
 });
 
 export default connect(

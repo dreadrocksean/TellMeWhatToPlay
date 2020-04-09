@@ -16,3 +16,4 @@ export const OffAir = "OFF_AIR";
 export const AddArtistPhoto = "ADD_ARTIST_PHOTO";
 export const Loading = "LOADING";
 export const Message = "MESSAGE";
+export const CurrSong = "CURRSONG";

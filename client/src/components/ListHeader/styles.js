@@ -1,14 +1,15 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  component: {
+  root: {
     flexDirection: "row",
     justifyContent: "space-between",
     // backgroundColor: "rgba(220,220,255,0.9)"
     // height: 45
     overflow: "hidden",
     // alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginBottom: 20
   },
   logoWrap: {
     flex: 1

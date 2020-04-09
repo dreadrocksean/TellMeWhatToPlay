@@ -231,6 +231,11 @@ export const offAir = () => ({
   type: AT.OffAir
 });
 
+export const updateCurrSong = song => ({
+  type: AT.CurrSong,
+  payload: { song }
+});
+
 export const AddArtistPhoto = imageURL => ({
   type: AT.AddArtistPhoto,
   payload: imageURL

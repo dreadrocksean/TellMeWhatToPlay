@@ -1,35 +1,28 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  root: {
-    flex: 1,
-    padding: 10
-    // marginBottom: 40
-  },
   headerText: {
     flex: 1,
     color: "#55eeff",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
-    paddingVertical: 10
+    fontSize: 18,
+    fontStyle: "italic",
+    fontWeight: "normal"
   },
   container: {
-    flex: 20,
+    flex: 15,
     borderWidth: 1,
     borderColor: "purple",
     borderStyle: "dashed",
     backgroundColor: "rgba(255,255,255, 0.5)"
   },
   text: {
-    flex: 1,
+    // flex: 1,
     fontSize: 20,
-    color: "#4d4d4d",
+    color: "#363636",
     padding: 10
   },
   buttonContainer: {
-    flexDirection: "row",
-    height: 80,
+    flex: 2,
     marginTop: 20
   },
   image: {
