@@ -96,7 +96,7 @@ const Setlist = ({
   // const [updatedSong, setUpdatedSong] = useState(null);
   useEffect(() => {
     const updatedSongs = songs.map(v => {
-      if (v._id === updatedSong._id) return currSong;
+      if (v._id === currSong._id) return currSong;
       return v;
     });
     setSongs(updatedSongs);
