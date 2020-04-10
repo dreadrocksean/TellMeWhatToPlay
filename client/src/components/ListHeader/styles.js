@@ -3,13 +3,8 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   root: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    // backgroundColor: "rgba(220,220,255,0.9)",
-    height: 50,
-    overflow: "hidden",
-    // alignItems: "center",
     justifyContent: "space-between"
-    // marginBottom: 20
+    // height: 50
   },
   logoWrap: {
     flex: 1
@@ -17,7 +12,8 @@ export default StyleSheet.create({
   logo: {
     flex: 1,
     height: null,
-    width: null
+    width: null,
+    right: -10
   },
   left: {
     flex: 1,

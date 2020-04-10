@@ -51,7 +51,7 @@ const ArtistForm = ({
         </View>
         <AppTextInput
           textStyle={styles.inputText}
-          style={styles.input}
+          style={{ ...styles.input, ...styles.firstInput }}
           placeholder="Artist Name"
           onChangeText={handleChange("name")}
           value={name}
@@ -63,10 +63,7 @@ const ArtistForm = ({
           onChangeText={handleChange("genre")}
           value={genre}
         />
-        <Separator style={styles.separator} label="ROLES" />
-        <AppText textStyle={styles.h2} style={styles.sectionHeader}>
-          ARTIST TYPE
-        </AppText>
+        <Separator style={styles.separator} label="ARTIST TYPE" />
         <View style={[styles.section, styles.radioSection]}>
           {Object.keys(types).map((f, i) => (
             <RadioButton
@@ -77,9 +74,7 @@ const ArtistForm = ({
             />
           ))}
         </View>
-        <AppText textStyle={styles.h2} style={styles.sectionHeader}>
-          INSTRUMENTS
-        </AppText>
+        <Separator style={styles.separator} label="INSTRUMENTS" />
         <View style={[styles.section, styles.checkBoxSection]}>
           {roleKeys.map((f, i) => (
             <CheckBox

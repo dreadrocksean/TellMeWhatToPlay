@@ -52,7 +52,7 @@ const AppTextInput = ({
   // console.log("RENDER APPTEXTINPUT");
 
   return (
-    <View style={[styles.root, style]}>
+    <View style={{ ...styles.root, ...style }}>
       <TextInput
         style={[styles.input]}
         placeholder={placeholder}

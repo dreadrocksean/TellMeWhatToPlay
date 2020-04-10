@@ -19,6 +19,9 @@ import Background from "src/components/Background";
 import ListHeader from "src/components/ListHeader";
 import bg from "src/images/bg.png";
 
+const pickTrue = (variable, val) =>
+  typeof variable === "undefined" ? val : variable;
+
 const DefaultContainer = ({
   loading,
   navigation,
@@ -26,9 +29,16 @@ const DefaultContainer = ({
   style,
   headerLeft,
   headerMiddle,
-  headerRight
+  headerRight,
+  headerHeight,
+  bodyPaddingTop
 }) => {
   const home = navigation ? () => navigation.popToTop() : () => {};
+  const headerStyles = { height: pickTrue(headerHeight, 50) };
+  const bodyStyles = {
+    paddingTop: pickTrue(bodyPaddingTop, headerStyles.height + 10)
+  };
+
   return loading ? (
     <View style={styles.loading}>
       <Background />
@@ -39,12 +49,13 @@ const DefaultContainer = ({
     <View style={[styles.container, style]}>
       <Background />
       <ListHeader
+        style={{ ...styles.listHeader, ...headerStyles }}
         home={home}
         headerLeft={headerLeft}
         headerMiddle={headerMiddle}
         headerRight={headerRight}
       />
-      <View style={styles.children}>{children}</View>
+      <View style={{ ...styles.children, ...bodyStyles }}>{children}</View>
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   StyleSheet,
   ViewPropTypes,
@@ -13,26 +13,25 @@ import styles from "./styles.js";
 import Check from "src/images/icons/check_icon.png";
 import AppText from "src/components/AppText";
 
-const RadioButton = ({ onPress, checked, label, disabled }) => {
+const CheckBox = ({ onPress, checked, label, disabled, ellipsis }) => {
   const disabledStyles = disabled
     ? {
         opacity: 0.5
       }
     : {};
-
-  const bg = checked ? "white" : null;
   return (
     <TouchableOpacity
-      style={styles.root}
+      style={styles.container}
       onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >
-      <View
-        style={[styles.circle, { backgroundColor: bg }, disabledStyles]}
-      ></View>
+      <View style={[styles.box, disabledStyles]}>
+        {checked && <Image style={styles.image} source={Check} />}
+      </View>
       <AppText
         textStyle={styles.labelText}
         style={[styles.label, disabledStyles]}
+        numberOfLines={ellipsis ? 1 : 0}
       >
         {label}
       </AppText>
@@ -40,11 +39,11 @@ const RadioButton = ({ onPress, checked, label, disabled }) => {
   );
 };
 
-RadioButton.propTypes = {
+CheckBox.propTypes = {
   onPress: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
   disabled: PropTypes.bool
 };
 
-export default RadioButton;
+export default CheckBox;

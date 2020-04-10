@@ -5,6 +5,7 @@ export default StyleSheet.create({
   formRoot: {
     justifyContent: "space-between",
     flex: 1
+    // backgroundColor: "#ffffff70"
     // paddingHorizontal: 10
   },
   container: {
@@ -19,11 +20,16 @@ export default StyleSheet.create({
     flex: 10,
     justifyContent: "center"
   },
+  firstInput: {
+    marginTop: 30
+    // backgroundColor: "green"
+  },
   imageUpload: {
     // flex: 1,
     // marginBottom: 20,
-    width: 80,
-    height: 80
+    top: 2,
+    width: 100,
+    height: 100
   },
   autocomplete: {
     position: "absolute",
@@ -42,15 +48,16 @@ export default StyleSheet.create({
     padding: 5,
     height: 40,
     width: width * 0.8,
-    borderColor: "#7a42f4",
+    // borderColor: "#7a42f4",
     borderWidth: 1
   },
   input: {
     flex: 8,
     // backgroundColor: "orange",
     height: null,
-    alignSelf: "stretch"
-    // marginBottom: 10
+    alignSelf: "stretch",
+    justifyContent: "center",
+    marginBottom: 0
     // height: 60
     // fontSize: 16
   },
@@ -79,58 +86,29 @@ export default StyleSheet.create({
     color: "rgba(220,220,255,0.7)"
   },
   separator: {
-    flex: 1
-  },
-  sectionHeader: {
-    flex: 2,
-    // marginTop: 10,
-    marginBottom: 12,
-    marginLeft: 15,
-    alignSelf: "flex-start"
+    flex: 3
+    // backgroundColor: "#ffffff70"
   },
   radioSection: {
-    flex: 5
+    flex: 5,
+    flexWrap: "nowrap",
+    justifyContent: "space-around"
   },
   checkBoxSection: {
     justifyContent: "space-between"
   },
   section: {
     flex: 10,
-    overflow: "hidden",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-around",
-    // alignSelf: "flex-start",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "#ffffff70",
     alignSelf: "stretch"
-    // backgroundColor: "pink"
   },
   error: {
     color: "red",
     fontWeight: "bold",
     fontSize: 12
-  },
-
-  cambtn: {
-    flexDirection: "row",
-    width: 100,
-    height: 100,
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  photos: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap"
-  },
-  cancel: {
-    // opacity: 0,
-    alignSelf: "center",
-    width: "50%"
-    // marginBottom: 60
   }
-  // image: {
-  //   width: undefined,
-  //   resizeMode: "contain"
-  // }
 });

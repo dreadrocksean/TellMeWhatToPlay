@@ -286,6 +286,7 @@ const Setlist = ({
       navigation={navigation}
       headerLeft={renderHeaderLeft()}
       headerMiddle={renderHeaderMiddle()}
+      bodyPaddingTop={80}
     >
       {showSearch && (
         <AppTextInput

@@ -16,8 +16,6 @@ export default StyleSheet.create({
     // fontFamily: 'montserrat-bold',
   },
   textCustomPos: {
-    // position: "absolute"
-    // top: -60
     marginTop: 40
   },
   close: {
@@ -26,16 +24,11 @@ export default StyleSheet.create({
     right: 0,
     height: 25,
     width: 25
-    // borderRadius: 25,
-    // borderColor: 'black',
-    // borderWidth: 1,
   },
   imageButton: {
     height: 70,
     width: width * 0.8,
     backgroundColor: "red",
-    // borderColor: 'white',
-    // borderWidth: 4,
     borderRadius: 100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },

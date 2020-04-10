@@ -3,9 +3,9 @@ import { TouchableOpacity, View, Image } from "react-native";
 import Logo from "src/images/logo.png";
 import styles from "./styles";
 
-const ListHeader = ({ home, headerLeft, headerMiddle, headerRight }) => {
+const ListHeader = ({ style, home, headerLeft, headerMiddle, headerRight }) => {
   return (
-    <View style={styles.root}>
+    <View style={{ ...styles.root, ...style }}>
       <View style={styles.left}>{headerLeft || <View />}</View>
       <View style={styles.middle}>{headerMiddle || <View />}</View>
       {headerRight ? (

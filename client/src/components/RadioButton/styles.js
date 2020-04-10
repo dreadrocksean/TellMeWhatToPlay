@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
+    // backgroundColor: "#ffffff77",
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-    marginRight: "20%"
+    justifyContent: "center",
+    alignItems: "center"
+    // marginBottom: 10
   },
   circle: {
     borderColor: "#ebca0b",

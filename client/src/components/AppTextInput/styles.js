@@ -10,7 +10,8 @@ export default StyleSheet.create({
   },
   root: {
     flexDirection: "row",
-    flex: 1
+    flex: 1,
+    alignItems: "center"
   },
   input: {
     color: "white",
@@ -21,8 +22,8 @@ export default StyleSheet.create({
     height: 60,
     borderColor: "#7a42f4",
     borderWidth: 1,
-    // marginBottom: 20,
     borderRadius: 15
+    // justifyContent: "center"
   },
   inputIcon: {
     width: 25,

@@ -173,7 +173,7 @@ const ArtistFormWrapper = ({
   };
 
   return (
-    <DefaultContainer navigation={navigation}>
+    <DefaultContainer navigation={navigation} bodyPaddingTop={20}>
       <ArtistForm
         handleChange={handleChange}
         handleRoleChange={handleRoleChange}
