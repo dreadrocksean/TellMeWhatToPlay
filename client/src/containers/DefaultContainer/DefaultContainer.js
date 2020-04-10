@@ -46,7 +46,7 @@ const DefaultContainer = ({
       {/*<Loading size="large" color="#ffff00" />*/}
     </View>
   ) : (
-    <View style={[styles.container, style]}>
+    <View style={[styles.root, style]}>
       <Background />
       <ListHeader
         style={{ ...styles.listHeader, ...headerStyles }}

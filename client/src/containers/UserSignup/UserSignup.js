@@ -21,17 +21,7 @@ const UserSignup = ({ navigation, userType }) => {
     navigation.replace(routeName);
   };
 
-  const renderHeaderMiddle = () => (
-    <View>
-      <Text style={styles.h1}>ACCOUNT</Text>
-    </View>
-  );
-
-  return (
-    <DefaultContainer style={styles.body} headerMiddle={renderHeaderMiddle()}>
-      <UserFormWrapper navigateTo={navigateTo} />
-    </DefaultContainer>
-  );
+  return <UserFormWrapper navigateTo={navigateTo} />;
 };
 
 const mapStateToProps = state => ({

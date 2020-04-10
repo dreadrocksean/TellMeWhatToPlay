@@ -64,47 +64,45 @@ const UserForm = ({
   };
 
   return (
-    <View>
-      <View style={styles.container}>
-        <KeyboardAwareScrollView
-          extraScrollHeight={extraScrollHeight}
-          style={styles.form}
-        >
-          {fields
-            .filter(
-              f =>
-                f.placeholder === "Email" ||
-                f.placeholder === "Password" ||
-                !hasAccount
-            )
-            .map((field, i) => (
-              <AppTextInput
-                key={i}
-                onFocus={handleOnFocus(i)}
-                style={styles.input}
-                placeholder={field.placeholder}
-                onChangeText={field.onChange}
-                value={field.value}
-                secureTextEntry={field.placeholder === "Password"}
-              />
-            ))}
-          <View>
-            <TouchableOpacity
-              onPress={onSubmit(hasAccount ? "LogIn" : "SignUp")}
-              style={styles.submitButton}
-            >
-              <Image source={hasAccount ? loginButton : signupButton} />
-            </TouchableOpacity>
-            <AppText style={styles.label} textStyle={styles.labelText}>
-              {hasAccount ? "DON'T" : "ALREADY"} HAVE AN ACCOUNT?
-            </AppText>
-            <TouchableOpacity onPress={onHasAccountChange(!hasAccount)}>
-              <AppText>{hasAccount ? "SIGNUP" : "LOG IN"}</AppText>
-            </TouchableOpacity>
-          </View>
-          <AppText textStyle={styles.error}>{errorMessage}</AppText>
-        </KeyboardAwareScrollView>
-      </View>
+    <View style={styles.root}>
+      <KeyboardAwareScrollView
+        extraScrollHeight={extraScrollHeight}
+        style={styles.form}
+      >
+        {fields
+          .filter(
+            f =>
+              f.placeholder === "Email" ||
+              f.placeholder === "Password" ||
+              !hasAccount
+          )
+          .map((field, i) => (
+            <AppTextInput
+              key={i}
+              onFocus={handleOnFocus(i)}
+              style={styles.input}
+              placeholder={field.placeholder}
+              onChangeText={field.onChange}
+              value={field.value}
+              secureTextEntry={field.placeholder === "Password"}
+            />
+          ))}
+        <View>
+          <TouchableOpacity
+            onPress={onSubmit(hasAccount ? "LogIn" : "SignUp")}
+            style={styles.submitButton}
+          >
+            <Image source={hasAccount ? loginButton : signupButton} />
+          </TouchableOpacity>
+          <AppText style={styles.label} textStyle={styles.labelText}>
+            {hasAccount ? "DON'T" : "ALREADY"} HAVE AN ACCOUNT?
+          </AppText>
+          <TouchableOpacity onPress={onHasAccountChange(!hasAccount)}>
+            <AppText>{hasAccount ? "SIGNUP" : "LOG IN"}</AppText>
+          </TouchableOpacity>
+        </View>
+        <AppText textStyle={styles.error}>{errorMessage}</AppText>
+      </KeyboardAwareScrollView>
     </View>
   );
 };

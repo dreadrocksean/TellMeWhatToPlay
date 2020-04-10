@@ -1,12 +1,16 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
-    marginTop: 15,
-    backgroundColor: "transparent"
+  root: {
+    // marginTop: 15,
+    flex: 1
+    // backgroundColor: "transparent",
+    // backgroundColor: "#ffffff70"
   },
   form: {
+    flex: 1,
     padding: 10
+    // backgroundColor: "#ffffff70"
   },
   input: {
     marginBottom: 10

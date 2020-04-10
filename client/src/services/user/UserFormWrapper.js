@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import styles from "./styles";
+
+import DefaultContainer from "src/containers/DefaultContainer";
 import {
   loginUser,
   signupUser,
@@ -34,6 +36,9 @@ const UserFormWrapper = ({
   const [hidePassword, setHidePassword] = useState(true);
 
   const resetErrorMessage = () => setErrorMessage("");
+  const renderHeaderMiddle = () => (
+    <AppText textStyle={[styles.text]}>ACCOUNT</AppText>
+  );
 
   const handleChange = field => val => {
     switch (field) {
@@ -73,16 +78,18 @@ const UserFormWrapper = ({
   };
 
   return (
-    <UserForm
-      hasAccount={hasAccount}
-      onHasAccountChange={onHasAccountChange}
-      handleChange={handleChange}
-      onSubmit={onSubmit}
-      fieldValues={{ email, password, fname, lname, zip }}
-      errorMessage={errorMessage}
-      togglePassword={togglePassword}
-      hidePassword={hidePassword}
-    />
+    <DefaultContainer style={styles.body} headerMiddle={renderHeaderMiddle()}>
+      <UserForm
+        hasAccount={hasAccount}
+        onHasAccountChange={onHasAccountChange}
+        handleChange={handleChange}
+        onSubmit={onSubmit}
+        fieldValues={{ email, password, fname, lname, zip }}
+        errorMessage={errorMessage}
+        togglePassword={togglePassword}
+        hidePassword={hidePassword}
+      />
+    </DefaultContainer>
   );
 };
 

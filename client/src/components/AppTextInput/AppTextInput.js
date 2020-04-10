@@ -54,7 +54,7 @@ const AppTextInput = ({
   return (
     <View style={{ ...styles.root, ...style }}>
       <TextInput
-        style={[styles.input]}
+        style={styles.input}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
         onChangeText={handleOnChangeText}
@@ -76,8 +76,8 @@ const AppTextInput = ({
         )}
       </TextInput>
       {secureTextEntry && (
-        <TouchableOpacity onPress={togglePassword}>
-          <Image resizeMode="contain" style={styles.inputIcon} source={icon} />
+        <TouchableOpacity style={styles.inputIcon} onPress={togglePassword}>
+          <Image resizeMode="contain" style={styles.image} source={icon} />
         </TouchableOpacity>
       )}
     </View>

@@ -1,15 +1,16 @@
 import { Dimensions, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
+  root: {
     // zIndex: 0,
     flex: 1,
     padding: 7
+    // justifyContent: "flex-start"
   },
   listHeader: {
-    zIndex: 1
-    // flex: 1,
     // backgroundColor: "#80800070",
+    zIndex: 1
+    // flex: 1
     // height: 50
   },
   children: {

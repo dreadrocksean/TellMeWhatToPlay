@@ -13,7 +13,14 @@ export default StyleSheet.create({
     flex: 1,
     alignItems: "center"
   },
+  image: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: "contain"
+  },
   input: {
+    // backgroundColor: "#0000ff70",
     color: "white",
     flex: 1,
     fontSize: 20,
@@ -23,15 +30,15 @@ export default StyleSheet.create({
     borderColor: "#7a42f4",
     borderWidth: 1,
     borderRadius: 15
-    // justifyContent: "center"
   },
   inputIcon: {
     width: 25,
-    height: 60,
     position: "absolute",
+    top: 0,
+    bottom: 0,
     right: 15,
     opacity: 0.5
-    // backgroundColor: 'grey',
+    // backgroundColor: "grey"
   },
   formattedWrapper: {
     flexDirection: "row",
