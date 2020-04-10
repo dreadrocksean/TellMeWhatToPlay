@@ -92,7 +92,7 @@ const Home = ({
               <Image source={artistButton} resizeMode={"cover"} />
             </View>
           </TouchableHighlight>
-          <AppText style={[styles.textCustomPos]}>PLEASE SELECT</AppText>
+          <AppText style={styles.textCustomPos}>PLEASE SELECT</AppText>
         </View>
       </View>
     </DefaultContainer>

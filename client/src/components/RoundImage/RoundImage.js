@@ -9,7 +9,7 @@ const RoundImage = ({ style, size: dimensions, source }) => {
     borderRadius: dimensions / 2
   };
   return (
-    <View style={[styles.avatarContainer, size, style]}>
+    <View style={{ ...styles.avatarContainer, ...style, ...size }}>
       <Image style={styles.avatarImage} source={source} resizeMode={"cover"} />
     </View>
   );

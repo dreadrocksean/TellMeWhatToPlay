@@ -16,8 +16,9 @@ export default StyleSheet.create({
     // fontFamily: 'montserrat-bold',
   },
   textCustomPos: {
-    position: "absolute",
-    top: -60
+    // position: "absolute"
+    // top: -60
+    marginTop: 40
   },
   close: {
     position: "absolute",

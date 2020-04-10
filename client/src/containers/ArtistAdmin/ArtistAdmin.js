@@ -2,15 +2,11 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { connect } from "react-redux";
 import {
   Platform,
-  StyleSheet,
   Text,
   Button,
   View,
-  AsyncStorage,
   Image,
-  Switch,
-  TouchableOpacity,
-  TouchableHighlight
+  TouchableOpacity
 } from "react-native";
 import { Constants, Camera, FileSystem } from "expo";
 import * as Permissions from "expo-permissions";
@@ -150,7 +146,7 @@ const ArtistAdmin = ({
 
   const renderOnAirImage = () => {
     const source = (artist || {}).live ? onAirButton : offAirButton;
-    return <Image style={[styles.button, { height: 50 }]} source={source} />;
+    return <Image style={styles.image} source={source} />;
   };
 
   const renderHeaderLeft = () => (
@@ -176,51 +172,57 @@ const ArtistAdmin = ({
               <AppText textStyle={styles.error}>{errorMessage}</AppText>
             )}
             <View style={styles.top}>
-              <RoundImage
-                source={{
-                  uri: artist.imageURL || cloudinaryConfig.userUrl
-                }}
-                style={{
-                  borderColor: "#ffd72b",
-                  borderWidth: 4
-                }}
-                size={150}
-              />
-              <AppText textStyle={styles.title}>{artist.name}</AppText>
-              <View>
-                <TouchableOpacity onPress={toggleOnAir}>
-                  {renderOnAirImage()}
-                </TouchableOpacity>
+              {
+                <View style={styles.topTop}>
+                  <RoundImage
+                    source={{
+                      uri: artist.imageURL || cloudinaryConfig.userUrl
+                    }}
+                    style={styles.profileImage}
+                    size={150}
+                  />
+                </View>
+              }
+              <View style={styles.topMiddle}>
+                <AppText textStyle={styles.title}>{artist.name}</AppText>
               </View>
+              <TouchableOpacity style={styles.topBottom} onPress={toggleOnAir}>
+                {renderOnAirImage()}
+              </TouchableOpacity>
             </View>
             <View style={styles.middle}>
-              <View style={styles.mainBox}>
-                <AppText textStyle={styles.h2}>Genre</AppText>
-                <AppText textStyle={styles.h3}>{artist.genre}</AppText>
-              </View>
-              <View style={styles.mainBox}>
-                <AppText textStyle={styles.h2}>Roles</AppText>
-                <AppText textStyle={styles.h3}>
-                  {(artist.roles || []).join(" | ")}
-                </AppText>
+              <View style={styles.info}>
+                <View style={styles.mainBox}>
+                  <AppText textStyle={styles.h2}>Genre</AppText>
+                  <AppText textStyle={styles.h3}>{artist.genre}</AppText>
+                </View>
+                <View style={styles.mainBox}>
+                  <AppText textStyle={styles.h2}>Roles</AppText>
+                  <AppText textStyle={styles.h3}>
+                    {(artist.roles || []).join(" | ")}
+                  </AppText>
+                </View>
               </View>
             </View>
             <View style={styles.bottom}>
-              <TouchableOpacity onPress={handleNavigate("SetList")}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleNavigate("SetList")}
+              >
                 <Image
-                  style={[styles.button, { height: 68 }]}
+                  style={[styles.image]}
                   source={manageSetlistButton}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
-              <View style={styles.row}>
-                <TouchableOpacity onPress={handleLogout}>
-                  <Image
-                    style={[styles.button, { height: 55 }]}
-                    source={logoutButton}
-                  />
-                </TouchableOpacity>
-                <Button onPress={handleArtistDelete} title="Delete" />
-              </View>
+              <TouchableOpacity style={styles.button} onPress={handleLogout}>
+                <Image
+                  style={[styles.image]}
+                  source={logoutButton}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+              {/*<Button onPress={handleArtistDelete} title="Delete" />*/}
             </View>
           </View>
         </DefaultContainer>
