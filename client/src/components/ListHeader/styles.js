@@ -4,12 +4,12 @@ export default StyleSheet.create({
   root: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // backgroundColor: "rgba(220,220,255,0.9)"
+    // backgroundColor: "rgba(220,220,255,0.9)",
     height: 50,
     overflow: "hidden",
     // alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20
+    justifyContent: "space-between"
+    // marginBottom: 20
   },
   logoWrap: {
     flex: 1

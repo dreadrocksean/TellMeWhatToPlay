@@ -2,8 +2,8 @@ import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   scroll: {
-    flex: 1,
-    marginTop: 60
+    flex: 1
+    // marginTop: 10
   },
   icon: {
     width: 30,

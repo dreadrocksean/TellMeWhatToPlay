@@ -9,7 +9,8 @@ export default StyleSheet.create({
     textAlign: "center"
   },
   root: {
-    flexDirection: "row"
+    flexDirection: "row",
+    flex: 1
   },
   input: {
     color: "white",

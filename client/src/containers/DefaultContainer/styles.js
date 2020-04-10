@@ -7,6 +7,7 @@ export default StyleSheet.create({
   },
   children: {
     flex: 1,
+    paddingTop: 10,
     // backgroundColor: "#80008070",
     justifyContent: "space-between"
   },

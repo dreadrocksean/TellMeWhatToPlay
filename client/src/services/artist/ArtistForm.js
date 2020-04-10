@@ -42,11 +42,13 @@ const ArtistForm = ({
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.formRoot}>
       <View style={styles.container}>
-        <ImageUpload
-          style={styles.imageUpload}
-          source={{ uri: photo }}
-          onPress={onPressCam}
-        />
+        <View style={styles.imageWrapper}>
+          <ImageUpload
+            style={styles.imageUpload}
+            source={{ uri: photo }}
+            onPress={onPressCam}
+          />
+        </View>
         <AppTextInput
           textStyle={styles.inputText}
           style={styles.input}
@@ -61,11 +63,11 @@ const ArtistForm = ({
           onChangeText={handleChange("genre")}
           value={genre}
         />
-        <Separator label="ROLES" />
+        <Separator style={styles.separator} label="ROLES" />
         <AppText textStyle={styles.h2} style={styles.sectionHeader}>
           ARTIST TYPE
         </AppText>
-        <View style={styles.section}>
+        <View style={[styles.section, styles.radioSection]}>
           {Object.keys(types).map((f, i) => (
             <RadioButton
               key={i}
@@ -78,21 +80,30 @@ const ArtistForm = ({
         <AppText textStyle={styles.h2} style={styles.sectionHeader}>
           INSTRUMENTS
         </AppText>
-        <View style={styles.section}>
+        <View style={[styles.section, styles.checkBoxSection]}>
           {roleKeys.map((f, i) => (
             <CheckBox
               key={i}
               checked={roles[f]}
               onPress={() => handleRoleChange(f)}
               label={f.toUpperCase()}
+              ellipsis
             />
           ))}
         </View>
         <TouchableOpacity style={styles.button} onPress={onSubmit}>
           {id ? (
-            <Image source={updateArtist} style={styles.image} />
+            <Image
+              source={updateArtist}
+              resizeMode="contain"
+              style={styles.image}
+            />
           ) : (
-            <Image source={createArtist} style={styles.image} />
+            <Image
+              source={createArtist}
+              resizeMode="contain"
+              style={styles.image}
+            />
           )}
         </TouchableOpacity>
         {!!errorMessage && (

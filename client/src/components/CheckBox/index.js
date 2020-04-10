@@ -13,7 +13,7 @@ import styles from "./styles.js";
 import Check from "src/images/icons/check_icon.png";
 import AppText from "src/components/AppText";
 
-const CheckBox = ({ onPress, checked, label, disabled }) => {
+const CheckBox = ({ onPress, checked, label, disabled, ellipsis }) => {
   const disabledStyles = disabled
     ? {
         opacity: 0.5
@@ -31,6 +31,7 @@ const CheckBox = ({ onPress, checked, label, disabled }) => {
       <AppText
         textStyle={styles.labelText}
         style={[styles.label, disabledStyles]}
+        numberOfLines={ellipsis ? 1 : 0}
       >
         {label}
       </AppText>

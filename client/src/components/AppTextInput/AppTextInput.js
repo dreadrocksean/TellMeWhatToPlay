@@ -52,9 +52,9 @@ const AppTextInput = ({
   // console.log("RENDER APPTEXTINPUT");
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, style]}>
       <TextInput
-        style={[styles.input, style]}
+        style={[styles.input]}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
         onChangeText={handleOnChangeText}

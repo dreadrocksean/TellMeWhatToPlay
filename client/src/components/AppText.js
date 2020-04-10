@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { ViewPropTypes, StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
-const AppText = ({ style, textStyle, numberOfLines, children }) => (
-  <View style={[style, { justifyContent: "center" }]}>
+const AppText = ({ style, textStyle, numberOfLines, children, ellipsis }) => (
+  <View style={{ justifyContent: "center", ...style }}>
     <Text
       style={{ ...styles.text, ...textStyle }}
       numberOfLines={numberOfLines}

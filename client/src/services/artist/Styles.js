@@ -5,22 +5,25 @@ export default StyleSheet.create({
   formRoot: {
     justifyContent: "space-between",
     flex: 1
+    // paddingHorizontal: 10
   },
   container: {
     justifyContent: "space-between",
-    padding: 10,
-    paddingTop: 0,
+    // padding: 10,
+    // paddingTop: 0,
     alignItems: "center",
     flex: 1
+    // backgroundColor: "teal"
   },
-  photoTouch: {
-    width: 150,
-    height: 150,
-    backgroundColor: "grey"
+  imageWrapper: {
+    flex: 10,
+    justifyContent: "center"
   },
   imageUpload: {
-    marginTop: -0,
-    marginBottom: 20
+    // flex: 1,
+    // marginBottom: 20,
+    width: 80,
+    height: 80
   },
   autocomplete: {
     position: "absolute",
@@ -43,15 +46,28 @@ export default StyleSheet.create({
     borderWidth: 1
   },
   input: {
-    marginBottom: 10
+    flex: 8,
+    // backgroundColor: "orange",
+    height: null,
+    alignSelf: "stretch"
+    // marginBottom: 10
+    // height: 60
+    // fontSize: 16
   },
   button: {
-    alignSelf: "center",
-    width: "100%",
-    marginTop: 20
+    // alignSelf: "flex-start",
+    flex: 10,
+    width: "100%"
+    // backgroundColor: "cyan",
+    // justifyContent: "flex-start"
+    // marginTop: 20
   },
   image: {
-    width: undefined,
+    flex: 1,
+    // width: "100%"
+    // height: 60
+    width: null,
+    height: null,
     resizeMode: "contain"
   },
   submitButtonText: {
@@ -62,17 +78,31 @@ export default StyleSheet.create({
     fontFamily: "montserrat-bold",
     color: "rgba(220,220,255,0.7)"
   },
+  separator: {
+    flex: 1
+  },
   sectionHeader: {
+    flex: 2,
     // marginTop: 10,
     marginBottom: 12,
     marginLeft: 15,
     alignSelf: "flex-start"
   },
+  radioSection: {
+    flex: 5
+  },
+  checkBoxSection: {
+    justifyContent: "space-between"
+  },
   section: {
+    flex: 10,
+    overflow: "hidden",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignSelf: "flex-start"
+    justifyContent: "space-around",
+    // alignSelf: "flex-start",
+    alignSelf: "stretch"
+    // backgroundColor: "pink"
   },
   error: {
     color: "red",
@@ -98,9 +128,9 @@ export default StyleSheet.create({
     alignSelf: "center",
     width: "50%"
     // marginBottom: 60
-  },
-  image: {
-    width: undefined,
-    resizeMode: "contain"
   }
+  // image: {
+  //   width: undefined,
+  //   resizeMode: "contain"
+  // }
 });

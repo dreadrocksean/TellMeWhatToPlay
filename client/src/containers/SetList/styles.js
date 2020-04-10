@@ -4,6 +4,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
+    paddingTop: 0,
     padding: 5
   },
   headerIconContatiner: {
@@ -22,8 +23,8 @@ export default StyleSheet.create({
     width: 25
   },
   scroll: {
-    flex: 1,
-    marginTop: 10
+    flex: 1
+    // marginTop: 10
   },
   text: {
     fontSize: 20,
