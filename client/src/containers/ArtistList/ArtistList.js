@@ -57,7 +57,11 @@ const ArtistList = ({ navigation, loadingStatus }) => {
         "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
       );
     } else {
-      _getLocationAsync();
+      try {
+        _getLocationAsync();
+      } catch (err) {
+        console.log("ArtistList useEffect ERR", err);
+      }
     }
     updateArtistList();
     return () => {
@@ -73,7 +77,6 @@ const ArtistList = ({ navigation, loadingStatus }) => {
       const { status } = await Permissions.askAsync(Permissions.LOCATION);
       if (status !== "granted") {
         setErrorMessage("Permission to access location was denied");
-        throw new Error("Permission to access location was denied");
       }
 
       locationRef.current = await Location.watchPositionAsync(

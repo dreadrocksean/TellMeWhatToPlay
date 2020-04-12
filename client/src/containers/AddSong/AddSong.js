@@ -155,6 +155,17 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     }
   };
 
+  const getLocalSongId = data => {
+    const found = setlist.find(v => {
+      return (
+        v.mbid.toLowerCase().trim() === data.mbid.toLowerCase().trim() ||
+        (v.title.toLowerCase().trim() === data.title.toLowerCase().trim() &&
+          v.artist.toLowerCase().trim() === data.artist.toLowerCase().trim())
+      );
+    });
+    return (found || {})._id;
+  };
+
   const addSong = async () => {
     if (!asIs && (!song || !song.title || !song.artist)) {
       updateState({ errorMessage: "Fields cannot be empty" });
@@ -165,16 +176,32 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
       artist: (asIs ? artistRef.current : song.artist).trim(),
       mbid: asIs ? null : song.mbid.trim()
     };
-    const res = await createDoc("song", data);
-    if (res.success) {
-      const data = res.data;
+    try {
+      const songId = getLocalSongId(data);
+      console.log("SONG EXISTS", songId);
+      const artistSongExists = !!songId && setlist.find(v => v._id === songId);
+      console.log("ARTISTSONGEXISTS", !!artistSongExists);
+      if (artistSongExists) throw new Error("Song already exists in setlist.");
+
+      let res;
+      if (!songId) {
+        res = await createDoc("song", data);
+        if (!res.success) throw new Error("Could not create new song");
+      }
       await updateDoc("artist", {
         _id: userArtistId,
         songs: [
           ...setlist,
-          { _id: data._id, votes: 0, currVotes: 0, visible: false }
+          {
+            _id: res.data._id,
+            votes: 0,
+            currVotes: 0,
+            visible: false
+          }
         ]
       });
+    } catch (err) {
+      console.log(err);
     }
     console.log("about to COMPLETE");
     complete();

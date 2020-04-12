@@ -279,12 +279,10 @@ const Setlist = ({
 
   const onDeleteConfirm = confirm => {
     if (confirm) {
-      console.log("SONGDELETEID", songDeleteIdRef.current);
       const { _id } = artist;
       const newSongs = songs.filter(
         song => song._id !== songDeleteIdRef.current
       );
-      console.log("NEWSONGS", newSongs.map(v => v.title));
       updateDoc("artist", { _id, songs: newSongs });
     }
     setModalContent(null);
