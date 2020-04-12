@@ -61,8 +61,8 @@ export default StyleSheet.create({
   info: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    paddingHorizontal: 10
+    alignItems: "flex-start"
+    // paddingHorizontal: 10
   },
   mainBox: {
     flex: 1,

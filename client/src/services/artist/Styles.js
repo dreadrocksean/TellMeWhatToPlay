@@ -46,7 +46,7 @@ export default StyleSheet.create({
     position: "relative",
     fontSize: 20,
     padding: 5,
-    height: 40,
+    // height: 40,
     width: width * 0.8,
     // borderColor: "#7a42f4",
     borderWidth: 1

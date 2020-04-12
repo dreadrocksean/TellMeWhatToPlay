@@ -1,7 +1,21 @@
 const styles = {
-  imageWrapper: {
+  test: {
     flex: 1,
-    width: "100%"
+    alignSelf: "stretch",
+    backgroundColor: "#ffffff70"
+  },
+  title: {
+    flex: 2,
+    alignSelf: "stretch"
+    // backgroundColor: "#00800070"
+  },
+  asis: {
+    alignItems: "center"
+    // backgroundColor: "#f3f3f360"
+  },
+  asIsLabel: {
+    width: 50
+    // backgroundColor: "#00800070"
   },
   image: {
     width: null,
@@ -9,20 +23,33 @@ const styles = {
     flex: 1,
     resizeMode: "contain"
   },
+  fieldsWrapper: {
+    alignSelf: "stretch",
+    flex: 1
+  },
   dropdown: {
+    // zIndex: 1,
     backgroundColor: "#f3f3f3",
     position: "absolute",
     left: 0,
-    top: 65,
+    top: 70,
     width: "100%",
-    height: 200,
+    height: 300,
+    // flex: 1,
     borderRadius: 15,
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderColor: "#dddddd",
     borderWidth: 2
   },
-  listHeading: {},
+  listHeading: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
+    backgroundColor: "#f3f3f3"
+  },
   listFooter: {},
   listHeadingText: {
     textAlign: "left",
@@ -41,31 +68,39 @@ const styles = {
     textAlign: "left"
   },
   inputContainer: {
-    width: "100%",
-    zIndex: 1
+    flex: 4,
+    alignSelf: "stretch"
+    // minHeight: 70
+    // backgroundColor: "#80800070",
+    // zIndex: 1
   },
   autocomplete: {
+    zIndex: 0,
     position: "absolute",
     left: 0,
-    top: 0,
-    width: "100%"
+    right: 0,
+    bottom: 0,
+    top: 0
   },
   input: {
+    alignSelf: "stretch",
+    padding: 5
+  },
+  inputText: {
     fontFamily: "montserrat-regular",
     fontSize: 20,
-    padding: 5,
-    height: 60,
-    borderColor: "#7a42f4",
-    borderWidth: 1,
-    color: "white",
-    marginBottom: 10
+    color: "white"
+  },
+  buttonWrapper: {
+    flex: 12,
+    alignSelf: "stretch",
+    justifyContent: "flex-end",
+    // backgroundColor: "#7a42f4",
+    zIndex: -1
   },
   submitButton: {
-    flex: 1,
-    backgroundColor: "#7a42f4",
-    padding: 10,
-    height: 40,
-    zIndex: 0
+    height: 60,
+    alignSelf: "stretch"
   },
   submitButtonText: {
     color: "white"

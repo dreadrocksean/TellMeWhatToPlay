@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -12,19 +12,20 @@ import continueButton from "src/images/buttons/continue_btn.png";
 import signupButton from "src/images/buttons/signup_button.png";
 
 import {
-  loginUser as storeLoginUser,
-  signupUser as storeSignupUser
+  loginUser,
+  signupUser,
+  setModalContent
 } from "src/store/actions/ActionCreator";
 import { getUser } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import { capitalize } from "src/utils/General";
 
-const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
+const FanSignup = ({ setModalContent, loginUser, signupUser }) => {
   const [email, setEmail] = useState("a@a.a");
   const [password, setPassword] = useState("1111");
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const hide = () => setShowModal(false);
+  const hide = () => setModalContent(null);
 
   const onModalChange = func => val => {
     setErrorMessage(null);
@@ -35,7 +36,7 @@ const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
     try {
       const res = await signupUser({ email, password });
       if (res.success) {
-        setShowModal(false);
+        hide();
       } else throw new Error(res.error);
     } catch (err) {
       console.log("ERR", err);
@@ -46,9 +47,8 @@ const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
   const handleContinue = async () => {
     try {
       const res = await loginUser({ email, password });
-      console.log("handleContinue RES", res);
       if (res.success) {
-        setShowModal(false);
+        hide();
       } else throw new Error(res.error);
     } catch (err) {
       console.log("ERR", err);
@@ -57,7 +57,7 @@ const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
   };
 
   return (
-    <Modal dismiss={hide}>
+    <Fragment>
       <View style={styles.children}>
         <AppText
           style={styles.child}
@@ -92,13 +92,14 @@ const FanSignup = ({ setShowModal, loginUser, signupUser }) => {
           <Image style={styles.image} source={signupButton} />
         </TouchableOpacity>
       )}
-    </Modal>
+    </Fragment>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  loginUser: payload => dispatch(storeLoginUser(payload)),
-  signupUser: payload => dispatch(storeSignupUser(payload))
+  loginUser: payload => dispatch(loginUser(payload)),
+  signupUser: payload => dispatch(signupUser(payload)),
+  setModalContent: payload => dispatch(setModalContent(payload))
 });
 
 export default connect(

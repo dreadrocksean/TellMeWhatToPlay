@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Text,
-  ScrollView
-} from "react-native";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import { connect } from "react-redux";
 // import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 

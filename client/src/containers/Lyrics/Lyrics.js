@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import styles from "./styles";
 
@@ -97,7 +98,7 @@ const Lyrics = ({
       {currSong.title}
     </AppText>
   );
-  console.log("CURRSONG has lyrics", !!currSong.lyrics);
+
   return (
     <DefaultContainer
       headerLeft={renderHeaderLeft()}
@@ -110,7 +111,9 @@ const Lyrics = ({
           </View>
         </ScrollView>
       ) : (
-        <LyricsForm onSubmit={saveLyrics} origLyrics={currSong.lyrics} />
+        <KeyboardAwareScrollView>
+          <LyricsForm onSubmit={saveLyrics} origLyrics={currSong.lyrics} />
+        </KeyboardAwareScrollView>
       )}
     </DefaultContainer>
   );

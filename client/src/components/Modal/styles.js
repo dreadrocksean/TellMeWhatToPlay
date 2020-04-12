@@ -1,22 +1,15 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "rgba(0,0,0,0.74)"
+    backgroundColor: "rgba(0,0,0,0.74)",
+    paddingVertical: 10
   },
-  window: {
-    // flex: 1,
+  modal: {
     width: "80%",
-    // minHeight: "60%",
-    // height: "80%",
     padding: 30,
     alignItems: "center",
     justifyContent: "space-around",

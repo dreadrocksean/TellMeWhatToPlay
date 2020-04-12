@@ -185,20 +185,23 @@ const ArtistList = ({ navigation, loadingStatus }) => {
     >
       {showSearch && (
         <AppTextInput
+          style={styles.search}
           placeholder="Start typing"
           onChangeText={search}
           value=""
         />
       )}
-      <ScrollView style={styles.scroll} pagingEnabled={true}>
-        {(getSortedArtists() || artists).map((artist, i) => (
-          <ArtistItem
-            key={i}
-            artist={artist}
-            showSetList={showSetList(artist)}
-          />
-        ))}
-      </ScrollView>
+      <View style={styles.scroll}>
+        <ScrollView pagingEnabled={true}>
+          {(getSortedArtists() || artists).map((artist, i) => (
+            <ArtistItem
+              key={i}
+              artist={artist}
+              showSetList={showSetList(artist)}
+            />
+          ))}
+        </ScrollView>
+      </View>
     </DefaultContainer>
   );
 };

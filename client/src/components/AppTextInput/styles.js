@@ -12,6 +12,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     alignItems: "center"
+    // backgroundColor: "#800000f0"
   },
   image: {
     flex: 1,
@@ -21,6 +22,7 @@ export default StyleSheet.create({
   },
   input: {
     // backgroundColor: "#0000ff70",
+    // alignSelf: "stretch",
     color: "white",
     flex: 1,
     fontSize: 20,

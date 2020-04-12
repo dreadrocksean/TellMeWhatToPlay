@@ -37,7 +37,7 @@ const UserFormWrapper = ({
 
   const resetErrorMessage = () => setErrorMessage("");
   const renderHeaderMiddle = () => (
-    <AppText textStyle={[styles.text]}>ACCOUNT</AppText>
+    <AppText textStyle={styles.text}>ACCOUNT</AppText>
   );
 
   const handleChange = field => val => {

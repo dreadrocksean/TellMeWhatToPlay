@@ -84,7 +84,7 @@ export const fetchUserArtist = req =>
     .catch(err => console.error("Error fetching User Artist: ", err));
 
 export const updateDoc = async (type, { _id, ...rest }) => {
-  console.log("UPDATEDOC TYPE", type);
+  // console.log("UPDATEDOC TYPE", type);
   try {
     const res = await db
       .collection(`${type}s`)

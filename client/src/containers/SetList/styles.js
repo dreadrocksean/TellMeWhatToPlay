@@ -15,6 +15,9 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
+  search: {
+    flex: 2
+  },
   close: {
     position: "absolute",
     top: 0,
@@ -23,7 +26,7 @@ export default StyleSheet.create({
     width: 25
   },
   scroll: {
-    flex: 1
+    flex: 12
     // marginTop: 10
   },
   text: {

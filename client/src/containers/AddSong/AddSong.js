@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import {
-  Dimensions,
-  StyleSheet,
+  Platform,
+  ScrollView,
+  Text,
   View,
   Image,
-  FlatList,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import styles from "./styles";
 import ArtistDropdown from "./ArtistDropdown";
-import Modal from "src/components/Modal";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
+import CheckBox from "src/components/CheckBox";
 import FormError from "src/components/FormError";
 import addSongButton from "src/images/buttons/add_song_btn2.png";
 
@@ -34,7 +36,7 @@ const init = {
   errorMessage: null
 };
 
-const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
+const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
   const [errorMessage, setErrorMessage] = useState(init.errorMessage);
   const [formattedTitle, setFormattedTitle] = useState(init.formattedTitle);
   const [formattedArtist, setFormattedArtist] = useState(init.formattedArtist);
@@ -51,11 +53,18 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
 
   const [songs, setSongs] = useState(init.songs);
   const [song, setSong] = useState(init.song);
+
   useEffect(() => {
     const formattedTitle = getFormattedStr(titleRef.current, song.title);
     const formattedArtist = getFormattedStr(artistRef.current, song.artist);
     updateState({ formattedTitle, formattedArtist });
   }, [song.title, song.artist, titleRef.current, artistRef.current]);
+
+  const [asIs, setAsIs] = useState(false);
+  useEffect(() => {
+    handleChange("title")(titleRef.current);
+    handleChange("artist")(artistRef.current);
+  }, [asIs]);
 
   const reset = () => {
     allSongsRef.current = [];
@@ -69,7 +78,7 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
 
   const hide = () => {
     reset();
-    setShow(false);
+    hideModal(false);
   };
 
   const updateState = ({ formattedTitle, formattedArtist, songs, song }) => {
@@ -100,7 +109,7 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
     updateState({ errorMessage: null });
     if (field === "title") {
       titleRef.current = value;
-      if (titleRef.current.trim().length < 3) {
+      if (titleRef.current.trim().length < 3 || asIs) {
         reset();
         return;
       }
@@ -150,9 +159,9 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
       return;
     }
     const data = {
-      title: song.title.trim(),
-      artist: song.artist.trim(),
-      mbid: song.mbid.trim()
+      title: (asIs ? titleRef.current : song.title).trim(),
+      artist: (asIs ? artistRef.current : song.artist).trim(),
+      mbid: asIs ? null : song.mbid.trim()
     };
     const res = await createDoc("song", data);
     if (res.success) {
@@ -175,32 +184,37 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
     updateState({ song });
   };
 
+  const onAsIs = () => {
+    setAsIs(!asIs);
+  };
+
   const renderAction = () => (
-    <TouchableOpacity
-      style={{ width: "100%", height: 50, marginTop: 10 }}
-      onPress={addSong}
-    >
+    <TouchableOpacity style={styles.submitButton} onPress={addSong}>
       <Image style={styles.image} source={addSongButton} />
     </TouchableOpacity>
   );
 
   return (
-    <Modal dismiss={hide}>
-      <AppText
-        style={{ flex: 1 }}
-        textStyle={{ fontFamily: "montserrat-regular" }}
-      >
-        ADD NEW SONG
-      </AppText>
+    <Fragment>
+      <AppText style={styles.title}>ADD NEW SONG</AppText>
+      <CheckBox
+        style={styles.asis}
+        labelStyle={styles.asIsLabel}
+        onPress={onAsIs}
+        checked={asIs}
+        label={asIs ? "As Is" : "Lookup"}
+      />
       {errorMessage && <FormError>{errorMessage}</FormError>}
       <View style={styles.inputContainer}>
         <AppTextInput
-          style={[styles.input, styles.autocomplete]}
+          style={{ ...styles.input, ...styles.autocomplete }}
+          textStyle={styles.inputText}
           placeholder={song.title || ""}
           editable={false}
         />
         <AppTextInput
           style={styles.input}
+          textStyle={styles.inputText}
           placeholder={song.title ? "" : "Title"}
           onChangeText={handleChange("title")}
           formattedValue={formattedTitle}
@@ -208,24 +222,27 @@ const AddSong = ({ setShow, userArtistId, setlist, complete }) => {
       </View>
       <View style={styles.inputContainer}>
         <AppTextInput
-          style={styles.autocomplete}
+          style={{ ...styles.input, ...styles.autocomplete }}
+          textStyle={styles.inputText}
           placeholder={song.artist || ""}
           editable={false}
         />
         <AppTextInput
           style={styles.input}
+          textStyle={styles.inputText}
           placeholder={song.artist ? "" : "Artist"}
           onChangeText={handleChange("artist")}
           formattedValue={formattedArtist}
         />
         <ArtistDropdown
+          style={styles.dropdown}
           data={songs}
           action={renderAction()}
           onPress={onDropdownPress}
         />
       </View>
-      {renderAction()}
-    </Modal>
+      <View style={styles.buttonWrapper}>{renderAction()}</View>
+    </Fragment>
   );
 };
 

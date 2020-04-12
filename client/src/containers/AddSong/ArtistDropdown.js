@@ -5,7 +5,7 @@ import styles from "./styles";
 import ArtistDropdownItem from "./ArtistDropdownItem";
 import AppText from "src/components/AppText";
 
-const ArtistDropdown = ({ data = [], onPress, action }) => {
+const ArtistDropdown = ({ style, data = [], onPress, action }) => {
   if (!data.length) {
     return null;
   }
@@ -19,8 +19,10 @@ const ArtistDropdown = ({ data = [], onPress, action }) => {
   };
 
   return (
-    <View style={styles.dropdown}>
-      <AppText textStyle={styles.listHeadingText}>SUGGESTED ARTISTS</AppText>
+    <View style={style}>
+      <View style={styles.listHeading}>
+        <AppText textStyle={styles.listHeadingText}>SUGGESTED ARTISTS</AppText>
+      </View>
       <FlatList
         data={data}
         renderItem={renderArtistItem}

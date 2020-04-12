@@ -10,7 +10,6 @@ import styles from "./styles";
 
 const UserSignup = ({ navigation, userType }) => {
   const navigateTo = (user, artist) => {
-    console.log("UserSignup navigateTo USER, ARTIST", user, artist);
     let routeName;
     if (!user) return; //set sture message here
     if (userType === UserType.ARTIST) {

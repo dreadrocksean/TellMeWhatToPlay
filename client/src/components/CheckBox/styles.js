@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     // marginRight: 15,
+    // backgroundColor: "#00800070",
     marginBottom: 12
   },
   box: {
@@ -24,12 +25,12 @@ const styles = StyleSheet.create({
   },
   label: {
     // marginLeft: 7
+    // backgroundColor: "#ffffff70"
   },
   labelText: {
     color: "#f3f3f3",
     fontSize: 11,
     fontFamily: "montserrat-bold",
-    width: 40,
     overflow: "hidden",
     textAlign: "left"
   }

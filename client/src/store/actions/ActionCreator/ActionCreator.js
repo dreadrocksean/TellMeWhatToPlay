@@ -31,6 +31,29 @@ export const guestTypeNone = () => ({
   type: AT.GuestTypeNone
 });
 
+// export const openModal = () => ({
+//   type: AT.OpenModal
+// });
+//
+// export const closeModal = () => ({
+//   type: AT.CloseModal
+// });
+
+export const setModalContent = content => ({
+  type: AT.SetModalContent,
+  payload: { content }
+});
+
+export const setModalHeight = height => ({
+  type: AT.SetModalHeight,
+  payload: { height }
+});
+
+export const hideModalCloseButton = hide => ({
+  type: AT.HideModalCloseButton,
+  payload: { hideCloseButton }
+});
+
 export const loadStoredUserArtist = () => async (dispatch, getState) => {
   try {
     await loginStorageUser()(dispatch, getState);
@@ -56,11 +79,10 @@ export const loginUser = credentials => async (dispatch, getState) => {
 };
 
 export const loginStorageUser = () => async (dispatch, getState) => {
-  console.log("LOGINSTORAGEUSER");
+  // console.log("LOGINSTORAGEUSER");
   try {
     const res = await loadStorage("user");
     if (!res || !res.data) throw "No user stored";
-    dispatch({ type: AT.LoginUser, payload: res.data });
     return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
@@ -81,7 +103,7 @@ export const signupUser = payload => async (dispatch, getState) => {
   }
 };
 
-export const addLyrics = ({ _id, lyrics }) => async (dispatch, getState) => {
+export const addLyrics = ({ _id, lyrics }) => async () => {
   if (!_id) return;
   try {
     const res = await updateDoc("song", { _id, lyrics });
@@ -95,14 +117,14 @@ export const addLyrics = ({ _id, lyrics }) => async (dispatch, getState) => {
 };
 
 export const newArtist = data => async (dispatch, getState) => {
-  console.log("NEW ARTIST");
+  // console.log("NEW ARTIST");
   if (data._id) {
     return updateArtist(data)(dispatch, getState);
   }
   try {
     const res = await createDoc("artist", data);
     const artist = res && res.data;
-    console.log("NEW ARTIST", artist);
+    // console.log("NEW ARTIST", artist);
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = artist
       ? "Artist Successfully Logged In"
@@ -132,7 +154,7 @@ export const updateArtist = data => async (dispatch, getState) => {
 export const loginArtist = userId => async (dispatch, getState) => {
   try {
     const res = await getDocs("artist", { userId });
-    console.log("Artist Logged In", userId, res);
+    // console.log("Artist Logged In", userId, res);
     const artist = res && res.data;
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = artist ? "Artist Successfully Logged In" : "Artist Not Found";
@@ -144,7 +166,7 @@ export const loginArtist = userId => async (dispatch, getState) => {
 };
 
 export const deleteArtist = artistId => async (dispatch, getState) => {
-  console.log("DELETEARTIST", deleteArtist);
+  // console.log("DELETEARTIST", deleteArtist);
   try {
     const res = await deleteDoc("artist", artistId);
     const artist = res && res.data;
@@ -162,7 +184,7 @@ export const deleteArtist = artistId => async (dispatch, getState) => {
 export const signUpArtist = payload => async (dispatch, getState) => {
   try {
     const res = await createArtist(payload);
-    console.log("RES", res);
+    // console.log("RES", res);
     dispatch({ type: AT.LoginArtist, payload: res.data });
     res.message = "Artist Successfully created";
     await saveStorage({ artist: res.data });
@@ -190,8 +212,7 @@ export const loginStorageArtist = () => async (dispatch, getState) => {
   }
 };
 
-export const logout = () => (dispatch, getState) => {
-  console.log("LOGOUT", logout);
+export const logout = () => dispatch => {
   saveStorage({ user: null, artist: null });
   dispatch({ type: AT.Logout });
 };

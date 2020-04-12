@@ -14,6 +14,7 @@ import { Button as RNButton, Icon } from "react-native-elements";
 
 import styles from "./styles";
 
+import Modal from "src/components/Modal";
 import Loading from "src/components/Loading";
 import Background from "src/components/Background";
 import ListHeader from "src/components/ListHeader";
@@ -46,7 +47,7 @@ const DefaultContainer = ({
       {/*<Loading size="large" color="#ffff00" />*/}
     </View>
   ) : (
-    <View style={[styles.root, style]}>
+    <View style={{ ...styles.root, ...style }}>
       <Background />
       <ListHeader
         style={{ ...styles.listHeader, ...headerStyles }}
@@ -56,6 +57,7 @@ const DefaultContainer = ({
         headerRight={headerRight}
       />
       <View style={{ ...styles.children, ...bodyStyles }}>{children}</View>
+      <Modal style={styles.modal} />
     </View>
   );
 };

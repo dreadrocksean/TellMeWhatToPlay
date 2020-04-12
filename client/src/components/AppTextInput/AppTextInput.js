@@ -22,7 +22,8 @@ const AppTextInput = ({
   secureTextEntry,
   editable = true,
   autoCapitalize,
-  style
+  style,
+  textStyle
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [visibleText, setVisibleText] = useState("");
@@ -54,7 +55,7 @@ const AppTextInput = ({
   return (
     <View style={{ ...styles.root, ...style }}>
       <TextInput
-        style={styles.input}
+        style={{ ...styles.input, ...textStyle }}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
         onChangeText={handleOnChangeText}

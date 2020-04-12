@@ -33,7 +33,12 @@ import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import SongItem from "src/components/SongItem";
 
-import { loadingStatus, updateCurrSong } from "src/store/actions/ActionCreator";
+import {
+  loadingStatus,
+  updateCurrSong,
+  setModalContent,
+  setModalHeight
+} from "src/store/actions/ActionCreator";
 import { updateDoc, deleteDoc } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import UserFormWrapper from "src/services/user/UserFormWrapper";
@@ -42,6 +47,8 @@ const db = firebase.firestore();
 
 const Setlist = ({
   authorized,
+  setModalContent,
+  setModalHeight,
   loadingStatus,
   myArtist,
   navigation,
@@ -196,7 +203,7 @@ const Setlist = ({
     const { navigate } = navigation;
     const newCurrVotes = currVotes + (sentiment ? 1 : -1);
     if (!isArtist && !authorized) {
-      setShowModal(true);
+      setModalContent(<FanSignup />);
       return;
     }
 
@@ -214,14 +221,26 @@ const Setlist = ({
     }
   };
 
+  const hideModal = () => setModalContent(null);
+
   const openAddForm = () => {
-    setAdd(true);
     setTitleComplete("");
     setArtistComplete("");
     setEdit_title("");
     setEdit_artist("");
     setTitle("");
     setSong_artist("");
+    if (isArtist) {
+      setModalContent(
+        <AddSong
+          hideModal={hideModal}
+          userArtistId={(myArtist || {})._id}
+          complete={updateSongList}
+          setlist={artistSongs}
+        />
+      );
+      setModalHeight(500);
+    }
   };
 
   const renderHeaderLeft = () => (
@@ -238,19 +257,23 @@ const Setlist = ({
   const renderHeaderMiddle = () => {
     const headerPreface = isArtist ? "MANAGE " : "";
     return (
-      <AppText textStyle={[styles.text, { fontSize: 16, color: "white" }]}>
+      <AppText
+        textStyle={{ ...styles.text, ...{ fontSize: 16, color: "white" } }}
+      >
         {headerPreface}SETLIST
       </AppText>
     );
   };
 
-  const handleSetShowModal = show => {
+  const handleHideModal = show => {
     setShowModal(show);
     setAdd(show);
   };
 
   const onDeleteSong = id => {
-    setShowDeleteModal(true);
+    setModalContent(
+      <DeleteModal confirm={onDeleteConfirm} hideModal={hideModal} />
+    );
     setSongDeleteId(id);
   };
 
@@ -260,7 +283,7 @@ const Setlist = ({
       const newSongs = songs.filter(song => song._id !== songDeleteId);
       updateDoc("artist", { _id, songs: newSongs });
     }
-    setShowDeleteModal(false);
+    setModalContent(null);
   };
 
   const toggleSearch = () => {
@@ -290,6 +313,7 @@ const Setlist = ({
     >
       {showSearch && (
         <AppTextInput
+          style={styles.search}
           placeholder="Start typing"
           onChangeText={search}
           value=""
@@ -303,41 +327,27 @@ const Setlist = ({
         </View>
       )}
       {!!songs.length && (
-        <ScrollView style={styles.scroll} pagingEnabled={true}>
-          {songs.map(
-            (song, i) =>
-              (song.visible || isArtist) && (
-                <SongItem
-                  key={i}
-                  song={song}
-                  userType={userType}
-                  liked={likes.indexOf(song._id) > -1}
-                  vote={vote}
-                  artistLiveStatus={artist.live}
-                  showEditForm={showEditForm(i, song._id)}
-                  showLyrics={showLyrics(i, song._id)}
-                  onDeleteSong={onDeleteSong}
-                  changeSongVisibility={changeSongVisibility}
-                />
-              )
-          )}
-        </ScrollView>
-      )}
-
-      {isArtist && add && (
-        <AddSong
-          setShow={handleSetShowModal}
-          userArtistId={(myArtist || {})._id}
-          complete={updateSongList}
-          setlist={artistSongs}
-        />
-      )}
-      {showModal && <FanSignup setShowModal={handleSetShowModal} />}
-      {showDeleteModal && (
-        <DeleteModal
-          confirm={onDeleteConfirm}
-          setShowModal={handleSetShowModal}
-        />
+        <View style={styles.scroll}>
+          <ScrollView pagingEnabled={true}>
+            {songs.map(
+              (song, i) =>
+                (song.visible || isArtist) && (
+                  <SongItem
+                    key={i}
+                    song={song}
+                    userType={userType}
+                    liked={likes.indexOf(song._id) > -1}
+                    vote={vote}
+                    artistLiveStatus={artist.live}
+                    showEditForm={showEditForm(i, song._id)}
+                    showLyrics={showLyrics(i, song._id)}
+                    onDeleteSong={onDeleteSong}
+                    changeSongVisibility={changeSongVisibility}
+                  />
+                )
+            )}
+          </ScrollView>
+        </View>
       )}
     </DefaultContainer>
   );
@@ -349,7 +359,9 @@ const isEqual = (prev, next) =>
 
 const mapDispatchToProps = dispatch => ({
   loadingStatus: status => dispatch(loadingStatus(status)),
-  updateCurrSong: song => dispatch(updateCurrSong(song))
+  updateCurrSong: song => dispatch(updateCurrSong(song)),
+  setModalContent: content => dispatch(setModalContent(content)),
+  setModalHeight: height => dispatch(setModalHeight(height))
 });
 
 const mapStateToProps = state => ({

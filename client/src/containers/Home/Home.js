@@ -58,7 +58,7 @@ const Home = ({
   };
 
   const getRouteName = type => {
-    console.log("USER, ARTIST", user, artist);
+    // console.log("USER, ARTIST", user, artist);
     switch (type) {
       case "ARTIST": {
         if (!user) return "UserSignup";

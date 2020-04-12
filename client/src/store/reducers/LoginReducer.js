@@ -1,4 +1,5 @@
 import * as AT from "src/store/actions/ActionTypes";
+import { saveStorage, loadStorage } from "src/services/LocalStorage";
 
 export const UserType = Object.freeze({
   FAN: "FAN",
@@ -19,9 +20,8 @@ const loginReducer = (state = initialState, action) => {
         authorized: true,
         user: { ...state.user, ...action.payload }
       };
-    // case AT.LoginArtist:
-    //   return { ...state, artist: { ...state.artist, ...action.payload } };
     case AT.Logout:
+      logout();
       return { ...state, authorized: false, artist: null, user: null };
     case AT.LoginError:
       return {
@@ -38,6 +38,10 @@ const loginReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+
+const logout = () => {
+  saveStorage({ user: null, artist: null });
 };
 
 export default loginReducer;

@@ -2,12 +2,15 @@ import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   scroll: {
-    flex: 1
+    flex: 12
     // marginTop: 10
   },
+  search: {
+    flex: 2
+  },
   icon: {
-    width: 30,
-    height: 30
+    width: 40,
+    height: 40
   },
   icons: {
     flexDirection: "row",

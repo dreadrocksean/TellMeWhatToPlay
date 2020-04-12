@@ -13,7 +13,15 @@ import styles from "./styles.js";
 import Check from "src/images/icons/check_icon.png";
 import AppText from "src/components/AppText";
 
-const CheckBox = ({ onPress, checked, label, disabled, ellipsis }) => {
+const CheckBox = ({
+  style,
+  labelStyle,
+  onPress,
+  checked,
+  label,
+  disabled,
+  ellipsis
+}) => {
   const disabledStyles = disabled
     ? {
         opacity: 0.5
@@ -21,16 +29,16 @@ const CheckBox = ({ onPress, checked, label, disabled, ellipsis }) => {
     : {};
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={{ ...styles.container, ...style }}
       onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >
-      <View style={[styles.box, disabledStyles]}>
+      <View style={{ ...styles.box, ...disabledStyles }}>
         {checked && <Image style={styles.image} source={Check} />}
       </View>
       <AppText
-        textStyle={styles.labelText}
-        style={[styles.label, disabledStyles]}
+        textStyle={{ ...styles.labelText, ...labelStyle }}
+        style={{ ...styles.label, ...disabledStyles }}
         numberOfLines={ellipsis ? 1 : 0}
       >
         {label}

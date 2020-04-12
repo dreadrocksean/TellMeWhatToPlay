@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import { ViewPropTypes, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { ViewPropTypes, Text, View } from "react-native";
 import PropTypes from "prop-types";
+import styles from "./styles";
 
 const AppText = ({ style, textStyle, numberOfLines, children, ellipsis }) => (
-  <View style={{ justifyContent: "center", ...style }}>
+  <View style={{ ...styles.root, ...style }}>
     <Text
       style={{ ...styles.text, ...textStyle }}
       numberOfLines={numberOfLines}
@@ -12,16 +13,6 @@ const AppText = ({ style, textStyle, numberOfLines, children, ellipsis }) => (
     </Text>
   </View>
 );
-
-const styles = StyleSheet.create({
-  text: {
-    fontFamily: "montserrat-bold",
-    color: "rgba(220,220,255,0.9)",
-    fontWeight: "bold",
-    fontSize: 20,
-    textAlign: "center"
-  }
-});
 
 AppText.propTypes = {
   style: PropTypes.oneOfType([
