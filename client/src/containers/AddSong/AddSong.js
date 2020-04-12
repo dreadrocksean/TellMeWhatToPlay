@@ -58,12 +58,12 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     const formattedTitle = getFormattedStr(titleRef.current, song.title);
     const formattedArtist = getFormattedStr(artistRef.current, song.artist);
     updateState({ formattedTitle, formattedArtist });
+    filterByArtist();
   }, [song.title, song.artist, titleRef.current, artistRef.current]);
 
   const [asIs, setAsIs] = useState(false);
   useEffect(() => {
     handleChange("title")(titleRef.current);
-    handleChange("artist")(artistRef.current);
   }, [asIs]);
 
   const reset = () => {
@@ -81,7 +81,10 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     hideModal(false);
   };
 
-  const updateState = ({ formattedTitle, formattedArtist, songs, song }) => {
+  const updateState = (
+    { formattedTitle, formattedArtist, songs, song },
+    cb
+  ) => {
     if (!_isMountedRef.current) return;
     if (typeof formattedTitle !== "undefined")
       setFormattedTitle(formattedTitle);
@@ -91,9 +94,9 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     if (typeof song !== "undefined") setSong(song);
   };
 
-  const getFormattedStr = (str, strComplete) => {
+  const getFormattedStr = (str = "", strComplete = "") => {
     const strFormatted = {};
-    const pos = (strComplete || "").toLowerCase().indexOf(str.toLowerCase());
+    const pos = strComplete.toLowerCase().indexOf(str.toLowerCase());
     if (pos > -1 && strComplete) {
       const l = str.length;
       strFormatted.invisible = strComplete.substr(0, pos);
@@ -105,7 +108,16 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     return strFormatted;
   };
 
-  const handleChange = field => async value => {
+  const filterByArtist = val => {
+    artistRef.current = typeof val !== "undefined" ? val : artistRef.current;
+    console.log("filterByArtist ARTISTREF.CURRENT", artistRef.current);
+    const filteredSongs = (allSongsRef.current || []).filter(v =>
+      v.artist.toLowerCase().includes(artistRef.current.toLowerCase())
+    );
+    updateState({ songs: filteredSongs, song: filteredSongs[0] });
+  };
+
+  const handleChange = field => async (value = "") => {
     updateState({ errorMessage: null });
     if (field === "title") {
       titleRef.current = value;
@@ -124,13 +136,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
           init.song;
         updateState({ songs: allSongsRef.current, song: bestSong });
       } catch (err) {}
-    } else {
-      artistRef.current = value;
-      const filteredSongs = (allSongsRef.current || []).filter(v =>
-        v.artist.toLowerCase().includes(value.toLowerCase())
-      );
-      updateState({ songs: filteredSongs, song: filteredSongs[0] });
-    }
+    } else filterByArtist(value);
   };
 
   const fetchSongSuggestionList = async payload => {
@@ -192,11 +198,15 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
   );
 
   return (
-    <Fragment>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, alignSelf: "stretch" }}
+    >
       <AppText style={styles.title}>ADD NEW SONG</AppText>
       <CheckBox
         style={styles.asis}
         labelStyle={styles.asIsLabel}
+        checkBoxStyle={styles.asIsCheckBox}
         onPress={onAsIs}
         checked={asIs}
         label={asIs ? "As Is" : "Lookup"}
@@ -239,7 +249,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
         />
       </View>
       <View style={styles.buttonWrapper}>{renderAction()}</View>
-    </Fragment>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#ffffff70"
   },
   labelText: {
-    color: "#f3f3f3",
+    // color: "#f3f3f3",
     fontSize: 11,
     fontFamily: "montserrat-bold",
     overflow: "hidden",

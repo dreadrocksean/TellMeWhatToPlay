@@ -10,9 +10,15 @@ const styles = {
     // backgroundColor: "#00800070"
   },
   asis: {
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center"
     // backgroundColor: "#f3f3f360"
   },
+  asIsCheckBox: {
+    borderColor: "rgba(220,220,255,0.9)"
+    // backgroundColor: "#f3f3f360"
+  },
+
   asIsLabel: {
     width: 50
     // backgroundColor: "#00800070"
@@ -46,13 +52,13 @@ const styles = {
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 1,
+    shadowRadius: 0,
     elevation: 1,
     backgroundColor: "#f3f3f3"
   },
   listFooter: {},
   listHeadingText: {
-    textAlign: "left",
+    textAlign: "center",
     color: "#c4c4c4",
     fontSize: 11
   },

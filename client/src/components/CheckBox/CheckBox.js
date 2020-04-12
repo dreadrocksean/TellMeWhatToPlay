@@ -16,6 +16,7 @@ import AppText from "src/components/AppText";
 const CheckBox = ({
   style,
   labelStyle,
+  checkBoxStyle,
   onPress,
   checked,
   label,
@@ -33,7 +34,7 @@ const CheckBox = ({
       onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >
-      <View style={{ ...styles.box, ...disabledStyles }}>
+      <View style={{ ...styles.box, ...disabledStyles, ...checkBoxStyle }}>
         {checked && <Image style={styles.image} source={Check} />}
       </View>
       <AppText
