@@ -22,12 +22,13 @@ export default StyleSheet.create({
   },
   buttonContainer: {
     flex: 2,
+    alignSelf: "stretch",
     marginTop: 20
   },
   image: {
     flex: 1,
     width: null,
-    height: null,
+    height: 60,
     resizeMode: "contain"
   }
 });

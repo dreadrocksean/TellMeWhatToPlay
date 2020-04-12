@@ -154,7 +154,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
   };
 
   const addSong = async () => {
-    if (!song || !song.title || !song.artist) {
+    if (!asIs && (!song || !song.title || !song.artist)) {
       updateState({ errorMessage: "Fields cannot be empty" });
       return;
     }
@@ -163,6 +163,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
       artist: (asIs ? artistRef.current : song.artist).trim(),
       mbid: asIs ? null : song.mbid.trim()
     };
+    console.log("addSong DATA", data);
     const res = await createDoc("song", data);
     if (res.success) {
       const data = res.data;
@@ -180,13 +181,9 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     hide();
   };
 
-  const onDropdownPress = song => {
-    updateState({ song });
-  };
+  const onDropdownPress = song => updateState({ song });
 
-  const onAsIs = () => {
-    setAsIs(!asIs);
-  };
+  const onAsIs = () => setAsIs(!asIs);
 
   const renderAction = () => (
     <TouchableOpacity style={styles.submitButton} onPress={addSong}>

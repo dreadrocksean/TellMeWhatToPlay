@@ -10,6 +10,10 @@ export default StyleSheet.create({
     fontSize: 20,
     color: "#d4d4d4"
   },
+  textSuggestion: {
+    fontStyle: "italic",
+    color: "#ffd000"
+  },
   iconWrapper: {
     // backgroundColor: "white",
     // flex: 1,

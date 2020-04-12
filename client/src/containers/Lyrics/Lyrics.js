@@ -17,6 +17,7 @@ import {
 import editIcon from "src/images/icons/edit_btn.png";
 
 const apology = "Sorry, no lyrics available.";
+const suggestion = "Feel free to add lyrics with the edit button.";
 
 const Lyrics = ({
   navigation,
@@ -107,7 +108,14 @@ const Lyrics = ({
       {!edit ? (
         <ScrollView>
           <View style={styles.container}>
-            <Text style={styles.text}>{currSong.lyrics || apology}</Text>
+            {currSong.lyrics ? (
+              <Text style={styles.text}>{currSong.lyrics}</Text>
+            ) : (
+              <>
+                <Text style={styles.text}>{apology}</Text>
+                <Text style={styles.textSuggestion}>{suggestion}</Text>
+              </>
+            )}
           </View>
         </ScrollView>
       ) : (
