@@ -81,10 +81,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     hideModal(false);
   };
 
-  const updateState = (
-    { formattedTitle, formattedArtist, songs, song },
-    cb
-  ) => {
+  const updateState = ({ formattedTitle, formattedArtist, songs, song }) => {
     if (!_isMountedRef.current) return;
     if (typeof formattedTitle !== "undefined")
       setFormattedTitle(formattedTitle);
@@ -110,7 +107,6 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
 
   const filterByArtist = val => {
     artistRef.current = typeof val !== "undefined" ? val : artistRef.current;
-    console.log("filterByArtist ARTISTREF.CURRENT", artistRef.current);
     const filteredSongs = (allSongsRef.current || []).filter(v =>
       v.artist.toLowerCase().includes(artistRef.current.toLowerCase())
     );
@@ -169,7 +165,6 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
       artist: (asIs ? artistRef.current : song.artist).trim(),
       mbid: asIs ? null : song.mbid.trim()
     };
-    console.log("addSong DATA", data);
     const res = await createDoc("song", data);
     if (res.success) {
       const data = res.data;
