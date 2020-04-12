@@ -67,7 +67,7 @@ const AppTextInput = ({
       >
         {!!formattedValue.visible ? (
           <Text style={styles.formattedWrapper}>
-            <Text style={[styles.formattedText, styles.invisible]}>
+            <Text style={{ ...styles.formattedText, ...styles.invisible }}>
               {formattedValue.invisible}
             </Text>
             <Text style={styles.formattedText}>{formattedValue.visible}</Text>

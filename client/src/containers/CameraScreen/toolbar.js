@@ -49,7 +49,10 @@ export default ({
           onPress={onShortCapture}
         >
           <View
-            style={[styles.captureBtn, capturing && styles.captureBtnActive]}
+            style={{
+              ...styles.captureBtn,
+              ...(capturing ? styles.captureBtnActive : {})
+            }}
           >
             {capturing && <View style={styles.captureBtnInternal} />}
           </View>

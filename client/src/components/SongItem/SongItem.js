@@ -88,11 +88,11 @@ class SongItem extends Component {
 
     return (
       <View style={styles.root}>
-        <View style={[styles.itemLeft, { flex: 4 }]}>
+        <View style={{ ...styles.itemLeft, flex: 4 }}>
           <ListItemIcon onPress={showLyrics} icon={lyricsIcon} />
         </View>
 
-        <View style={[styles.itemInfo, { flex: 20 }]}>
+        <View style={{ ...styles.itemInfo, flex: 20 }}>
           <AppText
             numberOfLines={2}
             textStyle={{

@@ -84,7 +84,7 @@ const Home = ({
           </TouchableHighlight>
           <View style={styles.textSeparator}>
             <View style={styles.line} />
-            <AppText style={[{ flex: 2 }]}>OR</AppText>
+            <AppText style={{ flex: 2 }}>OR</AppText>
             <View style={styles.line} />
           </View>
           <TouchableHighlight onPress={onClick("ARTIST")}>

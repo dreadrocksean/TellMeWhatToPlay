@@ -210,14 +210,14 @@ const ArtistAdmin = ({
                 onPress={handleNavigate("SetList")}
               >
                 <Image
-                  style={[styles.image]}
+                  style={styles.image}
                   source={manageSetlistButton}
                   resizeMode="contain"
                 />
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={handleLogout}>
                 <Image
-                  style={[styles.image]}
+                  style={styles.image}
                   source={logoutButton}
                   resizeMode="contain"
                 />

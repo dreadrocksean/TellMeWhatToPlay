@@ -174,7 +174,7 @@ const ArtistList = ({ navigation, loadingStatus }) => {
   );
 
   const renderHeaderMiddle = () => (
-    <AppText textStyle={[styles.text]}>ARTIST LIST</AppText>
+    <AppText textStyle={styles.text}>ARTIST LIST</AppText>
   );
 
   return (

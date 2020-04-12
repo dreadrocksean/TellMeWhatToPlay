@@ -52,11 +52,11 @@ const Loading = ({ color, size }) => {
   };
 
   return (
-    <View style={[styles.root, style]}>
+    <View style={{ ...styles.root, ...style }}>
       {[...Array(barCount)].map((_, i) => (
         <Animated.View
           key={i}
-          style={[styles.bar, { height: heightsRef.current[i] }]}
+          style={{ ...styles.bar, height: heightsRef.current[i] }}
         />
       ))}
     </View>

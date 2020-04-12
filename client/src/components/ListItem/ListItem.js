@@ -10,7 +10,7 @@ const ListItem = props => {
 
   return (
     <View style={styles.itemContainer}>
-      <View style={[styles.item, styles[itemStyle]]}>
+      <View style={{ ...styles.item, ...styles[itemStyle] }}>
         <TouchableOpacity
           style={styles.button}
           onPress={props.onClick}

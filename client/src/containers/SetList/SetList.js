@@ -61,6 +61,7 @@ const Setlist = ({
   const unsubscribeArtistRef = useRef(() => {});
   const unsubscribeSongRefs = useRef([]);
   const initialGetRef = useRef(true);
+  const songDeleteIdRef = useRef(null);
 
   const [title, setTitle] = useState(null);
   const [song_artist, setSong_artist] = useState(null);
@@ -82,7 +83,6 @@ const Setlist = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [songDeleteId, setSongDeleteId] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
@@ -274,13 +274,17 @@ const Setlist = ({
     setModalContent(
       <DeleteModal confirm={onDeleteConfirm} hideModal={hideModal} />
     );
-    setSongDeleteId(id);
+    songDeleteIdRef.current = id;
   };
 
   const onDeleteConfirm = confirm => {
     if (confirm) {
+      console.log("SONGDELETEID", songDeleteIdRef.current);
       const { _id } = artist;
-      const newSongs = songs.filter(song => song._id !== songDeleteId);
+      const newSongs = songs.filter(
+        song => song._id !== songDeleteIdRef.current
+      );
+      console.log("NEWSONGS", newSongs.map(v => v.title));
       updateDoc("artist", { _id, songs: newSongs });
     }
     setModalContent(null);

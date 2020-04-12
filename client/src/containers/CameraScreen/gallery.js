@@ -6,7 +6,7 @@ import styles from "./styles";
 export default ({ captures = [], onPress }) => (
   <ScrollView
     horizontal={true}
-    style={[styles.bottomToolbar, styles.galleryContainer]}
+    style={{ ...styles.bottomToolbar, ...styles.galleryContainer }}
   >
     {captures.map(({ uri, base64 }) => (
       <TouchableOpacity

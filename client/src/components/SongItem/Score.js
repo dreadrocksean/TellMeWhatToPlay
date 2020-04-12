@@ -20,7 +20,7 @@ const Score = ({ icon, votes, disabled, short = false }) => {
     : null;
 
   return (
-    <View style={[styles.score, shortScoreStyle, disabledStyles]}>
+    <View style={{ ...styles.score, ...shortScoreStyle, ...disabledStyles }}>
       {icon && (
         <View style={styles.scoreIcon}>
           <Image source={icon} style={styles.gImage} />

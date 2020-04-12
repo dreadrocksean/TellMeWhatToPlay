@@ -28,11 +28,11 @@ const RadioButton = ({ onPress, checked, label, disabled }) => {
       activeOpacity={disabled ? 1 : 0.2}
     >
       <View
-        style={[styles.circle, { backgroundColor: bg }, disabledStyles]}
+        style={{ ...styles.circle, backgroundColor: bg, ...disabledStyles }}
       ></View>
       <AppText
         textStyle={styles.labelText}
-        style={[styles.label, disabledStyles]}
+        style={{ ...styles.label, ...disabledStyles }}
       >
         {label}
       </AppText>

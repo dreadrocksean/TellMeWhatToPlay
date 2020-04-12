@@ -6,7 +6,7 @@ import AppText from "src/components/AppText";
 import Icon from "src/images/icons/danger_icon.png";
 
 const FormError = ({ children, style }) => (
-  <View style={[styles.container, style]}>
+  <View style={{ ...styles.container, ...style }}>
     <Image source={Icon} style={styles.icon} resizeMode="contain" />
     <AppText textStyle={styles.text}>{children}</AppText>
   </View>

@@ -201,23 +201,25 @@ class MaterialSwitch extends Component {
             top: 1,
             left: 1
           }}>
-          <Animated.View style={[{
-              backgroundColor:
-                this.state.state
-                  ? (this.state.pressed? this.props.activeButtonPressedColor : this.props.activeButtonColor)
-                  : (this.state.pressed? this.props.inactiveButtonPressedColor : this.props.inactiveButtonPressedColor),
-              height: this.props.buttonRadius*2,
-              width: this.props.buttonRadius*2,
-              borderRadius: this.props.buttonRadius,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              position: 'absolute',
-              top: halfPadding + this.props.switchHeight/2 - this.props.buttonRadius,
-              left: this.props.switchHeight/2 > this.props.buttonRadius ? halfPadding : halfPadding + this.props.switchHeight/2 - this.props.buttonRadius,
-              transform: [{ translateX: this.state.position }]
-            },
-            this.props.buttonShadow]}
+          <Animated.View style={
+              ...{
+                backgroundColor:
+                  this.state.state
+                    ? (this.state.pressed? this.props.activeButtonPressedColor : this.props.activeButtonColor)
+                    : (this.state.pressed? this.props.inactiveButtonPressedColor : this.props.inactiveButtonPressedColor),
+                height: this.props.buttonRadius*2,
+                width: this.props.buttonRadius*2,
+                borderRadius: this.props.buttonRadius,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                position: 'absolute',
+                top: halfPadding + this.props.switchHeight/2 - this.props.buttonRadius,
+                left: this.props.switchHeight/2 > this.props.buttonRadius ? halfPadding : halfPadding + this.props.switchHeight/2 - this.props.buttonRadius,
+                transform: [{ translateX: this.state.position }]
+              },
+              ...this.props.buttonShadow
+            }
             {...this._panResponder.panHandlers}
           >
             {this.props.buttonContent}

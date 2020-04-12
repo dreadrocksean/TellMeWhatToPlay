@@ -64,7 +64,7 @@ const ArtistForm = ({
           value={genre}
         />
         <Separator style={styles.separator} label="ARTIST TYPE" />
-        <View style={[styles.section, styles.radioSection]}>
+        <View style={{ ...styles.section, ...styles.radioSection }}>
           {Object.keys(types).map((f, i) => (
             <RadioButton
               key={i}
@@ -75,7 +75,7 @@ const ArtistForm = ({
           ))}
         </View>
         <Separator style={styles.separator} label="INSTRUMENTS" />
-        <View style={[styles.section, styles.checkBoxSection]}>
+        <View style={{ ...styles.section, ...styles.checkBoxSection }}>
           {roleKeys.map((f, i) => (
             <CheckBox
               key={i}

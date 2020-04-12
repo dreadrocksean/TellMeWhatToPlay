@@ -10,7 +10,7 @@ const ListItemIcon = props => {
     <TouchableOpacity onPress={props.onPress}>
       <View>
         <Image
-          style={[styles.image, props.styles]}
+          style={{ ...styles.image, ...props.styles }}
           source={props.icon}
           resizeMode={"cover"}
         />

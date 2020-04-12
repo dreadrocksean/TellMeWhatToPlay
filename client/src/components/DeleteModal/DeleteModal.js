@@ -14,7 +14,7 @@ const DeleteModal = ({ confirm }) => {
     <View style={styles.container}>
       <AppText
         style={{ flex: 1 }}
-        textStyle={[styles.text, { color: "white" }]}
+        textStyle={{ ...styles.text, color: "white" }}
       >
         DELETE SONG
       </AppText>
