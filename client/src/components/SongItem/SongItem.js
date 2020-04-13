@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { useState, useEffect, useRef, useMemo, memo } from "react";
 import {
   TouchableHighlight,
   TouchableOpacity,
@@ -23,29 +23,30 @@ import muteButton from "src/images/buttons/mute_btn.png";
 import unmuteButton from "src/images/buttons/unmute_btn.png";
 import trashButton from "src/images/buttons/trash_btn.png";
 
-class SongItem extends Component {
-  static defaultProps = {};
+const SongItem = ({
+  navigation,
+  userType,
+  song,
+  onDeleteSong,
+  showLyrics,
+  vote,
+  liked,
+  artistLiveStatus,
+  changeSongVisibility
+}) => {
+  const [isArtist, setIsArtist] = useState(userType === UserType.ARTIST);
+  const [muted, setMuted] = useState(!song.visible);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isArtist: props.userType === UserType.ARTIST,
-      muted: !props.song.visible
-    };
-  }
-
-  changeSongVisibility = () => {
-    this.props.changeSongVisibility(this.props.song._id, this.state.muted);
-    this.setState({ muted: !this.state.muted });
+  const handleChangeSongVisibility = () => {
+    changeSongVisibility(song._id, muted);
+    setMuted(!muted);
   };
 
-  onDeleteSong = () => this.props.onDeleteSong(this.props.song._id);
+  const handleDeleteSong = () => onDeleteSong(song._id);
 
-  renderArtistSongItem = () => {
-    const { showLyrics, song } = this.props;
+  const renderArtistSongItem = () => {
     const { _id, title, artist } = song;
-    const currVotes = this.props.song.currVotes || 0;
-    const { muted } = this.state;
+    const currVotes = song.currVotes || 0;
     const titleColor = muted ? "#4d4d4d" : "#3c2385";
 
     return (
@@ -72,17 +73,16 @@ class SongItem extends Component {
 
         <View style={styles.itemRight}>
           <ListItemIcon
-            onPress={this.changeSongVisibility}
+            onPress={handleChangeSongVisibility}
             icon={muted ? unmuteButton : muteButton}
           />
-          <ListItemIcon onPress={this.onDeleteSong} icon={trashButton} />
+          <ListItemIcon onPress={handleDeleteSong} icon={trashButton} />
         </View>
       </View>
     );
   };
 
-  renderFanSongItem = () => {
-    const { vote, liked, showLyrics, song } = this.props;
+  const renderFanSongItem = () => {
     const { _id, title, artist } = song;
     const currVotes = song.currVotes || 0;
 
@@ -129,22 +129,15 @@ class SongItem extends Component {
     );
   };
 
-  render() {
-    const { artistLiveStatus, song } = this.props;
-    const { visible } = song;
-    const showSong = this.state.isArtist || (visible && artistLiveStatus);
-    if (!showSong) {
-      return null;
-    }
+  const showSong = isArtist || (song.visible && artistLiveStatus);
 
-    return (
-      <ListItem disabled={!visible}>
-        {this.state.isArtist
-          ? this.renderArtistSongItem()
-          : this.renderFanSongItem()}
-      </ListItem>
-    );
-  }
-}
+  return showSong ? (
+    <ListItem disabled={!song.visible}>
+      {isArtist ? renderArtistSongItem() : renderFanSongItem()}
+    </ListItem>
+  ) : null;
+};
 
-export default SongItem;
+SongItem.defaultProps = {};
+
+export default memo(SongItem);
