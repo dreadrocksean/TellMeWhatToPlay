@@ -12,6 +12,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import styles from "./styles";
+
 import ArtistDropdown from "./ArtistDropdown";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
@@ -23,7 +24,8 @@ import {
   fetchLastFMSong,
   createSong,
   createDoc,
-  updateDoc
+  updateDoc,
+  getDocs
 } from "src/services/api";
 import { saveStorage } from "src/services/LocalStorage";
 import { width, height } from "src/utils/General";
@@ -155,15 +157,14 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     }
   };
 
-  const getLocalSongId = data => {
-    const found = setlist.find(v => {
-      return (
-        v.mbid.toLowerCase().trim() === data.mbid.toLowerCase().trim() ||
-        (v.title.toLowerCase().trim() === data.title.toLowerCase().trim() &&
-          v.artist.toLowerCase().trim() === data.artist.toLowerCase().trim())
-      );
-    });
-    return (found || {})._id;
+  const findSong = async data => {
+    try {
+      const res = await getDocs("song", data);
+      return Promise.resolve(res.data);
+    } catch (err) {
+      console.log("ERR", err);
+      return Promise.reject(err);
+    }
   };
 
   const addSong = async () => {
@@ -177,14 +178,14 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
       mbid: asIs ? null : song.mbid.trim()
     };
     try {
-      const songId = getLocalSongId(data);
-      console.log("SONG EXISTS", songId);
-      const artistSongExists = !!songId && setlist.find(v => v._id === songId);
-      console.log("ARTISTSONGEXISTS", !!artistSongExists);
+      const found = await findSong(data);
+      const foundId = found ? found._id : null;
+      const artistSongExists =
+        !!foundId && setlist.find(v => v._id === foundId);
       if (artistSongExists) throw new Error("Song already exists in setlist.");
 
       let res;
-      if (!songId) {
+      if (!foundId) {
         res = await createDoc("song", data);
         if (!res.success) throw new Error("Could not create new song");
       }
@@ -193,7 +194,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
         songs: [
           ...setlist,
           {
-            _id: res.data._id,
+            _id: foundId || res.data._id,
             votes: 0,
             currVotes: 0,
             visible: false
