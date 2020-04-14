@@ -7,8 +7,10 @@ const artistReducer = (state = initialState, action) => {
   switch (action.type) {
     case AT.LoginArtist:
       return { ...state, ...action.payload };
-    case AT.LogoutArtist:
+    case AT.LogoutArtist: {
+      console.log("LOGOUTARTIST");
       return null;
+    }
     case AT.OnAir:
       return { ...state, live: true };
     case AT.OffAir:

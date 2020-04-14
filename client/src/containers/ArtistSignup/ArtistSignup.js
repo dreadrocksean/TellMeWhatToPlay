@@ -9,6 +9,7 @@ import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";
 
 const ArtistSignup = ({ navigation, user, artist, authorized }) => {
+  console.log("ArtistSignup ARTIST", artist);
   useEffect(() => {
     if (!authorized) navigation.replace("Home");
   }, [authorized]);

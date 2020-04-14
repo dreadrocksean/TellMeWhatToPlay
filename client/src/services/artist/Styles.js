@@ -6,12 +6,9 @@ export default StyleSheet.create({
     justifyContent: "space-between",
     flex: 1
     // backgroundColor: "#ffffff70"
-    // paddingHorizontal: 10
   },
   container: {
     justifyContent: "space-between",
-    // padding: 10,
-    // paddingTop: 0,
     alignItems: "center",
     flex: 1
     // backgroundColor: "teal"
@@ -21,13 +18,10 @@ export default StyleSheet.create({
     justifyContent: "center"
   },
   firstInput: {
-    marginTop: 30
+    // marginTop: 30
     // backgroundColor: "green"
   },
   imageUpload: {
-    // flex: 1,
-    // marginBottom: 20,
-    top: 2,
     width: 100,
     height: 100
   },
@@ -60,6 +54,9 @@ export default StyleSheet.create({
     marginBottom: 0
     // height: 60
     // fontSize: 16
+  },
+  labels: {
+    maxWidth: 40
   },
   button: {
     // alignSelf: "flex-start",

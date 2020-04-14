@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
     flexDirection: "row",
     alignItems: "center",
     // marginRight: 15,
     // backgroundColor: "#00800070",
-    marginBottom: 12
+    marginBottom: 12,
+    width: 80
   },
   box: {
     borderColor: "white",
@@ -24,8 +25,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain"
   },
   label: {
-    // marginLeft: 7
-    // backgroundColor: "#ffffff70"
+    width: 50
   },
   labelText: {
     // color: "#f3f3f3",

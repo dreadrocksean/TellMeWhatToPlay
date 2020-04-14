@@ -66,7 +66,9 @@ const UserFormWrapper = ({
         throw "Fields cannot be empty";
       }
       if (type === "SignUp") {
-        await signupUser(credentials);
+        const user = await signupUser(credentials);
+        navigateTo(user.data);
+        console.log("USER", user);
       } else if (type === "LogIn") {
         const userRes = await loginUser(credentials);
         const artistRes = await loginArtist(userRes.data._id);

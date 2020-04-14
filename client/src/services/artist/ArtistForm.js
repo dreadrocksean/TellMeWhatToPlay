@@ -82,6 +82,7 @@ const ArtistForm = ({
               checked={roles[f]}
               onPress={() => handleRoleChange(f)}
               label={f.toUpperCase()}
+              labelStyles={styles.labels}
               ellipsis
             />
           ))}

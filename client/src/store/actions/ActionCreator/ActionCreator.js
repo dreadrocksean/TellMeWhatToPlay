@@ -94,10 +94,12 @@ export const signupUser = payload => async (dispatch, getState) => {
   try {
     const res = await createUser(payload);
     dispatch({ type: AT.LoginUser, payload: res.data });
-    await saveStorage({ user: res.data });
+    dispatch({ type: AT.LogoutArtist });
+    await saveStorage({ user: res.data, artist: null });
     res.message = "You Were Successfully Logged In";
     return Promise.resolve(res);
   } catch (err) {
+    console.log("ERR", err);
     dispatch(logout());
     return Promise.reject(err);
   }
@@ -117,14 +119,13 @@ export const addLyrics = ({ _id, lyrics }) => async () => {
 };
 
 export const newArtist = data => async (dispatch, getState) => {
-  // console.log("NEW ARTIST");
   if (data._id) {
     return updateArtist(data)(dispatch, getState);
   }
+  delete data._id;
   try {
     const res = await createDoc("artist", data);
     const artist = res && res.data;
-    // console.log("NEW ARTIST", artist);
     dispatch({ type: AT.LoginArtist, payload: artist });
     res.message = artist
       ? "Artist Successfully Logged In"

@@ -30,7 +30,7 @@ const CheckBox = ({
     : {};
   return (
     <TouchableOpacity
-      style={{ ...styles.container, ...style }}
+      style={{ ...styles.root, ...style }}
       onPress={disabled ? null : onPress}
       activeOpacity={disabled ? 1 : 0.2}
     >

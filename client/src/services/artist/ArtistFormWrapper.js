@@ -104,7 +104,7 @@ const ArtistFormWrapper = ({
 
   const validate = creds => {
     const clone = { ...creds };
-    delete clone.userId;
+    delete clone._id;
     delete clone.imageURL;
     for (const k of Object.keys(clone)) {
       if (Array.isArray(clone[k]) && !clone[k].length) {
