@@ -76,7 +76,7 @@ const ArtistForm = ({
         </View>
         <Separator style={styles.separator} label="INSTRUMENTS" />
         <View style={{ ...styles.section, ...styles.checkBoxSection }}>
-          {roleKeys.map((f, i) => (
+          {roleKeys.sort().map((f, i) => (
             <CheckBox
               key={i}
               checked={roles[f]}
