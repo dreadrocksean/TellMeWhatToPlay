@@ -70,8 +70,8 @@ export const getDocs = async (type, req) => {
       .get();
     const doc = ref.docs[0];
     const data = doc ? { ...doc.data(), _id: doc.id } : null;
-    const message = `${type} successfully found!`;
-    return Promise.resolve({ success: !!data, data, message });
+    const message = `${type} ${data ? "successfully" : "not"} found!`;
+    return Promise.resolve({ success: true, data, message });
   } catch (err) {
     console.error(`Error getting ${type}: `, err);
     return Promise.resolve({ success: false, error: err });

@@ -92,6 +92,8 @@ export const loginStorageUser = () => async (dispatch, getState) => {
 
 export const signupUser = payload => async (dispatch, getState) => {
   try {
+    const found = await getDocs("user", { email: payload.email });
+    if (found.data) throw new Error("User already exists.");
     const res = await createUser(payload);
     dispatch({ type: AT.LoginUser, payload: res.data });
     dispatch({ type: AT.LogoutArtist });
