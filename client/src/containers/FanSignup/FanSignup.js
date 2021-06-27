@@ -4,7 +4,6 @@ import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import styles from "./styles";
-import Modal from "src/components/Modal";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
 import FormError from "src/components/FormError";

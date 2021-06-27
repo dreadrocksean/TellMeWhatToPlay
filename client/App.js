@@ -15,7 +15,6 @@ import AppNavigation from "./src/navigation/AppNavigation";
 // create our store
 const store = createStore();
 const { authorized } = store.getState();
-// const backgroundColor = authorized ? "#8888bb" : "#bb4444";
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);

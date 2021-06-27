@@ -70,7 +70,7 @@ export const loginUser = credentials => async (dispatch, getState) => {
     dispatch({ type: AT.LoginUser, payload: res.data });
     await saveStorage({ user: res.data });
     res.message = "You Were Successfully Logged In";
-    console.log("User logged in", res);
+    console.log("User Status: ", res);
     return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
@@ -79,7 +79,6 @@ export const loginUser = credentials => async (dispatch, getState) => {
 };
 
 export const loginStorageUser = () => async (dispatch, getState) => {
-  // console.log("LOGINSTORAGEUSER");
   try {
     const res = await loadStorage("user");
     if (!res || !res.data) throw "No user stored";
@@ -112,7 +111,6 @@ export const addLyrics = ({ _id, lyrics }) => async () => {
   try {
     const res = await updateDoc("song", { _id, lyrics });
     const song = res && res.data;
-    // console.log("SONG", song);
     res.message = song ? "Lyrics successfully added" : "Problem Adding Lyrics";
     return Promise.resolve(res);
   } catch (err) {

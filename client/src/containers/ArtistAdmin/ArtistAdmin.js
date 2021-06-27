@@ -14,10 +14,11 @@ import * as Location from "expo-location";
 import { Button as RNButton, Icon } from "react-native-elements";
 
 import {
-  onAir as onAirActionType,
-  offAir as offAirActionType,
-  logout as logoutActionType,
-  deleteArtist
+  onAir,
+  offAir,
+  logout,
+  deleteArtist,
+  setModalContent
 } from "src/store/actions/ActionCreator";
 import { updateDoc, updateLocation } from "src/services/api";
 
@@ -26,6 +27,7 @@ import listItemAvatar from "src/images/test_avatar.png";
 import styles from "./styles";
 
 import DefaultContainer from "src/containers/DefaultContainer";
+import OptionModal from "src/components/OptionModal";
 import AppText from "src/components/AppText";
 import RoundImage from "src/components/RoundImage";
 import { scale, verticalScale, moderateScale } from "src/utils/Scales";
@@ -44,7 +46,8 @@ const ArtistAdmin = ({
   logout,
   onAir,
   offAir,
-  deleteArtist
+  deleteArtist,
+  setModalContent
 }) => {
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(true);
@@ -124,10 +127,26 @@ const ArtistAdmin = ({
     deleteArtist(artist._id);
   };
 
-  const toggleOnAir = async () => {
+  const confirmOnAirToggle = () => {
+    const live = (artist || {}).live;
+    setModalContent(
+      <OptionModal
+        onConfirm={toggleOnAir}
+        heading={!live ? "START SHOW" : "END SHOW"}
+        confirmText={
+          !live
+            ? "Are you sure? This will create a new show."
+            : "Are you sure that you want to delete this show?"
+        }
+      />
+    );
+  };
+
+  const toggleOnAir = option => async () => {
+    setModalContent(null);
+    if (!option) return;
     try {
       if (!artist) throw new Error("Artist not valid");
-
       const res = await updateDoc("artist", {
         _id: artist._id,
         live: !artist.live
@@ -139,6 +158,8 @@ const ArtistAdmin = ({
       if (newArtist.live) onAir();
       else offAir();
     } catch (err) {
+      console.log("toggleOnAir ERR", err);
+      if (!artist) navigation.replace("Home");
       if (!_isMounted.current) return;
       setErrorMessage(res.message);
     }
@@ -186,7 +207,10 @@ const ArtistAdmin = ({
               <View style={styles.topMiddle}>
                 <AppText textStyle={styles.title}>{artist.name}</AppText>
               </View>
-              <TouchableOpacity style={styles.topBottom} onPress={toggleOnAir}>
+              <TouchableOpacity
+                style={styles.topBottom}
+                onPress={confirmOnAirToggle}
+              >
                 {renderOnAirImage()}
               </TouchableOpacity>
             </View>
@@ -235,10 +259,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logoutActionType()),
-  onAir: () => dispatch(onAirActionType()),
-  offAir: () => dispatch(offAirActionType()),
-  deleteArtist: id => dispatch(deleteArtist(id))
+  logout: () => dispatch(logout()),
+  onAir: () => dispatch(onAir()),
+  offAir: () => dispatch(offAir()),
+  deleteArtist: id => dispatch(deleteArtist(id)),
+  setModalContent: content => dispatch(setModalContent(content))
 });
 
 export default connect(

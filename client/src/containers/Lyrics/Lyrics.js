@@ -36,17 +36,13 @@ const Lyrics = ({
   useEffect(() => {
     if (!currSong) return;
     const { _id, title, artist, lyrics } = currSong;
-    console.log("================SONGID, LYRICS", _id, !!lyrics);
 
     const getLyrics = async () => {
       loadingStatus(true);
       try {
-        const data = await fetchLyrics(title, artist);
+        const lyrics = await fetchLyrics(title, artist);
         loadingStatus(false);
-        console.log("useEffect DATA", data.result.track.name);
-        if (data.error)
-          throw new Error(`Problem getting lyrics: ${data.error}`);
-        currSong.lyrics = data.result.track.text;
+        currSong.lyrics = lyrics;
         saveLyrics(currSong.lyrics);
         updateCurrSong(currSong);
       } catch (err) {
@@ -58,10 +54,7 @@ const Lyrics = ({
       }
     };
 
-    if (lyrics) {
-      // setLyrics(lyrics);
-      // setTitle(title);
-    } else getLyrics();
+    if (!lyrics) getLyrics();
   }, []);
 
   useEffect(() => {

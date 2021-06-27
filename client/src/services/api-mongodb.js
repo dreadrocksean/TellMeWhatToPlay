@@ -17,6 +17,14 @@ const apiSeeds = {
   ENDPOINT: "https://orion.apiseeds.com/api/music/lyric"
 };
 
+const chartLyrics = {
+  HOST: "sridurgayadav-chart-lyrics-v1.p.rapidapi.com",
+  API_KEY_NAME: "X-RapidAPI-Key",
+  API_KEY: "soZqqpkYNwmshdEkQDFSTEi02GqOp10QvlvjsnbJ9aiJV2g129",
+  ENDPOINT: "apiv1.asmx/SearchLyricDirect",
+  METHODS: { lyrics: "track.lyrics.get" }
+};
+
 const getAPIUrl = (() => {
   const localIPs = [
     "localhost",
@@ -130,8 +138,7 @@ export const fetchArtistSongs = artistId => {
 export const fetchLastFMSong = (title, artist) => {
   const artistQuery = artist ? `&artist=${artist}` : "";
   return fetch(
-    `${lastFMAPI.ENDPOINT}track.search&track=${title}${artistQuery}&api_key=${
-      lastFMAPI.API_KEY
+    `${lastFMAPI.ENDPOINT}track.search&track=${title}${artistQuery}&api_key=${lastFMAPI.API_KEY
     }&format=json`
   )
     .then(res => res.json())

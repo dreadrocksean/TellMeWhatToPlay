@@ -60,10 +60,11 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     const formattedTitle = getFormattedStr(titleRef.current, song.title);
     const formattedArtist = getFormattedStr(artistRef.current, song.artist);
     updateState({ formattedTitle, formattedArtist });
-    filterByArtist();
-  }, [song.title, song.artist, titleRef.current, artistRef.current]);
+    // filterByArtist();
+  }, [song, titleRef.current, artistRef.current]);
 
   const [asIs, setAsIs] = useState(false);
+
   useEffect(() => {
     handleChange("title")(titleRef.current);
   }, [asIs]);
@@ -78,19 +79,12 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     });
   };
 
-  const hide = () => {
-    reset();
-    hideModal(false);
-  };
-
   const updateState = ({ formattedTitle, formattedArtist, songs, song }) => {
     if (!_isMountedRef.current) return;
-    if (typeof formattedTitle !== "undefined")
-      setFormattedTitle(formattedTitle);
-    if (typeof formattedArtist !== "undefined")
-      setFormattedArtist(formattedArtist);
-    if (typeof songs !== "undefined") setSongs([...songs]);
-    if (typeof song !== "undefined") setSong(song);
+    formattedTitle && setFormattedTitle(formattedTitle);
+    formattedArtist && setFormattedArtist(formattedArtist);
+    songs && setSongs([...songs]);
+    song && setSong({ ...song });
   };
 
   const getFormattedStr = (str = "", strComplete = "") => {
@@ -133,7 +127,7 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
           songs[0] ||
           init.song;
         updateState({ songs: allSongsRef.current, song: bestSong });
-      } catch (err) {}
+      } catch (err) { }
     } else filterByArtist(value);
   };
 
@@ -207,10 +201,12 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     console.log("about to COMPLETE");
     complete();
     reset();
-    hide();
+    hideModal();
   };
 
-  const onDropdownPress = song => updateState({ song });
+  const onDropdownPress = song => {
+    updateState({ song });
+  };
 
   const onAsIs = () => setAsIs(!asIs);
 

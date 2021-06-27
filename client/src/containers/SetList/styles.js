@@ -7,6 +7,9 @@ export default StyleSheet.create({
     paddingTop: 0,
     padding: 5
   },
+  deleteModal: {
+    minHeight: 200
+  },
   headerIconContatiner: {
     flexDirection: "row"
   },

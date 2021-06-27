@@ -2,30 +2,30 @@ import React, { Component } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import styles from "./styles";
-import Modal from "src/components/Modal";
 import AppText from "src/components/AppText";
 import yesButton from "src/images/buttons/yes_btn.png";
 import noButton from "src/images/buttons/no_btn.png";
 
-const DeleteModal = ({ confirm }) => {
-  const _confirm = state => () => confirm(state);
-
+const OptionModal = ({ style, onConfirm, heading, confirmText }) => {
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.root, ...style }}>
       <AppText
-        style={{ flex: 1 }}
+        style={styles.section}
         textStyle={{ ...styles.text, color: "white" }}
       >
-        DELETE SONG
+        {heading}
       </AppText>
-      <AppText style={{ flex: 1 }} textStyle={styles.text}>
-        Are you sure you want to delete this song from SetList?
+      <AppText style={styles.section} textStyle={styles.text}>
+        {confirmText}
       </AppText>
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.imageWrapper} onPress={_confirm(false)}>
+      <View style={{ ...styles.section, ...styles.row }}>
+        <TouchableOpacity
+          style={styles.imageWrapper}
+          onPress={onConfirm(false)}
+        >
           <Image style={styles.image} source={noButton} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.imageWrapper} onPress={_confirm(true)}>
+        <TouchableOpacity style={styles.imageWrapper} onPress={onConfirm(true)}>
           <Image style={styles.image} source={yesButton} />
         </TouchableOpacity>
       </View>
@@ -33,4 +33,4 @@ const DeleteModal = ({ confirm }) => {
   );
 };
 
-export default DeleteModal;
+export default OptionModal;

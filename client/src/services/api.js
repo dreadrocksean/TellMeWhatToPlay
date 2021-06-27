@@ -1,4 +1,5 @@
 import firebase from "../utils/Firestore.js";
+import { getLyrics, getSong } from 'genius-lyrics-api';
 const db = firebase.firestore();
 // db.settings({
 //   timestampsInSnapshots: true
@@ -12,10 +13,11 @@ const lastFMAPI = {
   ENDPOINT: "http://ws.audioscrobbler.com/2.0/?method="
 };
 
-const apiSeeds = {
-  API_KEY: "WMgEiPpFQsYZWtep0Lyylax0Ncc1CByguiDFCKi7otLaKo4k9RzViN8zHVGspmyj",
-  ENDPOINT: "https://orion.apiseeds.com/api/music/lyric"
-};
+const geniusLyrics = {
+  CLIENT_ID: "geaU7Jx9SzLynU2ETvxJOnk8VlEjmTk-iaUMK1fP75YoZq1KlQoYVeq4b8Tmvv4n",
+  CLIENT_SECRET: "jUPlQl4C3yGEjySt_swWbXx9xegVUOiH4xi3WC_CwjMXnUgkQ1GdVoBg-NWNwuaFj2V9muXJrs61O6v57YkhqQ",
+  ACCESS_TOKEN: "oaj10VndbdQVKTBPDNvWXSt8VuauKG6W-mTpDeCvs_ZSEvI7LQBKqoa8zQnO5UVA",
+}
 
 const getAPIUrl = (() => {
   const localIPs = [
@@ -161,7 +163,18 @@ export const fetchLastFMSong = (title, artist) => {
     .catch(err => console.error("Network Error"));
 };
 
-export const fetchLyrics = (title, artist) =>
-  fetch(`${apiSeeds.ENDPOINT}/${artist}/${title}?apikey=${apiSeeds.API_KEY}`)
-    .then(res => res.json())
-    .catch(err => console.error("Network Error"));
+export const fetchLyrics = async (title, artist) => {
+  const options = {
+    apiKey: geniusLyrics.ACCESS_TOKEN,
+    title,
+    artist,
+    optimizeQuery: true
+  };
+
+  try {
+    const lyrics = await getLyrics(options);
+    return Promise.resolve(lyrics)
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};

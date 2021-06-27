@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Image, View } from "react-native";
 
 import styles from "./styles";
@@ -35,4 +35,4 @@ const Score = ({ icon, votes, disabled, short = false }) => {
   );
 };
 
-export default Score;
+export default memo(Score);

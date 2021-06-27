@@ -2,15 +2,21 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   root: {
-    height: "50%"
-  },
-  container: {
-    justifyContent: "space-between"
+    // flex: 1,
+    justifyContent: "space-between",
+    alignSelf: "stretch",
+    minHeight: 150
     // backgroundColor: "gray"
+  },
+  section: {
+    flex: 1
+    // borderColor: "green",
+    // borderWidth: 1
   },
   row: {
     flex: 1,
     flexDirection: "row",
+    // backgroundColor: "gray",
     justifyContent: "space-between"
   },
   imageWrapper: {

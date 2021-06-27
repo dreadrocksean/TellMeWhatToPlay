@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { ViewPropTypes, Text, View } from "react-native";
 import PropTypes from "prop-types";
 import styles from "./styles";
@@ -29,4 +29,6 @@ AppText.propTypes = {
   children: PropTypes.any
 };
 
-export default AppText;
+const areEqual = (prev, next) => prev.children === next.children;
+
+export default memo(AppText, areEqual);

@@ -140,4 +140,11 @@ const SongItem = ({
 
 SongItem.defaultProps = {};
 
-export default memo(SongItem);
+const areEqual = (prev, next) =>
+  // prev._id === next._id &&
+  prev.song.currVotes === next.song.currVotes &&
+  prev.song.artist === next.song.artist &&
+  prev.song.title === next.song.title &&
+  prev.liked === next.liked;
+
+export default memo(SongItem, areEqual);

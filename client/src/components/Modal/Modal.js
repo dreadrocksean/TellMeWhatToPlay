@@ -28,7 +28,6 @@ const Modal = ({
 
   return showModal ? (
     <View style={{ ...styles.root, ...style }}>
-      {/*<ScrollView style={{ alignSelf: "stretch" }}>*/}
       <View style={{ ...styles.modal, ...heightStyle }}>
         {modalContent}
         {!hideCloseButton && (
@@ -37,7 +36,6 @@ const Modal = ({
           </TouchableOpacity>
         )}
       </View>
-      {/*</ScrollView>*/}
     </View>
   ) : null;
 };

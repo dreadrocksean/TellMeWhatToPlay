@@ -1,6 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
 import { TouchableHighlight, Text, View, Image } from "react-native";
-import Modal from "react-native-modal";
 import { connect } from "react-redux";
 
 import styles from "./styles";
