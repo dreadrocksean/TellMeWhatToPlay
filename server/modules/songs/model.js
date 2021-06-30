@@ -39,6 +39,11 @@ const SongSchema = new Schema({
 		default: '',
 		required: false,
 	},
+	image: {
+		type: String,
+		default: '',
+		required: false,
+	},
 }, {timestamps: true});
 
 export default mongoose.model('Song', SongSchema);

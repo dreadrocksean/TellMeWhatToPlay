@@ -8,7 +8,7 @@ import {
   View,
   Dimensions
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import styles from "./styles";
 import AppText from "src/components/AppText";
@@ -63,30 +63,34 @@ const UserForm = ({
     setExtraScrollHeight(index * 10 - 100);
   };
 
+  const Fields = () => (
+    fields
+      .filter(
+        f =>
+          f.placeholder === "Email" ||
+          f.placeholder === "Password" ||
+          !hasAccount
+      )
+      .map((field, i) => (
+        <AppTextInput
+          key={i}
+          onFocus={handleOnFocus(i)}
+          style={styles.input}
+          placeholder={field.placeholder}
+          onChangeText={field.onChange}
+          value={field.value}
+          secureTextEntry={field.placeholder === "Password"}
+        />
+      ))
+  );
+
   return (
     <View style={styles.root}>
       <KeyboardAwareScrollView
         extraScrollHeight={extraScrollHeight}
         style={styles.form}
       >
-        {fields
-          .filter(
-            f =>
-              f.placeholder === "Email" ||
-              f.placeholder === "Password" ||
-              !hasAccount
-          )
-          .map((field, i) => (
-            <AppTextInput
-              key={i}
-              onFocus={handleOnFocus(i)}
-              style={styles.input}
-              placeholder={field.placeholder}
-              onChangeText={field.onChange}
-              value={field.value}
-              secureTextEntry={field.placeholder === "Password"}
-            />
-          ))}
+        <Fields />
         <View>
           <TouchableOpacity
             onPress={onSubmit(hasAccount ? "LogIn" : "SignUp")}

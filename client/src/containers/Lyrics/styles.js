@@ -10,6 +10,11 @@ export default StyleSheet.create({
     fontSize: 20,
     color: "#d4d4d4"
   },
+  image: {
+    width: 80,
+    height: 80,
+    marginBottom: 20
+  },
   textSuggestion: {
     fontStyle: "italic",
     color: "#ffd000"

@@ -8,7 +8,7 @@ import {
   View
 } from "react-native";
 import { FileSystem, FaceDetector, MediaLibrary } from "expo";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import styles from "./styles";
 

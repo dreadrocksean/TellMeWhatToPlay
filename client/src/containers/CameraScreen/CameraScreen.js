@@ -49,8 +49,9 @@ class CameraScreen extends Component {
   };
 
   async componentDidMount() {
-    const cam = await Permissions.askAsync(Permissions.CAMERA);
-    const hasCameraPermission = cam.status === "granted";
+    // const cam = await Permissions.askAsync(Permissions.CAMERA);
+    const {status} = await Camera.requestPermissionsAsync();
+    const hasCameraPermission = status === "granted";
     const roll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     const hasCameraRollPermission = roll.status === "granted";
 

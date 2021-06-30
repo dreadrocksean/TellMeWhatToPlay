@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import { Constants } from "expo";
 import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
 
 import styles from "./styles";
 
@@ -67,14 +66,16 @@ const ArtistList = ({ navigation, loadingStatus }) => {
     return () => {
       _isMounted.current = false;
       unsubscribe.current();
-      locationRef.current.remove();
+      locationRef.current && locationRef.current.remove();
     };
   }, []);
 
   const _getLocationAsync = async () => {
     loadingStatus(true);
     try {
-      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      // const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      const {status} = await Location.requestForegroundPermissionsAsync();
+      console.log("TCL: _getLocationAsync -> status", status)
       if (status !== "granted") {
         setErrorMessage("Permission to access location was denied");
       }

@@ -106,10 +106,10 @@ export const signupUser = payload => async (dispatch, getState) => {
   }
 };
 
-export const addLyrics = ({ _id, lyrics }) => async () => {
+export const addLyrics = ({ _id, lyrics, image }) => async () => {
   if (!_id) return;
   try {
-    const res = await updateDoc("song", { _id, lyrics });
+    const res = await updateDoc("song", { _id, lyrics, image });
     const song = res && res.data;
     res.message = song ? "Lyrics successfully added" : "Problem Adding Lyrics";
     return Promise.resolve(res);

@@ -26,8 +26,9 @@ const UserFormWrapper = ({
   navigateTo
 }) => {
   const [hasAccount, setHasAccount] = useState(true);
-  const [email, setEmail] = useState("adrian@bartholomusic.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState("landon@bartholomusic.com");
+  // const [email, setEmail] = useState("adrian@bartholomusic.com");
+  const [password, setPassword] = useState("Skateurban04");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [zip, setZip] = useState("");

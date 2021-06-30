@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import styles from "./styles";
 
@@ -30,6 +30,7 @@ const Lyrics = ({
   currSong
 }) => {
   const [edit, setEdit] = useState(false);
+  // const [image, setImage] = useState(null);
   // const [lyrics, setLyrics] = useState(null);
   // const [title, setTitle] = useState(null);
 
@@ -40,15 +41,17 @@ const Lyrics = ({
     const getLyrics = async () => {
       loadingStatus(true);
       try {
-        const lyrics = await fetchLyrics(title, artist);
+        const {lyrics, albumArt  = null} = await fetchLyrics(title, artist);
         loadingStatus(false);
-        currSong.lyrics = lyrics;
-        saveLyrics(currSong.lyrics);
-        updateCurrSong(currSong);
+        // currSong.lyrics = lyrics;
+        currSong.image = albumArt;
+        console.log("TCL: getLyrics -> currSong", currSong)
+        saveLyrics(lyrics);
       } catch (err) {
         loadingStatus(false);
         console.log("getLyrics ERR", err);
         currSong.lyrics = null;
+        currSong.image = null;
         updateCurrSong(currSong);
         // setLyrics(null);
       }
@@ -62,14 +65,14 @@ const Lyrics = ({
   }, [authorized]);
 
   const saveLyrics = async lyrics => {
-    console.log("SAVELYRICS", !!lyrics, currSong._id);
     try {
       loadingStatus(true);
       currSong.lyrics = lyrics;
       updateCurrSong(currSong);
       const res = await addLyrics({
         _id: currSong._id,
-        lyrics: currSong.lyrics
+        lyrics: currSong.lyrics,
+        image: currSong.image
       });
       setEdit(false);
       loadingStatus(false);
@@ -93,6 +96,9 @@ const Lyrics = ({
     </AppText>
   );
 
+  console.log("currSong: ", currSong)
+  // const icon = currSong?.image ? require(currSong.image) : null;
+
   return (
     <DefaultContainer
       headerLeft={renderHeaderLeft()}
@@ -102,7 +108,10 @@ const Lyrics = ({
         <ScrollView>
           <View style={styles.container}>
             {currSong.lyrics ? (
-              <Text style={styles.text}>{currSong.lyrics}</Text>
+              <>
+                {currSong.image && <Image style={styles.image} source={{uri: currSong.image}} />}
+                <Text style={styles.text}>{currSong.lyrics}</Text>
+              </>
             ) : (
               <>
                 <Text style={styles.text}>{apology}</Text>
@@ -113,7 +122,7 @@ const Lyrics = ({
         </ScrollView>
       ) : (
         <KeyboardAwareScrollView>
-          <LyricsForm onSubmit={saveLyrics} origLyrics={currSong.lyrics} />
+          <LyricsForm onSubmit={saveLyrics} song={currSong} />
         </KeyboardAwareScrollView>
       )}
     </DefaultContainer>

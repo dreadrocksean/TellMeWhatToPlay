@@ -172,8 +172,9 @@ export const fetchLyrics = async (title, artist) => {
   };
 
   try {
-    const lyrics = await getLyrics(options);
-    return Promise.resolve(lyrics)
+    // const lyrics = await getLyrics(options);
+    const {lyrics, albumArt} = await getSong(options);
+    return Promise.resolve({lyrics, albumArt})
   } catch (err) {
     return Promise.reject(err);
   }

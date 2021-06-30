@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import styles from "./styles";
 

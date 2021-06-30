@@ -9,7 +9,6 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Constants, Camera, FileSystem } from "expo";
-import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import { Button as RNButton, Icon } from "react-native-elements";
 
@@ -65,7 +64,7 @@ const ArtistAdmin = ({
 
     return () => {
       _isMounted.current = false;
-      locationRef.current.remove();
+      locationRef.current && locationRef.current.remove();
     };
   }, []);
 
@@ -87,7 +86,8 @@ const ArtistAdmin = ({
           "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
         );
       }
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      // let { status } = await Permissions.askAsync(Permissions.LOCATION);
+      const {status} = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         throw new Error("Permission to access location was denied");
       }
@@ -107,7 +107,7 @@ const ArtistAdmin = ({
     } catch (err) {
       if (!_isMounted.current) return;
       setErrorMessage(err.message);
-      console.err(err.message);
+      console.error(err.message);
     }
   };
 
@@ -183,74 +183,74 @@ const ArtistAdmin = ({
   return !authorized || !artist
     ? null
     : artist && (
-        <DefaultContainer
-          headerLeft={renderHeaderLeft()}
-          headerMiddle={renderHeaderMiddle()}
-          navigation={navigation}
-        >
-          <View style={styles.container}>
-            {!!errorMessage && (
-              <AppText textStyle={styles.error}>{errorMessage}</AppText>
-            )}
-            <View style={styles.top}>
-              {
-                <View style={styles.topTop}>
-                  <RoundImage
-                    source={{
-                      uri: artist.imageURL || cloudinaryConfig.userUrl
-                    }}
-                    style={styles.profileImage}
-                    size={150}
-                  />
-                </View>
-              }
-              <View style={styles.topMiddle}>
-                <AppText textStyle={styles.title}>{artist.name}</AppText>
-              </View>
-              <TouchableOpacity
-                style={styles.topBottom}
-                onPress={confirmOnAirToggle}
-              >
-                {renderOnAirImage()}
-              </TouchableOpacity>
-            </View>
-            <View style={styles.middle}>
-              <View style={styles.info}>
-                <View style={styles.mainBox}>
-                  <AppText textStyle={styles.h2}>Genre</AppText>
-                  <AppText textStyle={styles.h3}>{artist.genre}</AppText>
-                </View>
-                <View style={styles.mainBox}>
-                  <AppText textStyle={styles.h2}>Roles</AppText>
-                  <AppText textStyle={styles.h3}>
-                    {(artist.roles || []).join(" | ")}
-                  </AppText>
-                </View>
-              </View>
-            </View>
-            <View style={styles.bottom}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleNavigate("SetList")}
-              >
-                <Image
-                  style={styles.image}
-                  source={manageSetlistButton}
-                  resizeMode="contain"
+      <DefaultContainer
+        headerLeft={renderHeaderLeft()}
+        headerMiddle={renderHeaderMiddle()}
+        navigation={navigation}
+      >
+        <View style={styles.container}>
+          {!!errorMessage && (
+            <AppText textStyle={styles.error}>{errorMessage}</AppText>
+          )}
+          <View style={styles.top}>
+            {
+              <View style={styles.topTop}>
+                <RoundImage
+                  source={{
+                    uri: artist.imageURL || cloudinaryConfig.userUrl
+                  }}
+                  style={styles.profileImage}
+                  size={150}
                 />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={handleLogout}>
-                <Image
-                  style={styles.image}
-                  source={logoutButton}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-              {/*<Button onPress={handleArtistDelete} title="Delete" />*/}
+              </View>
+            }
+            <View style={styles.topMiddle}>
+              <AppText textStyle={styles.title}>{artist.name}</AppText>
+            </View>
+            <TouchableOpacity
+              style={styles.topBottom}
+              onPress={confirmOnAirToggle}
+            >
+              {renderOnAirImage()}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.middle}>
+            <View style={styles.info}>
+              <View style={styles.mainBox}>
+                <AppText textStyle={styles.h2}>Genre</AppText>
+                <AppText textStyle={styles.h3}>{artist.genre}</AppText>
+              </View>
+              <View style={styles.mainBox}>
+                <AppText textStyle={styles.h2}>Roles</AppText>
+                <AppText textStyle={styles.h3}>
+                  {(artist.roles || []).join(" | ")}
+                </AppText>
+              </View>
             </View>
           </View>
-        </DefaultContainer>
-      );
+          <View style={styles.bottom}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleNavigate("SetList")}
+            >
+              <Image
+                style={styles.image}
+                source={manageSetlistButton}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleLogout}>
+              <Image
+                style={styles.image}
+                source={logoutButton}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            {/*<Button onPress={handleArtistDelete} title="Delete" />*/}
+          </View>
+        </View>
+      </DefaultContainer>
+    );
 };
 
 const mapStateToProps = state => ({

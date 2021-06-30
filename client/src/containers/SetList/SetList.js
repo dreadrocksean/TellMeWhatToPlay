@@ -172,11 +172,8 @@ const Setlist = ({
   };
 
   const showLyrics = songId => () => {
-    // console.log("SONGID", songId);
     const { navigate } = navigation;
-    const song = songs.find(el => {
-      return el._id === songId;
-    });
+    const song = songs.find(el => el._id === songId);
     updateCurrSong(song);
     navigate("Lyrics", {
       name: "Lyrics"
@@ -275,23 +272,23 @@ const Setlist = ({
     setAdd(show);
   };
 
-  const onDeleteSong = useCallback(id => {
+  const onDeleteSong = useCallback(id => () => {
     setModalContent(
       <OptionModal
         style={styles.deleteModal}
-        onConfirm={onDeleteConfirm}
+        onConfirm={onDeleteConfirm(id)}
         heading="DELETE SONG"
         confirmText="Are you sure you want to delete this song from SetList?"
       />
     );
     songDeleteIdRef.current = id;
-  }, []);
+  }, [songs]);
 
-  const onDeleteConfirm = confirm => () => {
+  const onDeleteConfirm = songId => confirm => () => {
     setModalContent(null);
     if (!confirm) return;
     const { _id } = artist;
-    const newSongs = songs.filter(song => song._id !== songDeleteIdRef.current);
+    const newSongs = songs.filter(song => song._id !== songId);
     updateDoc("artist", { _id, songs: newSongs });
   };
 
@@ -351,7 +348,7 @@ const Setlist = ({
                     artistLiveStatus={artist.live}
                     showEditForm={showEditForm(song._id)}
                     showLyrics={showLyrics(song._id)}
-                    onDeleteSong={onDeleteSong}
+                    onDeleteSong={onDeleteSong(song._id)}
                     changeSongVisibility={changeSongVisibility}
                   />
                 )

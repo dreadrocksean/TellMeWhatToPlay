@@ -17,12 +17,14 @@ const LyricsForm = ({
   authorized,
   userType,
   onSubmit,
-  origLyrics
+  song
 }) => {
   const [lyrics, setLyrics] = useState(null);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
-    setLyrics(origLyrics);
+    setLyrics(song?.lyrics);
+    setImage(song?.image);
   }, []);
 
   useEffect(() => {
@@ -36,6 +38,7 @@ const LyricsForm = ({
   return (
     <Fragment>
       <Text style={styles.headerText}>{headerText}</Text>
+      {/* { image && <Image source={require(image)} />} */}
       <View style={styles.container}>
         <TextInput
           style={styles.text}
