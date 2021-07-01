@@ -63,7 +63,7 @@ const UserForm = ({
     setExtraScrollHeight(index * 10 - 100);
   };
 
-  const Fields = () => (
+  const renderFields = () => (
     fields
       .filter(
         f =>
@@ -74,11 +74,10 @@ const UserForm = ({
       .map((field, i) => (
         <AppTextInput
           key={i}
-          onFocus={handleOnFocus(i)}
+          value={field.value}
           style={styles.input}
           placeholder={field.placeholder}
           onChangeText={field.onChange}
-          value={field.value}
           secureTextEntry={field.placeholder === "Password"}
         />
       ))
@@ -90,7 +89,7 @@ const UserForm = ({
         extraScrollHeight={extraScrollHeight}
         style={styles.form}
       >
-        <Fields />
+        {renderFields()}
         <View>
           <TouchableOpacity
             onPress={onSubmit(hasAccount ? "LogIn" : "SignUp")}

@@ -1,6 +1,5 @@
 import React, { useState, useRef, memo } from "react";
 import {
-  ViewPropTypes,
   TextInput,
   Text,
   View,
@@ -50,19 +49,19 @@ const AppTextInput = ({
 
   const onKeyPress = evt => (keyPressedRef.current = evt.nativeEvent.key);
 
-  // console.log("RENDER APPTEXTINPUT");
+  // console.log("APPTEXTINPUT: ", value);
 
   return (
     <View style={{ ...styles.root, ...style }}>
       <TextInput
         style={{ ...styles.input, ...textStyle }}
+        onChangeText={handleOnChangeText}
+        editable={editable}
+        onFocus={onFocus}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor || "rgba(255,255,255,0.3)"}
-        onChangeText={handleOnChangeText}
-        onFocus={onFocus}
         onKeyPress={onKeyPress}
         secureTextEntry={secureTextEntry && !showPassword}
-        editable={editable}
         autoCapitalize={autoCapitalize || "none"}
       >
         {!!formattedValue.visible ? (
@@ -87,11 +86,18 @@ const AppTextInput = ({
 
 AppTextInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  handleOnChangeText: PropTypes.func,
+  onChangeText: PropTypes.func.isRequired,
   onFocus: PropTypes.func,
   value: PropTypes.any,
   secureTextEntry: PropTypes.bool,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+
+
+  formattedValue: PropTypes.object,
+  placeholderTextColor: PropTypes.string,
+  autoCapitalize: PropTypes.bool,
+  style: PropTypes.object,
+  textStyle: PropTypes.object,
 };
 
 export default memo(AppTextInput);

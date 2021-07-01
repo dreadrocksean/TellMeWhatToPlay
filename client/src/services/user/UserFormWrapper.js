@@ -26,9 +26,11 @@ const UserFormWrapper = ({
   navigateTo
 }) => {
   const [hasAccount, setHasAccount] = useState(true);
-  const [email, setEmail] = useState("landon@bartholomusic.com");
+  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("landon@bartholomusic.com");
   // const [email, setEmail] = useState("adrian@bartholomusic.com");
-  const [password, setPassword] = useState("Skateurban04");
+  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("Skateurban04");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [zip, setZip] = useState("");
@@ -44,15 +46,15 @@ const UserFormWrapper = ({
   const handleChange = field => val => {
     switch (field) {
       case "email":
-        return setEmail(val);
+        setEmail(val); break;
       case "password":
-        return setPassword(val);
+        setPassword(val); break;
       case "fname":
-        return setFname(val);
+        setFname(val); break;
       case "lname":
-        return setLname(val);
+        setLname(val); break;
       case "zip":
-        return setZip(val);
+        setZip(val); break;
     }
   };
 
