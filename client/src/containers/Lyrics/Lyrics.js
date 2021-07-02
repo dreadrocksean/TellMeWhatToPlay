@@ -109,7 +109,14 @@ const Lyrics = ({
           <View style={styles.container}>
             {currSong.lyrics ? (
               <>
-                {currSong.image && <Image style={styles.image} source={{uri: currSong.image}} />}
+                <View style={styles.titleContainer}>
+                  <View style={{flex: 1}}>
+                    {currSong.image && <Image style={styles.image} source={{uri: currSong.image}} />}
+                  </View>
+                  <View style={styles.artistContainer}>
+                    <Text style={styles.artist}>{currSong.artist}</Text>
+                  </View>
+                </View>
                 <Text style={styles.text}>{currSong.lyrics}</Text>
               </>
             ) : (
