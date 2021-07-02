@@ -15,6 +15,7 @@ const initialState = {
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
     case AT.LoginUser:
+      console.log("TCL: loginReducer -> action", action)
       return {
         ...state,
         authorized: true,

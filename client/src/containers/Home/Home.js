@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import styles from "./styles";
 
-import { UserType } from "src/store/reducers/LoginReducer";
+import Logo from "src/images/logo.png";
 import {
   loadStoredUserArtist,
   guestTypeFan,
@@ -36,7 +36,6 @@ const Home = ({
       }
     };
     checkStoredCreds();
-    // guestTypeNone();
   }, [loadStoredUserArtist]);
 
   const onClick = type => async () => {
@@ -57,7 +56,6 @@ const Home = ({
   };
 
   const getRouteName = type => {
-    // console.log("USER, ARTIST", user, artist);
     switch (type) {
       case "ARTIST": {
         if (!user) return "UserSignup";
@@ -73,7 +71,10 @@ const Home = ({
   };
 
   return (
-    <DefaultContainer>
+    <DefaultContainer
+      headerHeight={100}
+      headerRight={<Image style={styles.logo} source={Logo} />}
+    >
       <View style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <TouchableHighlight onPress={onClick("FAN")}>

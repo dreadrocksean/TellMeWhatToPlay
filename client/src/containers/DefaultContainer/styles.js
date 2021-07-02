@@ -14,7 +14,6 @@ export default StyleSheet.create({
     zIndex: 1,
   },
   listHeader: {
-    // backgroundColor: "#80800070",
     zIndex: 1
   },
   children: {

@@ -8,16 +8,16 @@ const ListHeader = ({ style, home, headerLeft, headerMiddle, headerRight }) => {
     <View style={{ ...styles.root, ...style }}>
       <View style={styles.left}>{headerLeft || <View />}</View>
       <View style={styles.middle}>{headerMiddle || <View />}</View>
-      {headerRight ? (
-        { headerRight }
-      ) : (
-        <TouchableOpacity
-          style={{ ...styles.right, ...styles.logoWrap }}
-          onPress={home}
-        >
-          <Image style={styles.logo} source={Logo} resizeMode={"contain"} />
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={{ ...styles.right, ...styles.logoWrap }}
+        onPress={home}
+      >
+      {
+        headerRight
+          ? headerRight
+          : <Image style={styles.logo} source={Logo} resizeMode={"contain"} />
+      }
+      </TouchableOpacity>
     </View>
   );
 };

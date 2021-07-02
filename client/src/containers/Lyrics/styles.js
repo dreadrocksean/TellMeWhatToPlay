@@ -1,7 +1,10 @@
 import { StyleSheet } from "react-native";
-import { Dimensions } from 'react-native';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+
+import { width as windowWidth, height as windowHeight } from "src/utils/General";
+import * as Color from "src/styles/Colors";
+
+console.log("TCL: colors", Color.brandPink)
+
 
 export default StyleSheet.create({
   container: {
@@ -52,12 +55,12 @@ export default StyleSheet.create({
   },
   artist: {
     fontFamily: "montserrat-regular",
-    color: "#ffd52b",
+    color: Color.brandPink,
     fontSize: 16,
   },
   title: {
     fontFamily: "montserrat-regular",
-    color: "#f18",
+    color: Color.brandPink,
     textTransform: "uppercase",
     fontSize: 18,
     maxWidth: "95%",

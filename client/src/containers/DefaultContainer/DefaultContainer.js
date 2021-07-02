@@ -35,7 +35,6 @@ const DefaultContainer = ({
     <View style={styles.loading}>
       <Background />
       <ActivityIndicator size="large" color="#ffff00" />
-      {/*<Loading size="large" color="#ffff00" />*/}
     </View>
   ) : (
     <View style={{ ...styles.root, ...style }}>

@@ -381,4 +381,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
+// )(Setlist);
 )(memo(Setlist, isEqual));

@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 import { width, height } from "src/utils/General";
 
 export default StyleSheet.create({
@@ -7,6 +8,11 @@ export default StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     padding: 5
+  },
+  logo: {
+    flex: 1,
+    right: 50,
+    aspectRatio: 646 / 498,
   },
   text: {
     color: "rgba(220,220,255,0.9)",

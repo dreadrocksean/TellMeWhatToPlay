@@ -147,4 +147,5 @@ const areEqual = (prev, next) =>
   prev.song.title === next.song.title &&
   prev.liked === next.liked;
 
-export default memo(SongItem, areEqual);
+export default SongItem;
+// export default memo(SongItem, areEqual);
