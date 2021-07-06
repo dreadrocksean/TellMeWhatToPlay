@@ -5,18 +5,18 @@ import styles from "./styles";
 
 const { width, height } = Dimensions.get("window");
 
-const ListItem = props => {
-  const itemStyle = props.disabled ? "itemDisabled" : "itemActive";
+const ListItem = ({ disabled, onClick, children }) => {
+  const itemStyle = disabled ? "itemDisabled" : "itemActive";
 
   return (
     <View style={styles.itemContainer}>
       <View style={{ ...styles.item, ...styles[itemStyle] }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={props.onClick}
-          disabled={props.disabled}
+          onPress={onClick}
+          disabled={disabled}
         >
-          <View style={styles.content}>{props.children}</View>
+          <View style={styles.content}>{children}</View>
         </TouchableOpacity>
       </View>
     </View>

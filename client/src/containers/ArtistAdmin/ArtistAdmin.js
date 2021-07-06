@@ -15,11 +15,10 @@ import { Button as RNButton, Icon } from "react-native-elements";
 import {
   onAir,
   offAir,
-  logout,
   deleteArtist,
   setModalContent
 } from "src/store/actions/ActionCreator";
-import { updateDoc, updateLocation } from "src/services/api";
+import { updateDoc, updateLocation, createShow, endShow } from "src/services/api";
 
 import listItemAvatar from "src/images/test_avatar.png";
 
@@ -36,7 +35,7 @@ import onAirButton from "src/images/buttons/onair_btn.png";
 import offAirButton from "src/images/buttons/offair_btn.png";
 import editIcon from "src/images/icons/edit_btn.png";
 import manageSetlistButton from "src/images/buttons/manage_btn.png";
-import logoutButton from "src/images/buttons/logout_btn.png";
+// import logoutButton from "src/images/buttons/logout_btn.png";
 
 const ArtistAdmin = ({
   navigation,
@@ -118,17 +117,12 @@ const ArtistAdmin = ({
     });
   };
 
-  const handleLogout = () => {
-    logout();
-  };
-
   const handleArtistDelete = () => {
-    console.log("HANDLEARTISTDELETE", artist._id);
     deleteArtist(artist._id);
   };
 
   const confirmOnAirToggle = () => {
-    const live = (artist || {}).live;
+    const live = artist?.live;
     setModalContent(
       <OptionModal
         onConfirm={toggleOnAir}
@@ -136,32 +130,29 @@ const ArtistAdmin = ({
         confirmText={
           !live
             ? "Are you sure? This will create a new show."
-            : "Are you sure that you want to delete this show?"
+            : "Are you sure that you want to end this show?"
         }
       />
     );
   };
 
   const toggleOnAir = option => async () => {
+    if (!_isMounted.current) return;
     setModalContent(null);
     if (!option) return;
     try {
       if (!artist) throw new Error("Artist not valid");
-      const res = await updateDoc("artist", {
-        _id: artist._id,
-        live: !artist.live
-      });
-      if (res.error) {
-        throw new Error("Error toggling on air: ", res.error);
+      if (artist.live) {
+        await endShow(artist);
+        offAir();
+      } else {
+        const currShowId = await createShow(artist);
+        onAir({currShowId})
       }
-      const newArtist = { ...artist, ...res.data };
-      if (newArtist.live) onAir();
-      else offAir();
+      setErrorMessage("");
     } catch (err) {
-      console.log("toggleOnAir ERR", err);
       if (!artist) navigation.replace("Home");
-      if (!_isMounted.current) return;
-      setErrorMessage(res.message);
+      setErrorMessage(err?.message ?? "");
     }
   };
 
@@ -239,14 +230,6 @@ const ArtistAdmin = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleLogout}>
-              <Image
-                style={styles.image}
-                source={logoutButton}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            {/*<Button onPress={handleArtistDelete} title="Delete" />*/}
           </View>
         </View>
       </DefaultContainer>
@@ -260,7 +243,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
-  onAir: () => dispatch(onAir()),
+  onAir: props => dispatch(onAir(props)),
   offAir: () => dispatch(offAir()),
   deleteArtist: id => dispatch(deleteArtist(id)),
   setModalContent: content => dispatch(setModalContent(content))

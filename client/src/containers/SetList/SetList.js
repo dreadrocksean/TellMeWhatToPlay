@@ -45,9 +45,9 @@ import {
   setModalContent,
   setModalHeight
 } from "src/store/actions/ActionCreator";
-import { updateDoc, deleteDoc } from "src/services/api";
-import { saveStorage } from "src/services/LocalStorage";
-import UserFormWrapper from "src/services/user/UserFormWrapper";
+import { updateDoc, deleteDoc, updateVotes } from "src/services/api";
+// import { saveStorage } from "src/services/LocalStorage";
+// import UserFormWrapper from "src/services/user/UserFormWrapper";
 
 const db = firebase.firestore();
 
@@ -63,41 +63,31 @@ const Setlist = ({
   currSong,
   updateCurrSong
 }) => {
+
+  const artist = route.params.artist;
+  const isArtist = userType === UserType.ARTIST;
+
   const isMountedRef = useRef(false);
   const unsubscribeArtistRef = useRef(() => { });
   const unsubscribeSongRefs = useRef([]);
+  const unsubscribeShowSongsRef = useRef(null);
   const initialGetRef = useRef(true);
   const songDeleteIdRef = useRef(null);
   const allSongsRef = useRef([]);
 
   const [songs, setSongs] = useState([]);
-
-  const [title, setTitle] = useState(null);
-  const [song_artist, setSong_artist] = useState(null);
-  const [edit_title, setEdit_title] = useState(null);
-  const [edit_artist, setEdit_artist] = useState(null);
-  const [add, setAdd] = useState(false);
-  const [titleComplete, setTitleComplete] = useState("");
-  const [artistComplete, setArtistComplete] = useState("");
-  const [artist, setArtist] = useState(route.params.artist);
-  // const [artistSongs, setArtistSongs] = useState([]);
   const [likes, setLikes] = useState([]);
-  const [isArtist, setIsArtist] = useState(userType === UserType.ARTIST);
-  const [edit_email, setEdit_email] = useState("");
-  const [edit_password, setEdit_password] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [songVotes, setSongVotes] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     isMountedRef.current = true;
-    updateSongList();
+    processSongList()
     return () => {
       isMountedRef.current = false;
       unsubscribeArtistRef.current();
       unsubscribeSongRefs.current.forEach(f => f());
+      unsubscribeShowSongsRef.current?.();
     };
   }, []);
 
@@ -105,7 +95,6 @@ const Setlist = ({
     if (!authorized && userType === "ARTIST") navigation.replace("Home");
   }, [authorized]);
 
-  // const [updatedSong, setUpdatedSong] = useState(null);
   useEffect(() => {
     if (authorized && currSong) {
       const updatedSongs = songs.map(v => {
@@ -116,13 +105,35 @@ const Setlist = ({
     }
   }, [currSong, authorized]);
 
-  const updateSongList = async () => {
+  const processSongList = useCallback(async () => {
+    const showSongsCollRef = db.collection(
+      `artists/${artist._id}/shows/${artist.currShowId}/songVotes`
+    );
+
+    try {
+      unsubscribeShowSongsRef.current = await showSongsCollRef.onSnapshot(snapshot => {
+        const showSongVotes = [];
+        snapshot.docChanges().forEach(change => {
+          if (change.type === 'added' || change.type === 'modified') {
+            snapshot.forEach(doc => showSongVotes.push({...doc.data(), _id: doc.id}));
+            setSongVotes(showSongVotes);
+          }
+        });
+        updateSongList(showSongVotes);
+      });
+    } catch(err) {
+      console.log("TCL: processSongList -> err", err);
+    }
+  }, [])
+
+  const updateSongList = async showSongVotes => {
     loadingStatus(true);
     unsubscribeArtistRef.current = db
       .doc(`artists/${artist._id}`)
       .onSnapshot(async doc => {
         if (!doc.data() || !isMountedRef.current) return;
         const currArtistSongs = (doc.data() || {}).songs || [];
+        console.log("TCL: updateSongList -> currArtistSongs", currArtistSongs)
         try {
           let songs = await Promise.all(
             currArtistSongs.map(async v => {
@@ -140,8 +151,10 @@ const Setlist = ({
 
           if (isArtist) {
             songs = songs.sort((a, b) => {
-              if (a.currVotes < b.currVotes) return 1;
-              if (a.currVotes > b.currVotes) return -1;
+              const votesA = showSongVotes.find(v => v._id === a._id)?.votes ?? 0;
+              const votesB = showSongVotes.find(v => v._id === b._id)?.votes ?? 0;
+              if (votesA < votesB) return 1;
+              if (votesA > votesB) return -1;
               if (a.createdAt < b.createdAt) return -1;
               if (a.createdAt > b.createdAt) return 1;
               return 0;
@@ -152,11 +165,7 @@ const Setlist = ({
             initialGetRef.current = false;
             return allSongsRef.current;
           });
-          // setArtistSongs(currArtistSongs);
           loadingStatus(false);
-          setAdd(false);
-          setTitle("");
-          setSong_artist("");
 
           if (!songs.length) openAddForm();
         } catch (err) {
@@ -167,8 +176,6 @@ const Setlist = ({
 
   const showEditForm = songId => () => {
     const { title, artist } = songs.find(el => el._id === songId);
-    setEdit_title(title);
-    setEdit_artist(artist);
   };
 
   const showLyrics = songId => () => {
@@ -177,7 +184,6 @@ const Setlist = ({
     updateCurrSong(song);
     navigate("Lyrics", {
       name: "Lyrics"
-      // song
     });
   };
 
@@ -187,6 +193,10 @@ const Setlist = ({
     delete song.mbid;
     return song;
   };
+
+  const showVisibilityDialog = () => {
+    setModalContent(<Text>Hide/Show all</Text>);
+  }
 
   const changeSongVisibility = useCallback(async (_id, visible) => {
     const newSongs = allSongsRef.current.map(song => {
@@ -202,20 +212,18 @@ const Setlist = ({
   }, []);
 
   const vote = (_id, currVotes, sentiment) => async () => {
-    const { navigate } = navigation;
-    const newCurrVotes = currVotes + (sentiment ? 1 : -1);
+    if(!isMountedRef.current || !myArtist.currShowId) return;
+    
+    const songVoteCount = songVotes.find(v => v._id === _id)?.votes ?? 0;
+    const newCurrVotes = Math.max(songVoteCount + (sentiment ? 1 : -1), 0);
     if (!isArtist && !authorized) {
       setModalContent(<FanSignup />);
       return;
     }
 
-    const newSongs = songs.map(song => {
-      song = cleanSong(song);
-      if (song._id !== _id) return song;
-      song.currVotes = newCurrVotes;
-      return song;
+    const res = await updateVotes({
+      artist, songId: _id, votes: newCurrVotes
     });
-    updateDoc("artist", { _id: artist._id, songs: newSongs });
     if (sentiment) {
       setLikes([...likes, _id]);
     } else {
@@ -226,12 +234,6 @@ const Setlist = ({
   const hideModal = () => setModalContent(null);
 
   const openAddForm = () => {
-    setTitleComplete("");
-    setArtistComplete("");
-    setEdit_title("");
-    setEdit_artist("");
-    setTitle("");
-    setSong_artist("");
     if (isArtist) {
       setModalContent(
         <AddSong
@@ -267,11 +269,6 @@ const Setlist = ({
     );
   };
 
-  const handleHideModal = show => {
-    setShowModal(show);
-    setAdd(show);
-  };
-
   const onDeleteSong = useCallback(id => () => {
     setModalContent(
       <OptionModal
@@ -304,6 +301,8 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongsRef.current);
   };
+
+  // console.log("TCL: render -> songVotes", songVotes)
 
   return !isArtist && !artist.live ? (
     <View>
@@ -339,18 +338,20 @@ const Setlist = ({
             {songs.map(
               song =>
                 (song.visible || isArtist) && (
-                  <SongItem
-                    key={song._id}
-                    song={song}
-                    userType={userType}
-                    liked={likes.indexOf(song._id) > -1}
-                    vote={vote}
-                    artistLiveStatus={artist.live}
-                    showEditForm={showEditForm(song._id)}
-                    showLyrics={showLyrics(song._id)}
-                    onDeleteSong={onDeleteSong(song._id)}
-                    changeSongVisibility={changeSongVisibility}
-                  />
+                    <SongItem
+                      key={song._id}
+                      song={song}
+                      songVotes={songVotes.find(v => v._id === song._id)}
+                      userType={userType}
+                      liked={likes.indexOf(song._id) > -1}
+                      vote={vote}
+                      artistLiveStatus={artist.live}
+                      showEditForm={showEditForm(song._id)}
+                      showLyrics={showLyrics(song._id)}
+                      onDeleteSong={onDeleteSong(song._id)}
+                      changeSongVisibility={changeSongVisibility}
+                      showVisibilityDialog={showVisibilityDialog}
+                    />
                 )
             )}
           </ScrollView>

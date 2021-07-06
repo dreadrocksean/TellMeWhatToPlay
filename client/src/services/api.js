@@ -86,7 +86,6 @@ export const fetchUserArtist = req =>
     .catch(err => console.error("Error fetching User Artist: ", err));
 
 export const updateDoc = async (type, { _id, ...rest }) => {
-  // console.log("UPDATEDOC TYPE", type);
   try {
     const res = await db
       .collection(`${type}s`)
@@ -153,6 +152,46 @@ export const getUser = async req => {
     });
   }
 };
+
+export const updateVotes = async ({artist, songId, votes}) => {
+  console.log("TCL: votes", votes)
+  try {
+    const showSongRef = db.doc(`artists/${artist._id}/shows/${artist.currShowId}/songVotes/${songId}`);
+    const timestamp =  firebase.firestore.Timestamp.fromDate(new Date());
+    const res = await showSongRef.set({
+      votes,
+      timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
+    }, {merge: true});
+    return Promise.resolve(res);
+  } catch(err) {
+    return Promise.reject(err)
+  }
+}
+
+export const createShow = async artist => {
+  const artistRef = db.doc(`artists/${artist._id}`);
+  try {
+    const timestamp =  firebase.firestore.Timestamp.fromDate(new Date());
+    const showRes = await artistRef.collection('shows').add({startTime: timestamp});
+    await artistRef.update({live: true, currShowId: showRes.id});
+    return Promise.resolve(showRes.id)
+  } catch(err) {
+    return Promise.reject(err)
+  }
+}
+
+export const endShow = async artist => {
+  const artistRef = db.doc(`artists/${artist._id}`);
+  const showRef = artistRef.collection("shows").doc(artist.currShowId);
+  try {
+    const timestamp =  firebase.firestore.Timestamp.fromDate(new Date());
+    await showRef.update({endTime: timestamp});
+    await artistRef.update({live: false});
+    return Promise.resolve(null)
+  } catch(err) {
+    return Promise.reject(err)
+  }
+}
 
 export const fetchLastFMSong = (title, artist) => {
   const artistQuery = artist ? `&artist=${artist}` : "";

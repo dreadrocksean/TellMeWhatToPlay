@@ -3,18 +3,18 @@ import { Image, View, TouchableOpacity } from "react-native";
 
 import styles from "./styles";
 
-const ListItemIcon = props => {
+const ListItemIcon = ({onPress, onLongPress, styles: propStyles, icon, tint}) => {
   const defaultProps = { tint: false };
 
   return (
-    <TouchableOpacity onPress={props.onPress}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
       <View>
         <Image
-          style={{ ...styles.image, ...props.styles }}
-          source={props.icon}
+          style={{ ...styles.image, ...propStyles }}
+          source={icon}
           resizeMode={"cover"}
         />
-        {props.tint && <View style={styles.iconTint} />}
+        {tint && <View style={styles.iconTint} />}
       </View>
     </TouchableOpacity>
   );

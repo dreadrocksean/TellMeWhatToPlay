@@ -1,3 +1,6 @@
+
+import firebase from "src/utils/Firestore";
+
 import * as AT from "src/store/actions/ActionTypes";
 import {
   createUser,
@@ -10,6 +13,9 @@ import {
   fetchUserArtist
 } from "src/services/api";
 import { saveStorage, loadStorage } from "src/services/LocalStorage";
+
+const db = firebase.firestore();
+
 
 export const incrementVotes = () => ({
   type: AT.IncrementVotes
@@ -245,8 +251,9 @@ export const navigateToLogoutScreen = () => ({
   type: AT.NavigateToLogoutScreen
 });
 
-export const onAir = () => ({
-  type: AT.OnAir
+export const onAir = payload => ({
+  type: AT.OnAir,
+  payload
 });
 
 export const offAir = () => ({

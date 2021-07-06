@@ -12,9 +12,9 @@ const artistReducer = (state = initialState, action) => {
       return null;
     }
     case AT.OnAir:
-      return { ...state, live: true };
+      return { ...state, live: true, ...action.payload };
     case AT.OffAir:
-      return { ...state, live: false };
+      return { ...state, live: false, showId: null };
     case AT.AddArtistPhoto:
       return { ...state, imageURL: action.payload };
 

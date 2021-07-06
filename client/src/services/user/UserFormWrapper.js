@@ -26,10 +26,11 @@ const UserFormWrapper = ({
   navigateTo
 }) => {
   const [hasAccount, setHasAccount] = useState(true);
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   // const [email, setEmail] = useState("landon@bartholomusic.com");
-  // const [email, setEmail] = useState("adrian@bartholomusic.com");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("adrian@bartholomusic.com");
+  // const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("1234");
   // const [password, setPassword] = useState("Skateurban04");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");

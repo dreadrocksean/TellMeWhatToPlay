@@ -27,12 +27,14 @@ const SongItem = ({
   navigation,
   userType,
   song,
+  songVotes = {},
   onDeleteSong,
   showLyrics,
   vote,
   liked,
   artistLiveStatus,
-  changeSongVisibility
+  changeSongVisibility,
+  showVisibilityDialog
 }) => {
   const [isArtist, setIsArtist] = useState(userType === UserType.ARTIST);
   const [muted, setMuted] = useState(!song.visible);
@@ -46,14 +48,14 @@ const SongItem = ({
 
   const renderArtistSongItem = () => {
     const { _id, title, artist } = song;
-    const currVotes = song.currVotes || 0;
+    const currVotes = songVotes.votes || 0;
     const titleColor = muted ? "#4d4d4d" : "#3c2385";
 
     return (
       <View style={styles.root}>
         <View style={styles.itemLeft}>
           <Score short={true} votes={currVotes} disabled={muted} />
-          <ListItemIcon onPress={showLyrics} icon={lyricsIcon} />
+          {/* <ListItemIcon onPress={showLyrics} icon={lyricsIcon} /> */}
         </View>
         <View style={styles.itemInfo}>
           <AppText
@@ -74,7 +76,8 @@ const SongItem = ({
         <View style={styles.itemRight}>
           <ListItemIcon
             onPress={handleChangeSongVisibility}
-            icon={muted ? unmuteButton : muteButton}
+            onLongPress={showVisibilityDialog}
+            icon={muted ? muteButton : unmuteButton}
           />
           <ListItemIcon onPress={handleDeleteSong} icon={trashButton} />
         </View>
@@ -84,13 +87,13 @@ const SongItem = ({
 
   const renderFanSongItem = () => {
     const { _id, title, artist } = song;
-    const currVotes = song.currVotes || 0;
+    const currVotes = songVotes.votes || 0;
 
     return (
       <View style={styles.root}>
-        <View style={{ ...styles.itemLeft, flex: 4 }}>
+        {/* <View style={{ ...styles.itemLeft, flex: 4 }}>
           <ListItemIcon onPress={showLyrics} icon={lyricsIcon} />
-        </View>
+        </View> */}
 
         <View style={{ ...styles.itemInfo, flex: 20 }}>
           <AppText
@@ -119,10 +122,11 @@ const SongItem = ({
             <Score votes={currVotes} />
           </View>
           <ListItemIcon
-            onPress={vote(_id, currVotes, !liked)}
+            onPress={vote(_id, songVotes?.votes, !liked)}
             icon={voteUpIcon}
             styles={styles.voteIcon}
             tint={liked}
+            disabled={!vote}
           />
         </View>
       </View>
@@ -132,7 +136,7 @@ const SongItem = ({
   const showSong = isArtist || (song.visible && artistLiveStatus);
 
   return showSong ? (
-    <ListItem disabled={!song.visible}>
+    <ListItem disabled={!song.visible} onClick={showLyrics}>
       {isArtist ? renderArtistSongItem() : renderFanSongItem()}
     </ListItem>
   ) : null;
@@ -142,7 +146,7 @@ SongItem.defaultProps = {};
 
 const areEqual = (prev, next) =>
   // prev._id === next._id &&
-  prev.song.currVotes === next.song.currVotes &&
+  prev.songVotes.votes === next.songVotes.votes &&
   prev.song.artist === next.song.artist &&
   prev.song.title === next.song.title &&
   prev.liked === next.liked;

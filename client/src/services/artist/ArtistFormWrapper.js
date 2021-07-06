@@ -47,6 +47,7 @@ const ArtistFormWrapper = ({
       vocals: hasRole("vocals"),
       piano: hasRole("piano"),
       guitar: hasRole("guitar"),
+      bass: hasRole("bass"),
       sax: hasRole("sax"),
       percussion: hasRole("percussion"),
       harmonica: hasRole("harmonica"),
