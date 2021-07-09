@@ -136,10 +136,10 @@ const ArtistAdmin = ({
     );
   };
 
-  const toggleOnAir = option => async () => {
+  const toggleOnAir = async () => {
     if (!_isMounted.current) return;
     setModalContent(null);
-    if (!option) return;
+    // if (!option) return;
     try {
       if (!artist) throw new Error("Artist not valid");
       if (artist.live) {
