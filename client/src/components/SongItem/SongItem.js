@@ -28,7 +28,7 @@ const SongItem = ({
   userType,
   song,
   songVotes = {},
-  onDeleteSong,
+  deleteSong,
   showLyrics,
   vote,
   liked,
@@ -37,25 +37,21 @@ const SongItem = ({
   showVisibilityDialog
 }) => {
   const [isArtist, setIsArtist] = useState(userType === UserType.ARTIST);
-  const [muted, setMuted] = useState(!song.visible);
 
   const handleChangeSongVisibility = () => {
-    changeSongVisibility(song._id, muted);
-    setMuted(!muted);
+    changeSongVisibility(song._id, !song.visible);
   };
-
-  const handleDeleteSong = () => onDeleteSong(song._id);
 
   const renderArtistSongItem = () => {
     const { _id, title, artist } = song;
     const currVotes = songVotes.votes || 0;
-    const titleColor = muted ? "#4d4d4d" : "#3c2385";
+    const titleColor = song.visible ? "#3c2385" : "#4d4d4d";
 
     return (
       <View style={styles.root}>
         <View style={styles.itemLeft}>
-          <Score short={true} votes={currVotes} disabled={muted} />
-          {/* <ListItemIcon onPress={showLyrics} icon={lyricsIcon} /> */}
+          <Score short={true} votes={currVotes} disabled={!song.visible} />
+          {!song.visible && <ListItemIcon onPress={showLyrics} icon={lyricsIcon} />}
         </View>
         <View style={styles.itemInfo}>
           <AppText
@@ -77,9 +73,9 @@ const SongItem = ({
           <ListItemIcon
             onPress={handleChangeSongVisibility}
             onLongPress={showVisibilityDialog}
-            icon={muted ? muteButton : unmuteButton}
+            icon={song.visible ? unmuteButton : muteButton}
           />
-          <ListItemIcon onPress={handleDeleteSong} icon={trashButton} />
+          <ListItemIcon onPress={deleteSong} icon={trashButton} />
         </View>
       </View>
     );

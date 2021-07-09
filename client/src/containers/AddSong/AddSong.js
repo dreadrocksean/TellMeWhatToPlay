@@ -173,33 +173,29 @@ const AddSong = ({ hideModal, userArtistId, setlist, complete }) => {
     };
     try {
       const found = await findSong(data);
-      const foundId = found ? found._id : null;
-      const artistSongExists =
-        !!foundId && setlist.find(v => v._id === foundId);
+      const artistSongExists = setlist.find(v => v._id === found?._id);
       if (artistSongExists) throw new Error("Song already exists in setlist.");
 
       let res;
-      if (!foundId) {
+      if (!found?._id) {
         res = await createDoc("song", data);
-        if (!res.success) throw new Error("Could not create new song");
+        if (!res?.success) throw new Error("Could not create new song");
       }
+      const songs = [
+        ...setlist,
+        {
+          _id: found?._id || res.data._id,
+          ...data,
+          visible: false
+        }
+      ];
       await updateDoc("artist", {
         _id: userArtistId,
-        songs: [
-          ...setlist,
-          {
-            _id: foundId || res.data._id,
-            votes: 0,
-            currVotes: 0,
-            visible: false
-          }
-        ]
+        songs
       });
     } catch (err) {
       console.log(err);
     }
-    console.log("about to COMPLETE");
-    complete();
     reset();
     hideModal();
   };

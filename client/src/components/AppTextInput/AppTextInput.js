@@ -86,7 +86,7 @@ const AppTextInput = ({
 
 AppTextInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
-  onChangeText: PropTypes.func.isRequired,
+  onChangeText: PropTypes.func,
   onFocus: PropTypes.func,
   value: PropTypes.any,
   secureTextEntry: PropTypes.bool,
