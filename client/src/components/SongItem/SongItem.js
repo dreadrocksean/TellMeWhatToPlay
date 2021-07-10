@@ -31,7 +31,7 @@ const SongItem = ({
   deleteSong,
   showLyrics,
   vote,
-  liked,
+  disabled,
   artistLiveStatus,
   changeSongVisibility,
   showVisibilityDialog
@@ -118,10 +118,10 @@ const SongItem = ({
             <Score votes={currVotes} />
           </View>
           <ListItemIcon
-            onPress={vote(_id, songVotes?.votes, !liked)}
+            onPress={vote}
             icon={voteUpIcon}
             styles={styles.voteIcon}
-            tint={liked}
+            tint={disabled}
             disabled={!vote}
           />
         </View>
@@ -145,7 +145,7 @@ const areEqual = (prev, next) =>
   prev.songVotes.votes === next.songVotes.votes &&
   prev.song.artist === next.song.artist &&
   prev.song.title === next.song.title &&
-  prev.liked === next.liked;
+  prev.disabled === next.disabled;
 
 export default SongItem;
 // export default memo(SongItem, areEqual);

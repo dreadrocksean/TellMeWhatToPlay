@@ -45,9 +45,7 @@ import {
   setModalContent,
   setModalHeight
 } from "src/store/actions/ActionCreator";
-import { updateDoc, deleteDoc, updateVotes } from "src/services/api";
-// import { saveStorage } from "src/services/LocalStorage";
-// import UserFormWrapper from "src/services/user/UserFormWrapper";
+import { updateDoc, deleteDoc, updateVotes, getTimesTillVotable } from "src/services/api";
 
 const db = firebase.firestore();
 
@@ -76,19 +74,34 @@ const Setlist = ({
   const allSongsRef = useRef([]);
 
   const [songs, setSongs] = useState([]);
-  const [likes, setLikes] = useState([]);
+  const [disabled, setDisabled] = useState({});
   const [songVotes, setSongVotes] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     isMountedRef.current = true;
-    processSongVotes()
+    processSongVotes();
     return () => {
       isMountedRef.current = false;
       unsubscribeArtistRef.current();
       unsubscribeSongRefs.current.forEach(f => f());
       unsubscribeShowSongsRef.current?.();
     };
+  }, []);
+
+  useEffect(() => {
+    const processDisabledSongs = async () => {
+      try {
+        const timesTillVotable = await getTimesTillVotable();
+        const disabledSongs = Object.keys(timesTillVotable)?.reduce((acc, songId) => {
+            acc[songId] = timesTillVotable[songId].timeTillVotable.seconds > 0
+          return acc;
+        }, {});
+        setDisabled(disabledSongs ?? {});
+      } catch(err) {
+      }
+    };
+    processDisabledSongs();
   }, []);
 
   useEffect(() => {
@@ -200,23 +213,26 @@ const Setlist = ({
     });
   }, []);
 
-  const vote = (_id, currVotes, sentiment) => async () => {
-    if(!isMountedRef.current || !myArtist.currShowId) return;
+  const vote = songId => async () => {
+    if(!isMountedRef.current || !artist.currShowId) return;
 
-    const songVoteCount = songVotes.find(v => v._id === _id)?.votes ?? 0;
-    const newCurrVotes = Math.max(songVoteCount + (sentiment ? 1 : -1), 0);
-    if (!isArtist && !authorized) {
+    const songVoteCount = songVotes.find(v => v._id === songId)?.votes ?? 0;
+    if (!isArtist && !authorized) { 
       setModalContent(<FanSignup />);
       return;
     }
 
-    const res = await updateVotes({
-      artist, songId: _id, votes: newCurrVotes
-    });
-    if (sentiment) {
-      setLikes([...likes, _id]);
-    } else {
-      setLikes(likes.filter(i => i !== _id));
+    const toSecs = timeRemaining =>  timeRemaining.mins * 60 + timeRemaining.secs
+
+    try {
+      const res = await updateVotes({artist, songId, votes: songVoteCount+1});
+      if (res?.timeRemaining) {
+        const tr = res?.timeRemaining;
+        setDisabled({...disabled, [songId]: toSecs(tr) > 0})
+        console.log(`You can vote for this song again in ${tr.mins} mins ${tr.secs} secs`);
+      }
+    } catch(err) {
+      console.log("vote -> err", err)
     }
   };
 
@@ -259,7 +275,6 @@ const Setlist = ({
   };
 
   const deleteSong = id => () => {
-    console.log("TCL: -> deleteSong", id)
     setModalContent(
       <OptionModal
         style={styles.deleteModal}
@@ -291,9 +306,6 @@ const Setlist = ({
 
     setSongs(filtered.length ? filtered : allSongsRef.current);
   };
-
-  // console.log("TCL: render -> songVotes", songVotes)
-  console.log("TCL: render -> songs", songs)
 
   return !isArtist && !artist.live ? (
     <View>
@@ -334,8 +346,8 @@ const Setlist = ({
                       song={song}
                       songVotes={songVotes.find(v => v._id === song._id)}
                       userType={userType}
-                      liked={likes.indexOf(song._id) > -1}
-                      vote={vote}
+                      disabled={disabled[song._id]}
+                      vote={vote(song._id)}
                       artistLiveStatus={artist.live}
                       showEditForm={showEditForm(song._id)}
                       showLyrics={showLyrics(song._id)}

@@ -1,9 +1,12 @@
 import firebase from "../utils/Firestore.js";
 import { getLyrics, getSong } from 'genius-lyrics-api';
+import { saveStorage, loadStorage } from "src/services/LocalStorage";
 const db = firebase.firestore();
 // db.settings({
 //   timestampsInSnapshots: true
 // });
+
+const VOTEPERIOD_IN_MINS = 1;
 
 const lastFMAPI = {
   API_KEY: "f99a0153aeb7a033fbece27dd9650248",
@@ -153,16 +156,48 @@ export const getUser = async req => {
   }
 };
 
-export const updateVotes = async ({artist, songId, votes}) => {
-  console.log("TCL: votes", votes)
+const getMinsSecs = seconds => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return { mins, secs, seconds};
+}
+
+export const getTimesTillVotable = async now => {
   try {
+    const localVotes = await loadStorage("votes");
+    const timestamp = now ?? firebase.firestore.Timestamp.fromDate(new Date());
+    const times = Object.keys(localVotes).reduce((acc, songId) => {
+      const timeTillVotable = getMinsSecs(
+        (VOTEPERIOD_IN_MINS * 60)
+        - timestamp.seconds
+        + localVotes[songId].timestamp.seconds
+      );
+      acc[songId] = {...localVotes[songId], timeTillVotable}
+      return acc
+    }, {});
+    return Promise.resolve(times);
+  } catch(err) {
+    return Promise.resolve(null);
+  }
+}
+
+export const updateVotes = async ({artist, songId, votes}) => {
+  try {
+    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+    const localVotes = await getTimesTillVotable(timestamp);
+    const canVote = !localVotes?.[songId]
+      || localVotes?.votes > votes
+      || localVotes?.[songId].timeTillVotable.seconds <= 0;
+    if (!canVote) {
+      return Promise.resolve({ timeRemaining: localVotes.timeTillVotable });
+    }
+
     const showSongRef = db.doc(`artists/${artist._id}/shows/${artist.currShowId}/songVotes/${songId}`);
-    const timestamp =  firebase.firestore.Timestamp.fromDate(new Date());
-    const res = await showSongRef.set({
-      votes,
-      timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
-    }, {merge: true});
-    return Promise.resolve(res);
+    const payload = {votes, timestamp}
+    await showSongRef.set(payload, {merge: true});
+    const newLocalVotes = {...(localVotes || {}), [songId]: payload};
+    saveStorage({votes: newLocalVotes})
+    return Promise.resolve({timeRemaining: getMinsSecs(VOTEPERIOD_IN_MINS * 60)});
   } catch(err) {
     return Promise.reject(err)
   }
@@ -186,7 +221,7 @@ export const endShow = async artist => {
   try {
     const timestamp =  firebase.firestore.Timestamp.fromDate(new Date());
     await showRef.update({endTime: timestamp});
-    await artistRef.update({live: false});
+    await artistRef.update({live: false, currShowId: null});
     return Promise.resolve(null)
   } catch(err) {
     return Promise.reject(err)

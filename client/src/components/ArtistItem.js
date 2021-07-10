@@ -19,8 +19,9 @@ import listItemAvatar from "src/images/test_avatar.png";
 import geoMarkerIcon from "src/images/icons/marker.png";
 
 const { width, height } = Dimensions.get("window");
+const FEET_PER_MILE = 5280;
 
-const ArtistItem = props => {
+const ArtistItem = ({artist, showSetList}) => {
   const {
     name = "Lindsey Stroud",
     genre = "Alternative Hiphop",
@@ -28,14 +29,14 @@ const ArtistItem = props => {
     live,
     distance,
     imageURL
-  } = props.artist;
+  } = artist;
 
-  const feet = Math.round(distance * 5280);
+  const feet = Math.round(distance * FEET_PER_MILE);
   const miles = Math.round(distance);
   const distanceStr = miles > 0 ? `${miles} Mi` : `${feet} Ft`;
 
   return (
-    <ListItem disabled={!live} onClick={props.showSetList}>
+    <ListItem disabled={!live} onClick={showSetList}>
       <View style={styles.leftInfo}>
         <View style={styles.avatarContainer}>
           <Image

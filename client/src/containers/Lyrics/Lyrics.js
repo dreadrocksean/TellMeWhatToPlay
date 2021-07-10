@@ -30,9 +30,6 @@ const Lyrics = ({
   currSong
 }) => {
   const [edit, setEdit] = useState(false);
-  // const [image, setImage] = useState(null);
-  // const [lyrics, setLyrics] = useState(null);
-  // const [title, setTitle] = useState(null);
 
   useEffect(() => {
     if (!currSong) return;
@@ -43,7 +40,6 @@ const Lyrics = ({
       try {
         const {lyrics, albumArt  = null} = await fetchLyrics(title, artist);
         loadingStatus(false);
-        // currSong.lyrics = lyrics;
         currSong.image = albumArt;
         console.log("TCL: getLyrics -> currSong", currSong)
         saveLyrics(lyrics);
@@ -52,8 +48,7 @@ const Lyrics = ({
         console.log("getLyrics ERR", err);
         currSong.lyrics = null;
         currSong.image = null;
-        updateCurrSong(currSong);
-        // setLyrics(null);
+        updateCurrSong(currSong)
       }
     };
 

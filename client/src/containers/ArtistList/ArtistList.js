@@ -73,9 +73,7 @@ const ArtistList = ({ navigation, loadingStatus }) => {
   const _getLocationAsync = async () => {
     loadingStatus(true);
     try {
-      // const { status } = await Permissions.askAsync(Permissions.LOCATION);
       const {status} = await Location.requestForegroundPermissionsAsync();
-      console.log("TCL: _getLocationAsync -> status", status)
       if (status !== "granted") {
         setErrorMessage("Permission to access location was denied");
       }
@@ -91,24 +89,16 @@ const ArtistList = ({ navigation, loadingStatus }) => {
     }
   };
 
-  const getSortedArtists = () => {
-    if (!location) return [];
-    return artists
-      .map(v => {
-        v.distance =
-          location && v.location ? getDistance(location, v.location) : 0;
-        return v;
-      })
-      .sort((a, b) => {
-        if (a.distance > b.distance) {
-          return 1;
-        }
-        if (a.distance < b.distance) {
-          return -1;
-        }
-        return 0;
-      });
-  };
+  const getSortedArtists = () => !location ? [] : artists
+    .map(v => {
+      v.distance =
+        location && v.location ? getDistance(location, v.location) : 0;
+      return v;
+    })
+    .sort((a, b) => 
+      a.distance > b.distance ? 1
+      : a.distance < b.distance ? -1 : 0
+    );
 
   const updateArtistList = async () => {
     loadingStatus(true);
@@ -161,7 +151,6 @@ const ArtistList = ({ navigation, loadingStatus }) => {
   };
 
   const showSetList = artist => () => {
-    // console.log('showSetList artist', artist);
     const { navigate } = navigation;
     navigate("SetList", { name: "SetList", artist });
   };
@@ -197,9 +186,9 @@ const ArtistList = ({ navigation, loadingStatus }) => {
       )}
       <View style={styles.scroll}>
         <ScrollView pagingEnabled={true}>
-          {(getSortedArtists() || artists).map((artist, i) => (
+          {(getSortedArtists() || artists).map(artist => (
             <ArtistItem
-              key={i}
+              key={artist._id}
               artist={artist}
               showSetList={showSetList(artist)}
             />

@@ -1,4 +1,3 @@
-
 import firebase from "src/utils/Firestore";
 
 import * as AT from "src/store/actions/ActionTypes";
@@ -13,6 +12,7 @@ import {
   fetchUserArtist
 } from "src/services/api";
 import { saveStorage, loadStorage } from "src/services/LocalStorage";
+
 
 const db = firebase.firestore();
 
@@ -87,7 +87,7 @@ export const loginUser = credentials => async (dispatch, getState) => {
 export const loginStorageUser = () => async (dispatch, getState) => {
   try {
     const res = await loadStorage("user");
-    if (!res || !res.data) throw "No user stored";
+    if (!res) throw "No user stored";
     return Promise.resolve(res);
   } catch (err) {
     dispatch(logout());
@@ -204,13 +204,10 @@ export const signUpArtist = payload => async (dispatch, getState) => {
 export const loginStorageArtist = () => async (dispatch, getState) => {
   try {
     let artist = await loadStorage("artist");
-    if (!artist || !artist.data) {
+    if (!artist) {
       console.log("DID NOT FIND ARTIST");
       const localUser = await loadStorage("user");
-      if (!localUser || !localUser.data) {
-        logout();
-        throw new Error("Something weird occurred");
-      }
+      if (!localUser?.data) logout();
       loginArtist(localUser.data._id)(dispatch, getState);
     } else dispatch({ type: AT.LoginArtist, payload: artist.data });
     return Promise.resolve(artist);
