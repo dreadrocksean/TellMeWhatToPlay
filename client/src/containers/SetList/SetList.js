@@ -34,6 +34,7 @@ import FanSignup from "src/containers/FanSignup";
 // import SongForm from "src/containers/SongForm";
 import AddSong from "src/containers/AddSong";
 import RoundImage from "src/components/RoundImage";
+import ConfirmModal from "src/components/ConfirmModal";
 import OptionModal from "src/components/OptionModal";
 import AppText from "src/components/AppText";
 import AppTextInput from "src/components/AppTextInput";
@@ -93,12 +94,14 @@ const Setlist = ({
     const processDisabledSongs = async () => {
       try {
         const timesTillVotable = await getTimesTillVotable();
+        if (!isMountedRef.current) return;
         const disabledSongs = Object.keys(timesTillVotable)?.reduce((acc, songId) => {
-            acc[songId] = timesTillVotable[songId].timeTillVotable.seconds > 0
+            acc[songId] = timesTillVotable[songId]?.disabledPercent ?? 0
           return acc;
         }, {});
         setDisabled(disabledSongs ?? {});
       } catch(err) {
+        console.log("TCL: processDisabledSongs -> err", err)
       }
     };
     processDisabledSongs();
@@ -137,9 +140,9 @@ const Setlist = ({
     } catch(err) {
       console.log("TCL: processSongVotes -> err", err);
     }
-  }, [artist._id, artist.currShowId, setSongVotes, updateSongList])
+  }, [])
 
-  const updateSongList = async showSongVotes => {
+  const updateSongList = useCallback(async showSongVotes => {
     loadingStatus(true);
     unsubscribeArtistRef.current = db
       .doc(`artists/${artist._id}`)
@@ -147,51 +150,48 @@ const Setlist = ({
         if (!doc.data() || !isMountedRef.current) return;
         let currArtistSongs = (doc.data() || {}).songs || [];
 
-          if (isArtist) {
-            currArtistSongs = currArtistSongs.sort((a, b) => {
-              const votesA = showSongVotes.find(v => v._id === a._id)?.votes ?? 0;
-              const votesB = showSongVotes.find(v => v._id === b._id)?.votes ?? 0;
-              if (votesA < votesB) return 1;
-              if (votesA > votesB) return -1;
-              if (a.createdAt < b.createdAt) return -1;
-              if (a.createdAt > b.createdAt) return 1;
-              return 0;
-            });
-          }
-          allSongsRef.current = currArtistSongs;
-          setSongs(currArtistSongs)
-          loadingStatus(false);
+        if (isArtist) {
+          currArtistSongs = currArtistSongs.sort((a, b) => {
+            const votesA = showSongVotes.find(v => v._id === a._id)?.votes ?? 0;
+            const votesB = showSongVotes.find(v => v._id === b._id)?.votes ?? 0;
+            if (votesA < votesB) return 1;
+            if (votesA > votesB) return -1;
+            if (a.createdAt < b.createdAt) return -1;
+            if (a.createdAt > b.createdAt) return 1;
+            return 0;
+          });
+        }
+        allSongsRef.current = currArtistSongs;
+        setSongs(currArtistSongs)
+        loadingStatus(false);
 
-          if (!currArtistSongs.length) openAddForm();
+        if (!currArtistSongs.length) openAddForm();
       });
-  };
+  }, []);
 
-  const showEditForm = songId => () => {
-    const { title, artist } = songs.find(el => el._id === songId);
-  };
-
-  const showLyrics = songId => () => {
+  const showLyrics = useCallback(songId => () => {
     const { navigate } = navigation;
     const song = songs.find(el => el._id === songId);
     updateCurrSong(song);
     navigate("Lyrics", {
       name: "Lyrics"
     });
-  };
+  }, [currSong]);
 
-  const showVisibilityDialog = () => {
+  const showVisibilityDialog = useCallback(() => {
     setModalContent(
       <OptionModal
-        style={styles.deleteModal}
-        hideModal={hideModal}
         onConfirm={showAll}
-        heading="Show All / Hide All"
-        confirmText="Show All -> YES - Hide All -> NO"
+        heading="Show or Hide all songs at a time"
+        buttonTextLeft="Hide All"
+        buttonTextRight="Show All"
+        setModalHeight={setModalHeight}
       />
     );
-  }
+  }, [songs]);
 
-  const showAll = async visible => {
+  const showAll = useCallback(visible => async () => {
+    setModalContent(null);
     const newSongs = allSongsRef.current.map(song => {
       song.visible = visible;
       return song;
@@ -200,9 +200,8 @@ const Setlist = ({
       _id: artist._id,
       songs: newSongs
     });
-    // setSongs(newSongs);
     setModalContent(null);
-  }
+  }, [songs]);
 
   const changeSongVisibility = useCallback(async (_id, visible) => {
     const found = allSongsRef.current.find(song => song._id === _id) || {};
@@ -211,30 +210,26 @@ const Setlist = ({
       _id: artist._id,
       songs: allSongsRef.current
     });
-  }, []);
+  }, [allSongsRef.current]);
 
-  const vote = songId => async () => {
+  const vote = useCallback(songId => async (authorized) => {
     if(!isMountedRef.current || !artist.currShowId) return;
 
     const songVoteCount = songVotes.find(v => v._id === songId)?.votes ?? 0;
-    if (!isArtist && !authorized) { 
+    if (!isArtist && !authorized) {
       setModalContent(<FanSignup />);
       return;
     }
 
-    const toSecs = timeRemaining =>  timeRemaining.mins * 60 + timeRemaining.secs
-
     try {
-      const res = await updateVotes({artist, songId, votes: songVoteCount+1});
-      if (res?.timeRemaining) {
-        const tr = res?.timeRemaining;
-        setDisabled({...disabled, [songId]: toSecs(tr) > 0})
-        console.log(`You can vote for this song again in ${tr.mins} mins ${tr.secs} secs`);
+      const timeTillVotable = await updateVotes({artist, songId, votes: songVoteCount+1});
+      if (timeTillVotable) {
+        setDisabled({...disabled, [songId]: timeTillVotable.disabledPercent})
       }
     } catch(err) {
       console.log("vote -> err", err)
     }
-  };
+  }, [authorized, songVotes]);
 
   const hideModal = () => setModalContent(null);
 
@@ -274,19 +269,22 @@ const Setlist = ({
     );
   };
 
-  const deleteSong = id => () => {
+  const deleteSong = useCallback(id => () => {
+    const song = songs.find(v => v._id === id);
+    const title = song?.title ?? "this song";
     setModalContent(
-      <OptionModal
+      <ConfirmModal
         style={styles.deleteModal}
         onConfirm={onDeleteConfirm(id)}
         heading="DELETE SONG"
-        confirmText="Are you sure you want to delete this song from SetList?"
+        confirmText={`Are you sure you want to delete ${title} from your set?`}
+        setModalHeight={setModalHeight}
       />
     );
     songDeleteIdRef.current = id;
-  };
+  }, []);
 
-  const onDeleteConfirm = songId => confirm => {
+  const onDeleteConfirm = songId => confirm => () => {
     setModalContent(null);
     if (!confirm) return;
     const { _id } = artist;
@@ -307,6 +305,7 @@ const Setlist = ({
     setSongs(filtered.length ? filtered : allSongsRef.current);
   };
 
+  console.log("SETLIST RENDER: ", songs)
   return !isArtist && !artist.live ? (
     <View>
       <Text style={styles.text}>
@@ -344,16 +343,16 @@ const Setlist = ({
                     <SongItem
                       key={song._id}
                       song={song}
-                      songVotes={songVotes.find(v => v._id === song._id)}
+                      songVotes={songVotes.find(v => v._id === song._id) ?? {}}
                       userType={userType}
-                      disabled={disabled[song._id]}
+                      disabledPercent={disabled[song._id]}
                       vote={vote(song._id)}
                       artistLiveStatus={artist.live}
-                      showEditForm={showEditForm(song._id)}
                       showLyrics={showLyrics(song._id)}
                       deleteSong={deleteSong(song._id)}
                       changeSongVisibility={changeSongVisibility}
                       showVisibilityDialog={showVisibilityDialog}
+                      authorized={authorized}
                     />
                 )
             )}

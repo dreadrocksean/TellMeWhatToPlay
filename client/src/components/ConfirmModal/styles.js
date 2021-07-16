@@ -4,7 +4,7 @@ export default StyleSheet.create({
   root: {
     // flex: 1,
     justifyContent: "space-between",
-    // alignSelf: "stretch",
+    alignSelf: "stretch",
     minHeight: 150
     // backgroundColor: "gray"
   },

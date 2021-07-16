@@ -13,6 +13,7 @@ import {
 } from "src/store/actions/ActionCreator";
 import DefaultContainer from "src/containers/DefaultContainer";
 import AppText from "src/components/AppText";
+import AppButton from "src/components/AppButton";
 import fanButton from "src/images/buttons/fan_btn.png";
 import artistButton from "src/images/buttons/artist_btn.png";
 
@@ -78,9 +79,7 @@ const Home = ({
       <View style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <TouchableHighlight onPress={onClick("FAN")}>
-            <View>
               <Image source={fanButton} resizeMode={"cover"} />
-            </View>
           </TouchableHighlight>
           <View style={styles.textSeparator}>
             <View style={styles.line} />
@@ -88,9 +87,7 @@ const Home = ({
             <View style={styles.line} />
           </View>
           <TouchableHighlight onPress={onClick("ARTIST")}>
-            <View>
               <Image source={artistButton} resizeMode={"cover"} />
-            </View>
           </TouchableHighlight>
           <AppText style={styles.textCustomPos}>PLEASE SELECT</AppText>
         </View>

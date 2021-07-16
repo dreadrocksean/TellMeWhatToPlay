@@ -25,7 +25,7 @@ import listItemAvatar from "src/images/test_avatar.png";
 import styles from "./styles";
 
 import DefaultContainer from "src/containers/DefaultContainer";
-import OptionModal from "src/components/OptionModal";
+import ConfirmModal from "src/components/ConfirmModal";
 import AppText from "src/components/AppText";
 import RoundImage from "src/components/RoundImage";
 import { scale, verticalScale, moderateScale } from "src/utils/Scales";
@@ -124,7 +124,7 @@ const ArtistAdmin = ({
   const confirmOnAirToggle = () => {
     const live = artist?.live;
     setModalContent(
-      <OptionModal
+      <ConfirmModal
         onConfirm={toggleOnAir}
         heading={!live ? "START SHOW" : "END SHOW"}
         confirmText={
@@ -136,9 +136,10 @@ const ArtistAdmin = ({
     );
   };
 
-  const toggleOnAir = async () => {
+  const toggleOnAir = toggle => async () => {
     if (!_isMounted.current) return;
     setModalContent(null);
+    if (!toggle) return;
     try {
       if (!artist) throw new Error("Artist not valid");
       if (artist.live) {

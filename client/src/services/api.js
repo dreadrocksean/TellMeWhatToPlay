@@ -157,23 +157,25 @@ export const getUser = async req => {
 };
 
 const getMinsSecs = seconds => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return { mins, secs, seconds};
+  const mins = seconds < 0 ? 0 : Math.floor(seconds / 60);
+  const secs = seconds < 0 ? 0 : seconds % 60;
+  return { mins, secs, seconds: seconds < 0 ? 0 : seconds};
 }
 
-export const getTimesTillVotable = async now => {
+export const getTimesTillVotable = async () => {
+  const VOTEPERIOD_IN_SECS = VOTEPERIOD_IN_MINS * 60;
   try {
     const localVotes = await loadStorage("votes");
-    const timestamp = now ?? firebase.firestore.Timestamp.fromDate(new Date());
+    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
     const times = Object.keys(localVotes).reduce((acc, songId) => {
       const timeTillVotable = getMinsSecs(
-        (VOTEPERIOD_IN_MINS * 60)
-        - timestamp.seconds
-        + localVotes[songId].timestamp.seconds
+        VOTEPERIOD_IN_SECS - timestamp.seconds + localVotes[songId].timestamp.seconds
       );
-      acc[songId] = {...localVotes[songId], timeTillVotable}
-      return acc
+      const disabledPercent = Math.floor(
+        timeTillVotable.seconds * 100 / VOTEPERIOD_IN_SECS
+      );
+      acc[songId] = {...localVotes[songId], timeTillVotable, disabledPercent};
+      return acc;
     }, {});
     return Promise.resolve(times);
   } catch(err) {
@@ -183,21 +185,22 @@ export const getTimesTillVotable = async now => {
 
 export const updateVotes = async ({artist, songId, votes}) => {
   try {
-    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
-    const localVotes = await getTimesTillVotable(timestamp);
+    const localVotes = await getTimesTillVotable();
     const canVote = !localVotes?.[songId]
       || localVotes?.votes > votes
       || localVotes?.[songId].timeTillVotable.seconds <= 0;
     if (!canVote) {
-      return Promise.resolve({ timeRemaining: localVotes.timeTillVotable });
+      return Promise.resolve(localVotes[songId]);
     }
 
     const showSongRef = db.doc(`artists/${artist._id}/shows/${artist.currShowId}/songVotes/${songId}`);
+    const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
     const payload = {votes, timestamp}
-    await showSongRef.set(payload, {merge: true});
-    const newLocalVotes = {...(localVotes || {}), [songId]: payload};
-    saveStorage({votes: newLocalVotes})
-    return Promise.resolve({timeRemaining: getMinsSecs(VOTEPERIOD_IN_MINS * 60)});
+    await showSongRef.set(payload);
+    const newLocalVotes = {...(localVotes || {}), [songId]: {...localVotes[songId], ...payload}};
+    await saveStorage({votes: newLocalVotes})
+    const timesTillVotable = await getTimesTillVotable();
+    return Promise.resolve(timesTillVotable[songId]);
   } catch(err) {
     return Promise.reject(err)
   }

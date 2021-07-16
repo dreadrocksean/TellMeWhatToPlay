@@ -1,13 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo, memo } from "react";
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-  Image,
-  Text,
-  Button,
-  View
-} from "react-native";
-import { Button as RNButton, Icon } from "react-native-elements";
+import React, { useState, memo } from "react";
+import { View } from "react-native";
 
 import styles from "./styles";
 import Score from "./Score";
@@ -17,25 +9,24 @@ import AppText from "src/components/AppText";
 import { UserType } from "src/store/reducers/LoginReducer";
 import lyricsIcon from "src/images/icons/lyrics_btn1.png";
 import voteUpIcon from "src/images/icons/vote_up_btn.png";
-import voteDownIcon from "src/images/icons/vote_down_btn.png";
-import artistThumb from "src/images/icons/artist_thumb.png";
 import muteButton from "src/images/buttons/mute_btn.png";
 import unmuteButton from "src/images/buttons/unmute_btn.png";
 import trashButton from "src/images/buttons/trash_btn.png";
 
 const SongItem = ({
-  navigation,
+  authorized,
   userType,
   song,
   songVotes = {},
   deleteSong,
   showLyrics,
   vote,
-  disabled,
+  disabledPercent,
   artistLiveStatus,
   changeSongVisibility,
   showVisibilityDialog
 }) => {
+  // console.log("SongItem: disabledPercent", disabledPercent)
   const [isArtist, setIsArtist] = useState(userType === UserType.ARTIST);
 
   const handleChangeSongVisibility = () => {
@@ -44,7 +35,7 @@ const SongItem = ({
 
   const renderArtistSongItem = () => {
     const { _id, title, artist } = song;
-    const currVotes = songVotes.votes || 0;
+    const currVotes = songVotes?.votes || 0;
     const titleColor = song.visible ? "#3c2385" : "#4d4d4d";
 
     return (
@@ -83,7 +74,7 @@ const SongItem = ({
 
   const renderFanSongItem = () => {
     const { _id, title, artist } = song;
-    const currVotes = songVotes.votes || 0;
+    const currVotes = songVotes?.votes || 0;
 
     return (
       <View style={styles.root}>
@@ -118,11 +109,11 @@ const SongItem = ({
             <Score votes={currVotes} />
           </View>
           <ListItemIcon
-            onPress={vote}
+            onPress={() => vote(authorized)}
             icon={voteUpIcon}
             styles={styles.voteIcon}
-            tint={disabled}
-            disabled={!vote}
+            disabledPercent={disabledPercent}
+            showScreen={true}
           />
         </View>
       </View>
@@ -140,12 +131,18 @@ const SongItem = ({
 
 SongItem.defaultProps = {};
 
-const areEqual = (prev, next) =>
+const areEqual = (prev, next) => {
   // prev._id === next._id &&
-  prev.songVotes.votes === next.songVotes.votes &&
+  // prev.vote === next.vote &&
+  const equal = prev.songVotes?.votes === next.songVotes?.votes &&
+  prev.song.visible === next.song.visible &&
   prev.song.artist === next.song.artist &&
   prev.song.title === next.song.title &&
-  prev.disabled === next.disabled;
+  prev.authorized === next.authorized &&
+  prev.disabledPercent === next.disabledPercent;
+  console.log("TCL: equal", equal)
+  return equal;
+}
 
 export default SongItem;
 // export default memo(SongItem, areEqual);

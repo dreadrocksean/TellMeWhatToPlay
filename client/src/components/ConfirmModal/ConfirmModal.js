@@ -5,10 +5,11 @@ import styles from "./styles";
 import AppText from "src/components/AppText";
 import AppButton from "src/components/AppButton";
 
-const OptionModal = ({ style, onConfirm, heading, buttonTextLeft, buttonTextRight, setModalHeight }) => {
-  
+const ConfirmModal = ({ style, onConfirm, heading, confirmText, setModalHeight }) => {
+  const onLayout = ({nativeEvent: {layout: {width}}}) => {
+    setModalHeight?.(width);
+  }
 
-  const onLayout = ({nativeEvent: {layout: {width}}}) => setModalHeight(width);
   return (
     <View onLayout={onLayout} style={{ ...styles.root, ...style }}>
       <AppText
@@ -17,20 +18,24 @@ const OptionModal = ({ style, onConfirm, heading, buttonTextLeft, buttonTextRigh
       >
         {heading}
       </AppText>
+      <AppText style={styles.section} textStyle={styles.text}>
+        {confirmText}
+      </AppText>
       <View style={{ ...styles.section, ...styles.row }}>
         <AppButton
-          text={buttonTextLeft} color="#ff0055"
+          text="no" color="#ff0077"
+          icon={require("src/images/buttons/generic/x.png")}
           onPress={onConfirm(false)}
-          style={{width: 110}}
+          style={{width: 105}}
         />
         <AppButton
-          text={buttonTextRight}
+          text="yes"
+          icon={require("src/images/buttons/generic/check.png")}
           onPress={onConfirm(true)}
-          style={{width: 110}}
+          style={{width: 105}}
         />
       </View>
     </View>
-  );
-};
+  )};
 
-export default OptionModal;
+export default ConfirmModal;

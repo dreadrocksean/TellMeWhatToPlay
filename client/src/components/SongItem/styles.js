@@ -20,16 +20,6 @@ export default StyleSheet.create({
     width: iconSize,
     height: iconSize
   },
-  iconTint: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: iconSize,
-    height: iconSize,
-    borderRadius: iconSize / 2,
-    backgroundColor: "green",
-    opacity: 0.4
-  },
   scoreIcon: {
     width: iconSize * 0.4,
     height: iconSize * 0.4,

@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  Platform,
-  ScrollView,
-  Dimensions,
   View,
   Image,
   TouchableOpacity
@@ -12,7 +9,6 @@ import {
 import styles from "./styles";
 
 import { setModalContent } from "src/store/actions/ActionCreator";
-import AppText from "src/components/AppText";
 import closeIcon from "src/images/icons/close_icon.png";
 
 const Modal = ({

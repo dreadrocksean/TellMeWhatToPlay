@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+import { View, Image, TouchableOpacity } from "react-native";
+// import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import styles from "./styles";
 import AppText from "src/components/AppText";
